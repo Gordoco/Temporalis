@@ -25,7 +25,7 @@ public class LookAround : NetworkBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        if (!authority) return;
+        if (!isOwned) return;
 
         Cursor.lockState = CursorLockMode.Locked;
     }
@@ -33,7 +33,7 @@ public class LookAround : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!authority) return;
+        if (!isOwned) return;
         float mouseX = Input.GetAxis("Mouse X") * mouseXSensitivity * Time.deltaTime;
         float mouseY = -1 * Input.GetAxis("Mouse Y") * mouseYSensitivity * Time.deltaTime;
 

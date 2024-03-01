@@ -49,9 +49,16 @@ public class PlayerObjectController : NetworkBehaviour
         this.PlayerReadyUpdate(this.bReady, !this.bReady);
     }
 
+    public void ServerStartGame(string SceneName)
+    {
+        if (isServer)
+            Manager.ServerStartGame(SceneName);
+        else Debug.Log("ERROR: Trying to load scene from client");
+    }
+
     public void ChangeReady()
     {
-        if (authority)
+        if (isOwned)
         {
             CmdSetPlayerReady();
         }
@@ -94,26 +101,6 @@ public class PlayerObjectController : NetworkBehaviour
         if (isClient)
         {
             LobbyController.Instance.UpdatePlayerList();
-        }
-    }
-
-    public void CanStartGame(string SceneName)
-    {
-        if (authority) CmdCanStartGame(SceneName);
-    }
-
-    [Command]
-    public void CmdCanStartGame(string SceneName)
-    {
-        Manager.ServerStartGame(SceneName);
-    }
-
-    public virtual void SpawnPlayerPrefab()
-    {
-        if (authority)
-        {
-            GameObject newPrefab = Instantiate(GamePrefab);
-            newPrefab.transform.parent = transform;
         }
     }
 }

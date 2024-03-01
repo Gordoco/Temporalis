@@ -29,11 +29,9 @@ public class LoopbreakerNetworkManager : NetworkManager
 
     private NetworkConnectionToClient GetConnectionFromID(int ConnectionID)
     {
-        for (int i = 0; i < Clients.Count; i++)
-        {
-            if (Clients[i].connectionId == ConnectionID) return Clients[i];
-        }
-        return null;
+        NetworkConnectionToClient connection;
+        NetworkServer.connections.TryGetValue(ConnectionID, out connection);
+        return connection;
     }
 
     public void RemoveClient(int index) { Debug.Log("Client Number: " + index + " Removed"); Clients.RemoveAt(index); }
@@ -48,7 +46,9 @@ public class LoopbreakerNetworkManager : NetworkManager
     {
         for (int i = 0; i < GamePlayers.Count; i++)
         {
-            GamePlayers[i].SpawnPlayerPrefab();
+            GameObject gamePrefab = Instantiate(GamePlayers[i].GamePrefab);
+            gamePrefab.transform.SetParent(GamePlayers[i].transform);
+            NetworkServer.ReplacePlayerForConnection(GetConnectionFromID(GamePlayers[i].ConnectionID), gamePrefab);
         }
     }
 }

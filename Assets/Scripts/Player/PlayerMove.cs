@@ -9,9 +9,22 @@ public class PlayerMove : NetworkBehaviour
     public float jumpSpeed = 8.0f;
     public float gravity = 20.0f;
     private Vector3 moveDirection = Vector3.zero;
-    
+
+    public override void OnStartAuthority()
+    {
+        base.OnStartAuthority();
+        if (!isOwned) return;
+        UpdatePositionRpc(new Vector3(Random.Range(-20f, 20f), 100, Random.Range(-20.0f, 20.0f)));
+    }
+
+    [Command]
+    void UpdatePositionRpc(Vector3 newPos)
+    {
+        transform.position = newPos;
+    } 
+
     void Update() {
-        if (!authority) return;
+        if (!isOwned) return;
 
         CharacterController controller = GetComponent<CharacterController>();
         if (controller.isGrounded) {

@@ -234,6 +234,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: GameManager
       objectReference: {fileID: 0}
+    - target: {fileID: 8851137220212218537, guid: bd23b56a587cd4b41b14547811c83a93, type: 3}
+      propertyPath: SteamAppID
+      value: 1230670
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bd23b56a587cd4b41b14547811c83a93, type: 3}
 --- !u!114 &11437209 stripped

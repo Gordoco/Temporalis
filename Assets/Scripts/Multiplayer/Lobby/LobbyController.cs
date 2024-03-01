@@ -50,7 +50,7 @@ public class LobbyController : MonoBehaviour
 
     public virtual void LaunchGame(string SceneName)
     {
-        LocalPlayerController.CanStartGame(SceneName);
+        LocalPlayerController.ServerStartGame(SceneName);
     }
 
     public void ReadyPlayer()
