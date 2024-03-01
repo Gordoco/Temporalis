@@ -18,7 +18,7 @@ public class SteamLobby : MonoBehaviour
     //Variables
     public ulong CurrentLobbyID;
     private const string HostAddressKey = "HostAddress";
-    private TemporalisNetworkManager manager;
+    private LoopbreakerNetworkManager manager;
 
     private void Start()
     {
@@ -26,7 +26,7 @@ public class SteamLobby : MonoBehaviour
 
         if (Instance == null) { Instance = this; }
 
-        manager = GetComponent<TemporalisNetworkManager>();
+        manager = GetComponent<LoopbreakerNetworkManager>();
 
         LobbyCreated = Callback<LobbyCreated_t>.Create(OnLobbyCreated);
         JoinRequest = Callback<GameLobbyJoinRequested_t>.Create(OnJoinRequest);

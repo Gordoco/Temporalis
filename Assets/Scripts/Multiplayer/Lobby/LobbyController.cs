@@ -32,14 +32,14 @@ public class LobbyController : MonoBehaviour
     public TMP_Text ReadyButtonText;
 
     //Manager
-    private TemporalisNetworkManager manager;
+    private LoopbreakerNetworkManager manager;
 
-    private TemporalisNetworkManager Manager
+    private LoopbreakerNetworkManager Manager
     {
         get
         {
             if (manager != null) return manager;
-            return manager = TemporalisNetworkManager.singleton as TemporalisNetworkManager;
+            return manager = LoopbreakerNetworkManager.singleton as LoopbreakerNetworkManager;
         }
     }
 

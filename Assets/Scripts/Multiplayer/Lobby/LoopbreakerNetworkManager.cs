@@ -5,7 +5,7 @@ using Mirror;
 using UnityEngine.SceneManagement;
 using Steamworks;
 
-public class TemporalisNetworkManager : NetworkManager
+public class LoopbreakerNetworkManager : NetworkManager
 {
     [SerializeField] private PlayerObjectController GamePlayerPrefab;
     public List<PlayerObjectController> GamePlayers { get; } = new List<PlayerObjectController>();
@@ -27,24 +27,28 @@ public class TemporalisNetworkManager : NetworkManager
         }
     }
 
-    public void RemoveClient(int index) { Clients.RemoveAt(index); }
+    private NetworkConnectionToClient GetConnectionFromID(int ConnectionID)
+    {
+        for (int i = 0; i < Clients.Count; i++)
+        {
+            if (Clients[i].connectionId == ConnectionID) return Clients[i];
+        }
+        return null;
+    }
 
-    public void StartGame(string SceneName)
+    public void RemoveClient(int index) { Debug.Log("Client Number: " + index + " Removed"); Clients.RemoveAt(index); }
+
+    public void ServerStartGame(string SceneName)
     {
         ServerChangeScene(SceneName);
+        ServerSpawnPlayerGamePrefabs();
     }
 
-    public override void OnServerChangeScene(string newSceneName)
+    private void ServerSpawnPlayerGamePrefabs()
     {
-        base.OnServerChangeScene(newSceneName);
-
         for (int i = 0; i < GamePlayers.Count; i++)
         {
-            GameObject playerPrefab = Instantiate(GamePlayers[i].GamePrefab);
-            playerPrefab.GetComponent<NetworkIdentity>().AssignClientAuthority(Clients[i]);
-            //Initialize Location Through Some Spawn Calcs
-            playerPrefab.transform.SetParent(GamePlayers[i].gameObject.transform);
+            GamePlayers[i].SpawnPlayerPrefab();
         }
     }
-
 }

@@ -14,14 +14,15 @@ public class PlayerObjectController : NetworkBehaviour
     [SyncVar(hook = nameof(PlayerReadyUpdate))] public bool bReady;
     public GameObject GamePrefab;
 
-    private TemporalisNetworkManager manager;
 
-    private TemporalisNetworkManager Manager
+    private LoopbreakerNetworkManager manager;
+
+    private LoopbreakerNetworkManager Manager
     {
         get
         {
             if (manager != null) return manager;
-            return manager = TemporalisNetworkManager.singleton as TemporalisNetworkManager;
+            return manager = LoopbreakerNetworkManager.singleton as LoopbreakerNetworkManager;
         }
     }
 
@@ -74,7 +75,7 @@ public class PlayerObjectController : NetworkBehaviour
     public override void OnStopClient()
     {
         Manager.GamePlayers.Remove(this);
-        Manager.RemoveClient(Manager.GamePlayers.IndexOf(this));
+        if (Manager.GamePlayers.IndexOf(this) != -1) Manager.RemoveClient(Manager.GamePlayers.IndexOf(this));
         LobbyController.Instance.UpdatePlayerList();
     }
 
@@ -104,6 +105,15 @@ public class PlayerObjectController : NetworkBehaviour
     [Command]
     public void CmdCanStartGame(string SceneName)
     {
-        Manager.StartGame(SceneName);
+        Manager.ServerStartGame(SceneName);
+    }
+
+    public virtual void SpawnPlayerPrefab()
+    {
+        if (authority)
+        {
+            GameObject newPrefab = Instantiate(GamePrefab);
+            newPrefab.transform.parent = transform;
+        }
     }
 }
