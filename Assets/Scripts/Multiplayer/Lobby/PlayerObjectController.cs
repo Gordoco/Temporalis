@@ -31,6 +31,12 @@ public class PlayerObjectController : NetworkBehaviour
         DontDestroyOnLoad(this.gameObject);
     }
 
+    [ClientRpc]
+    public void RpcSetParent(GameObject obj, GameObject parent)
+    {
+        obj.transform.SetParent(parent.transform);
+    }
+
     private void PlayerReadyUpdate(bool OldValue, bool NewValue)
     {
         if (isServer)
