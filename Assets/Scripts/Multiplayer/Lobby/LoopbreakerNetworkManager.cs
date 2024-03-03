@@ -80,6 +80,6 @@ public class LoopbreakerNetworkManager : NetworkManager
             if (GamePlayer.ConnectionID == conn.connectionId) Player = GamePlayer;
         }
         if (Player == null) return;
-        Player.gameObject.transform.position = StartLocation;
+        Player.RpcSetPosition(StartLocation);
     }
 }

@@ -37,6 +37,12 @@ public class PlayerObjectController : NetworkBehaviour
         obj.transform.SetParent(parent.transform);
     }
 
+    [ClientRpc]
+    public void RpcSetPosition(Vector3 pos)
+    {
+        transform.position = pos;
+    }
+
     private void PlayerReadyUpdate(bool OldValue, bool NewValue)
     {
         if (isServer)
