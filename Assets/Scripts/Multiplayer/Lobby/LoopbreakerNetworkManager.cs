@@ -8,8 +8,17 @@ using Steamworks;
 public class LoopbreakerNetworkManager : NetworkManager
 {
     [SerializeField] private PlayerObjectController GamePlayerPrefab;
+    [SerializeField] private Vector3 StartLocation = Vector3.zero;
+
     public List<PlayerObjectController> GamePlayers { get; } = new List<PlayerObjectController>();
     private List<NetworkConnectionToClient> Clients = new List<NetworkConnectionToClient>();
+
+    public override void Awake()
+    {
+        base.Awake();
+        if (StartLocation == Vector3.zero)
+            StartLocation = new Vector3(Random.Range(-20f, 20f), 100, Random.Range(-20.0f, 20.0f));
+    }
 
     public override void OnServerAddPlayer(NetworkConnectionToClient conn)
     {
@@ -39,16 +48,24 @@ public class LoopbreakerNetworkManager : NetworkManager
     public void ServerStartGame(string SceneName)
     {
         ServerChangeScene(SceneName);
-        ServerSpawnPlayerGamePrefabs();
     }
 
-    private void ServerSpawnPlayerGamePrefabs()
+    public override void OnServerReady(NetworkConnectionToClient conn)
     {
-        for (int i = 0; i < GamePlayers.Count; i++)
+        base.OnServerReady(conn);
+        GameObject player = null;
+        foreach (PlayerObjectController obj in GamePlayers)
         {
-            GameObject gamePrefab = Instantiate(GamePlayers[i].GamePrefab);
-            gamePrefab.transform.SetParent(GamePlayers[i].transform);
-            NetworkServer.ReplacePlayerForConnection(GetConnectionFromID(GamePlayers[i].ConnectionID), gamePrefab);
+            if (conn.connectionId == obj.ConnectionID) player = obj.gameObject;
+            break;
         }
+        if (player == null) return;
+        Debug.Log("Player Ready And Ported");
+
+        GameObject gamePrefab = Instantiate(player.GetComponent<PlayerObjectController>().GamePrefab, player.transform);
+        NetworkServer.Spawn(gamePrefab, conn);
+        gamePrefab.transform.SetParent(player.transform);
+
+        player.transform.position = StartLocation;
     }
 }

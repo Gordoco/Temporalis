@@ -10,31 +10,30 @@ public class PlayerMove : NetworkBehaviour
     public float gravity = 20.0f;
     private Vector3 moveDirection = Vector3.zero;
 
-    public override void OnStartAuthority()
-    {
-        base.OnStartAuthority();
+    void Update() {
         if (!isOwned) return;
-        UpdatePositionRpc(new Vector3(Random.Range(-20f, 20f), 100, Random.Range(-20.0f, 20.0f)));
+        CmdUpdateFunctionality();
     }
 
     [Command]
-    void UpdatePositionRpc(Vector3 newPos)
+    void CmdUpdateFunctionality()
     {
-        transform.position = newPos;
-    } 
+        ServerUpdateFunc();
+    }
 
-    void Update() {
-        if (!isOwned) return;
-
+    [Server]
+    void ServerUpdateFunc()
+    {
         CharacterController controller = GetComponent<CharacterController>();
-        if (controller.isGrounded) {
+        if (controller.isGrounded)
+        {
             moveDirection = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
             moveDirection.Normalize();
             moveDirection = transform.TransformDirection(moveDirection);
             moveDirection *= speed;
             if (Input.GetButton("Jump"))
                 moveDirection.y = jumpSpeed;
-            
+
         }
         moveDirection.y -= gravity * Time.deltaTime;
         controller.Move(moveDirection * Time.deltaTime);

@@ -17,16 +17,19 @@ public class LookAround : NetworkBehaviour
     public float mouseXSensitivity = 100f;
     public float mouseYSensitivity = 1f;
     public Transform playerBody;
+    [SerializeField] GameObject Weapon;
+
     private View TopDownView = new View(new Vector3(0, 3, -2), new Vector3(52, 0, 0));
     private View StraightView = new View(new Vector3(0, 2.23f, -4.18f), new Vector3(10, 0, 0));
-    private View DownTopView = new View(new Vector3(0, -0.27f, -2), new Vector3(-70, 0, 0));
+    private View DownTopView = new View(new Vector3(0, -0.27f, -1), new Vector3(-70, 0, 0));
     private float yRotation = 0.3f;
+    private Vector3 weaponMiddle;
 
     // Start is called before the first frame update
     void Start()
     {
         if (!isOwned) return;
-
+        if (Weapon != null) weaponMiddle = Weapon.transform.localPosition;
         Cursor.lockState = CursorLockMode.Locked;
     }
 
@@ -34,10 +37,19 @@ public class LookAround : NetworkBehaviour
     void Update()
     {
         if (!isOwned) return;
+
+        CmdUpdateFunctionality();
+    }
+
+    [Command]
+    void CmdUpdateFunctionality()
+    {
         float mouseX = Input.GetAxis("Mouse X") * mouseXSensitivity * Time.deltaTime;
         float mouseY = -1 * Input.GetAxis("Mouse Y") * mouseYSensitivity * Time.deltaTime;
 
         yRotation = Mathf.Clamp(yRotation + mouseY, 0, 1);
+
+        UpdateWeapon(yRotation);
 
         Vector3 pos;
         if (yRotation <= 0.5)
@@ -54,7 +66,7 @@ public class LookAround : NetworkBehaviour
             );
 
         Quaternion rot;
-        if (yRotation <= 0.5) 
+        if (yRotation <= 0.5)
             rot = Quaternion.Euler(new Vector3(
                 Mathf.Lerp(DownTopView.rot.x, StraightView.rot.x, yRotation * 2),
                 Mathf.Lerp(DownTopView.rot.y, StraightView.rot.y, yRotation * 2),
@@ -72,5 +84,12 @@ public class LookAround : NetworkBehaviour
 
         //X Rotation
         playerBody.Rotate(Vector3.up * mouseX);
+    }
+
+    void UpdateWeapon(float rot)
+    {
+        if (Weapon == null) return;
+        Weapon.transform.localPosition = new Vector3(Weapon.transform.localPosition.x, Mathf.Lerp(weaponMiddle.y + 1f, weaponMiddle.y - 1f, rot), Weapon.transform.localPosition.z);
+        Weapon.transform.localRotation = Quaternion.Euler(new Vector3(Mathf.Lerp(-45, 45, rot), 1, 1));
     }
 }
