@@ -48,7 +48,7 @@ public class LoopbreakerNetworkManager : NetworkManager
     public void ServerStartGame(string SceneName)
     {
         ServerSpawnAllPlayers();
-        ServerChangeScene(SceneName);
+        //ServerChangeScene(SceneName);
     }
 
     private void ServerSpawnAllPlayers()
