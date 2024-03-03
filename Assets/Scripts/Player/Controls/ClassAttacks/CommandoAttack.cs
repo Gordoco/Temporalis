@@ -12,9 +12,7 @@ public class CommandoAttack : AttackManager
         StartCoroutine(WeaponSwell(Weapon.transform.GetChild(0).gameObject, statManager.GetStat(NumericalStats.AttackSpeed)));
         StartCoroutine(WeaponSwell(Weapon.transform.GetChild(1).gameObject, statManager.GetStat(NumericalStats.AttackSpeed)));
         statManager.SetStat(NumericalStats.Range, 100); //BAD Move to stat initialization later
-        Debug.DrawLine(Weapon.transform.GetChild(0).position, Weapon.transform.GetChild(0).position + (Weapon.transform.GetChild(0).forward * (float)statManager.GetStat(NumericalStats.Range)), Color.red, 1 / (float)statManager.GetStat(NumericalStats.AttackSpeed));
-        Debug.DrawLine(Weapon.transform.GetChild(1).position, Weapon.transform.GetChild(1).position + (Weapon.transform.GetChild(1).forward * (float)statManager.GetStat(NumericalStats.Range)), Color.red, 1 / (float)statManager.GetStat(NumericalStats.AttackSpeed));
-
+  
         Vector3 start1 = Weapon.transform.GetChild(0).position;
         Vector3 start2 = Weapon.transform.GetChild(1).position;
         Vector3 dir = Weapon.transform.GetChild(0).forward;
