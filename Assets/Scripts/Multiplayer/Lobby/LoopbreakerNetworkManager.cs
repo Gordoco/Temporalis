@@ -58,7 +58,14 @@ public class LoopbreakerNetworkManager : NetworkManager
             GameObject gamePrefab = Instantiate(GamePlayer.GamePrefab, GamePlayer.transform);
             gamePrefab.transform.SetParent(GamePlayer.transform);
             NetworkServer.Spawn(gamePrefab, GetConnectionFromID(GamePlayer.ConnectionID));
+            RpcSetParent(gamePrefab, GamePlayer.gameObject);
         }
+    }
+
+    [ClientRpc]
+    private void RpcSetParent(GameObject obj, GameObject parent)
+    {
+        obj.transform.SetParent(parent.transform);
     }
 
     public override void OnServerReady(NetworkConnectionToClient conn)
