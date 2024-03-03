@@ -16,12 +16,13 @@ public enum NumericalStats
 public class StatManager : NetworkBehaviour
 {
     private readonly SyncList<double> stats = new SyncList<double>();
+    [SerializeField] private double[] initStats = new double[(int)NumericalStats.NumberOfStats];
 
     public void Start()
     {
         if (isServer)
         {
-            for (int i = 0; i < (int)NumericalStats.NumberOfStats; i++) stats.Add(1);
+            for (int i = 0; i < (int)NumericalStats.NumberOfStats; i++) stats.Add(initStats[i]);
         }
     }
 
@@ -50,11 +51,10 @@ public class StatManager : NetworkBehaviour
     }
 
     /// <summary>
-    /// Server-Only method which gets the specified stat of the player
+    /// Network-Independant method which gets the specified stat of the player
     /// </summary>
     /// <param name="stat"></param>
     /// <returns>The double value of the specified stat</returns>
-    [Server]
     public double GetStat(NumericalStats stat)
     {
         if (stat == NumericalStats.NumberOfStats) return Mathf.Infinity;

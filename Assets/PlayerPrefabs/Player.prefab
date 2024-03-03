@@ -160,6 +160,13 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  initStats:
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
 --- !u!114 &122124491002519710
 MonoBehaviour:
   m_ObjectHideFlags: 0
