@@ -13,6 +13,7 @@ public class PlayerMove : NetworkBehaviour
     private int test;
     private void Start()
     {
+        if (!isOwned) enabled = false;
         test = Random.Range(0, 100000);
         DontDestroyOnLoad(this.gameObject);
     }
