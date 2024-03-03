@@ -28,7 +28,11 @@ public class LookAround : NetworkBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        if (!isOwned) return;
+        if (!isOwned)
+        {
+            gameObject.SetActive(false);
+            return;
+        }
         if (Weapon != null) weaponMiddle = Weapon.transform.localPosition;
         Cursor.lockState = CursorLockMode.Locked;
     }
