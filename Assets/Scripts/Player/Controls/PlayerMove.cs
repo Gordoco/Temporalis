@@ -21,7 +21,7 @@ public class PlayerMove : NetworkBehaviour
         Debug.Log("Shouldn't Just See Me: " + test);
         if (!isOwned) return;
 
-        Debug.Log("Owned Client Trying to Move");
+        Debug.Log("Owned Client Trying to Move: " + test);
         CharacterController controller = GetComponent<CharacterController>();
         if (controller.isGrounded)
         {
@@ -39,7 +39,7 @@ public class PlayerMove : NetworkBehaviour
     [Command]
     void CmdUpdateFunctionality(Vector3 moveDirection)
     {
-        Debug.Log("ServerShouldBeRunningThis");
+        Debug.Log("ServerShouldBeRunningThis: " + test);
         ServerUpdateFunc(moveDirection);
     }
 
@@ -48,6 +48,6 @@ public class PlayerMove : NetworkBehaviour
     {
         CharacterController controller = GetComponent<CharacterController>();
         controller.Move(moveDirection * Time.deltaTime);
-        Debug.Log("Server Should Have Moved Us");
+        Debug.Log("Server Should Have Moved Us: " + test);
     }
 }
