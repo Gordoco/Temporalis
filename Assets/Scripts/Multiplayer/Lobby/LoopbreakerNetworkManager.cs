@@ -20,6 +20,7 @@ public class LoopbreakerNetworkManager : NetworkManager
             StartLocation = new Vector3(Random.Range(-20f, 20f), 100, Random.Range(-20.0f, 20.0f));
     }
 
+    [Server]
     public override void OnServerAddPlayer(NetworkConnectionToClient conn)
     {
         if (SceneManager.GetActiveScene().name == "Lobby")
@@ -36,6 +37,7 @@ public class LoopbreakerNetworkManager : NetworkManager
         }
     }
 
+    [Server]
     private NetworkConnectionToClient GetConnectionFromID(int ConnectionID)
     {
         NetworkConnectionToClient connection;
@@ -43,26 +45,29 @@ public class LoopbreakerNetworkManager : NetworkManager
         return connection;
     }
 
+    [Server]
     public void RemoveClient(int index) { Debug.Log("Client Number: " + index + " Removed"); Clients.RemoveAt(index); }
 
+    [Server]
     public void ServerStartGame(string SceneName)
     {
         ServerSpawnAllPlayers();
         ServerChangeScene(SceneName);
     }
 
+    [Server]
     private void ServerSpawnAllPlayers()
     {
         foreach (PlayerObjectController GamePlayer in GamePlayers)
         {
             GameObject gamePrefab = Instantiate(GamePlayer.GamePrefab, GamePlayer.transform);
             gamePrefab.transform.SetParent(GamePlayer.transform);
-            GamePlayer.transform.position = StartLocation;
             NetworkServer.Spawn(gamePrefab, GetConnectionFromID(GamePlayer.ConnectionID));
             GamePlayer.RpcSetParent(gamePrefab, GamePlayer.gameObject);
         }
     }
 
+    [Server]
     public override void OnServerReady(NetworkConnectionToClient conn)
     {
         base.OnServerReady(conn);
@@ -75,5 +80,6 @@ public class LoopbreakerNetworkManager : NetworkManager
             if (GamePlayer.ConnectionID == conn.connectionId) Player = GamePlayer;
         }
         if (Player == null) return;
+        Player.gameObject.transform.position = StartLocation;
     }
 }
