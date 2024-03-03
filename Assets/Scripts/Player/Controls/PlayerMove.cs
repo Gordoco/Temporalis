@@ -14,6 +14,7 @@ public class PlayerMove : NetworkBehaviour
     private void Start()
     {
         test = Random.Range(0, 100000);
+        DontDestroyOnLoad(this.gameObject);
     }
 
     void Update() {

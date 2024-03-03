@@ -47,25 +47,33 @@ public class LoopbreakerNetworkManager : NetworkManager
 
     public void ServerStartGame(string SceneName)
     {
+        ServerSpawnAllPlayers();
         ServerChangeScene(SceneName);
+    }
+
+    private void ServerSpawnAllPlayers()
+    {
+        foreach (PlayerObjectController GamePlayer in GamePlayers)
+        {
+            GameObject gamePrefab = Instantiate(GamePlayer.GamePrefab, GamePlayer.transform);
+            NetworkServer.Spawn(gamePrefab, GetConnectionFromID(GamePlayer.ConnectionID));
+            gamePrefab.transform.SetParent(GamePlayer.transform);
+
+            GamePlayer.transform.position = StartLocation;
+        }
     }
 
     public override void OnServerReady(NetworkConnectionToClient conn)
     {
         base.OnServerReady(conn);
-        GameObject player = null;
-        foreach (PlayerObjectController obj in GamePlayers)
-        {
-            if (conn.connectionId == obj.ConnectionID) player = obj.gameObject;
-            break;
-        }
-        if (player == null) return;
+
         Debug.Log("Player Ready And Ported");
 
-        GameObject gamePrefab = Instantiate(player.GetComponent<PlayerObjectController>().GamePrefab, player.transform);
-        NetworkServer.Spawn(gamePrefab, conn);
-        gamePrefab.transform.SetParent(player.transform);
-
-        player.transform.position = StartLocation;
+        PlayerObjectController Player = null;
+        foreach (PlayerObjectController GamePlayer in GamePlayers)
+        {
+            if (GamePlayer.ConnectionID == conn.connectionId) Player = GamePlayer;
+        }
+        if (Player == null) return;
     }
 }
