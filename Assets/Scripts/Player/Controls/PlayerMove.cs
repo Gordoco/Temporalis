@@ -24,6 +24,7 @@ public class PlayerMove : NetworkBehaviour
 
         Debug.Log("Owned Client Trying to Move: " + test);
         CharacterController controller = GetComponent<CharacterController>();
+        Debug.Log(controller.isGrounded + ": " + test);
         if (controller.isGrounded)
         {
             moveDirection = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
