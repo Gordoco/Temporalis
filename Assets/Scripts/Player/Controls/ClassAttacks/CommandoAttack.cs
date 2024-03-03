@@ -25,8 +25,8 @@ public class CommandoAttack : AttackManager
 
         if (isServer) //Server Side Only
         {
-            if (hit1.collider.gameObject.GetComponent<HitManager>()) hit1.collider.gameObject.GetComponent<HitManager>().Hit((float)statManager.GetStat(NumericalStats.Damage));
-            if (hit1.collider.gameObject.GetComponent<HitManager>()) hit1.collider.gameObject.GetComponent<HitManager>().Hit((float)statManager.GetStat(NumericalStats.Damage));
+            //if (hit1.collider.gameObject.GetComponent<HitManager>()) hit1.collider.gameObject.GetComponent<HitManager>().Hit((float)statManager.GetStat(NumericalStats.Damage));
+            //if (hit1.collider.gameObject.GetComponent<HitManager>()) hit1.collider.gameObject.GetComponent<HitManager>().Hit((float)statManager.GetStat(NumericalStats.Damage));
         }
     }
 
