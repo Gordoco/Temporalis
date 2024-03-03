@@ -48,7 +48,7 @@ public class LoopbreakerNetworkManager : NetworkManager
     public void ServerStartGame(string SceneName)
     {
         ServerSpawnAllPlayers();
-        //ServerChangeScene(SceneName);
+        ServerChangeScene(SceneName);
     }
 
     private void ServerSpawnAllPlayers()
@@ -56,10 +56,8 @@ public class LoopbreakerNetworkManager : NetworkManager
         foreach (PlayerObjectController GamePlayer in GamePlayers)
         {
             GameObject gamePrefab = Instantiate(GamePlayer.GamePrefab, GamePlayer.transform);
-            NetworkServer.Spawn(gamePrefab, GetConnectionFromID(GamePlayer.ConnectionID));
             gamePrefab.transform.SetParent(GamePlayer.transform);
-
-            GamePlayer.transform.position = StartLocation;
+            NetworkServer.Spawn(gamePrefab, GetConnectionFromID(GamePlayer.ConnectionID));
         }
     }
 
@@ -75,5 +73,6 @@ public class LoopbreakerNetworkManager : NetworkManager
             if (GamePlayer.ConnectionID == conn.connectionId) Player = GamePlayer;
         }
         if (Player == null) return;
+        Player.transform.position = StartLocation;
     }
 }
