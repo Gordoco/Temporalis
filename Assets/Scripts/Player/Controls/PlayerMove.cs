@@ -10,19 +10,15 @@ public class PlayerMove : NetworkBehaviour
     public float gravity = 20.0f;
     private Vector3 moveDirection = Vector3.zero;
 
-    private int test;
     private void Start()
     {
         if (!isOwned) enabled = false;
-        test = Random.Range(0, 100000);
-        DontDestroyOnLoad(this.gameObject);
     }
 
     void Update() {
         if (!isOwned) return;
 
         CharacterController controller = GetComponent<CharacterController>();
-        Debug.Log(controller.isGrounded + ": " + test);
         if (controller.isGrounded)
         {
             moveDirection = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
