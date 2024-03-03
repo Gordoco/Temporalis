@@ -11,6 +11,7 @@ public class PlayerMove : NetworkBehaviour
     private Vector3 moveDirection = Vector3.zero;
 
     void Update() {
+        Debug.Log("Shouldn't Just See Me");
         if (!isOwned) return;
 
         Debug.Log("Owned Client Trying to Move");
@@ -31,8 +32,8 @@ public class PlayerMove : NetworkBehaviour
     [Command]
     void CmdUpdateFunctionality(Vector3 moveDirection)
     {
-        ServerUpdateFunc(moveDirection);
         Debug.Log("ServerShouldBeRunningThis");
+        ServerUpdateFunc(moveDirection);
     }
 
     [Server]
