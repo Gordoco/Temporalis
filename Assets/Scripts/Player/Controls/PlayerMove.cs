@@ -23,7 +23,8 @@ public class PlayerMove : NetworkBehaviour
                 moveDirection.y = jumpSpeed;
         }
         moveDirection.y -= gravity * Time.deltaTime;
-        CmdUpdateFunctionality(moveDirection);
+        controller.Move(moveDirection * Time.deltaTime);
+        //CmdUpdateFunctionality(moveDirection);
     }
 
     [Command]

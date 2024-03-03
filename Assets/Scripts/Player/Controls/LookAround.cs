@@ -41,7 +41,7 @@ public class LookAround : NetworkBehaviour
         CmdUpdateFunctionality();
     }
 
-    [Command]
+    //[Command]
     void CmdUpdateFunctionality()
     {
         float mouseX = Input.GetAxis("Mouse X") * mouseXSensitivity * Time.deltaTime;
