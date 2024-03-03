@@ -10,8 +10,14 @@ public class PlayerMove : NetworkBehaviour
     public float gravity = 20.0f;
     private Vector3 moveDirection = Vector3.zero;
 
+    private int test;
+    private void Start()
+    {
+        test = Random.Range(0, 100000);
+    }
+
     void Update() {
-        Debug.Log("Shouldn't Just See Me");
+        Debug.Log("Shouldn't Just See Me: " + test);
         if (!isOwned) return;
 
         Debug.Log("Owned Client Trying to Move");
