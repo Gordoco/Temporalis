@@ -12,18 +12,6 @@ public class PlayerMove : NetworkBehaviour
 
     void Update() {
         if (!isOwned) return;
-        CmdUpdateFunctionality();
-    }
-
-    [Command]
-    void CmdUpdateFunctionality()
-    {
-        ServerUpdateFunc();
-    }
-
-    [Server]
-    void ServerUpdateFunc()
-    {
         CharacterController controller = GetComponent<CharacterController>();
         if (controller.isGrounded)
         {
@@ -33,9 +21,21 @@ public class PlayerMove : NetworkBehaviour
             moveDirection *= speed;
             if (Input.GetButton("Jump"))
                 moveDirection.y = jumpSpeed;
-
         }
         moveDirection.y -= gravity * Time.deltaTime;
+        CmdUpdateFunctionality(moveDirection);
+    }
+
+    [Command]
+    void CmdUpdateFunctionality(Vector3 moveDirection)
+    {
+        ServerUpdateFunc(moveDirection);
+    }
+
+    [Server]
+    void ServerUpdateFunc(Vector3 moveDirection)
+    {
+        CharacterController controller = GetComponent<CharacterController>();
         controller.Move(moveDirection * Time.deltaTime);
     }
 }
