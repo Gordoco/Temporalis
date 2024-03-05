@@ -166,13 +166,13 @@ MonoBehaviour:
   - stat: 1
     val: 100
   - stat: 2
-    val: 50
+    val: 25
   - stat: 3
     val: 1
   - stat: 4
     val: 1
   - stat: 5
-    val: 10
+    val: 25
 --- !u!114 &6093566969335152315
 MonoBehaviour:
   m_ObjectHideFlags: 0

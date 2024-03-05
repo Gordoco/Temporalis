@@ -41,6 +41,13 @@ public class StatManager : NetworkBehaviour
         {
             for (int i = 0; i < (int)NumericalStats.NumberOfStats; i++) stats.Add(initStats[i].val);
         }
+        else
+        {
+            for (int i = 0; i < (int)NumericalStats.NumberOfStats; i++)
+            {
+                Debug.Log((NumericalStats)i + " = " + stats[i]);
+            }
+        }
     }
 
     private void Update()
@@ -85,7 +92,7 @@ public class StatManager : NetworkBehaviour
     /// <returns>The double value of the specified stat</returns>
     public double GetStat(NumericalStats stat)
     {
-        if (stat == NumericalStats.NumberOfStats) return Mathf.Infinity;
+        if ((int)stat >= (int)NumericalStats.NumberOfStats || (int)stat < 0) return Mathf.Infinity;
         return stats[(int)stat];
     }
 }

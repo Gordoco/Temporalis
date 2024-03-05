@@ -14,9 +14,9 @@ public class CommandoAttack : AttackManager
 
         if (isServer) //Server Side Only
         {
-            Vector3 start1 = Weapon.transform.GetChild(0).position;
-            Vector3 start2 = Weapon.transform.GetChild(1).position;
-            Vector3 dir = Weapon.transform.GetChild(0).forward;
+            Vector3 start1 = Weapon.transform.position;
+            Vector3 start2 = start1;
+            Vector3 dir = Weapon.transform.forward;
             dir.Normalize();
             RaycastHit hit1;
             RaycastHit hit2;
