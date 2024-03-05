@@ -16,7 +16,8 @@ public abstract class AttackManager : NetworkBehaviour
         if (Input.GetButtonDown("PrimaryAttack") && bCanAttack)
         {
             Debug.Log("Shot Gat");
-            OnServerPrimaryAttack();
+            if (!isServer) OnServerPrimaryAttack();
+            else OnClientPrimaryAttack();
             ServerStartPrimaryAttackCooldown();
         }
 

@@ -14,8 +14,8 @@ GameObject:
   - component: {fileID: 7088774869660289746}
   - component: {fileID: 6156744942261420217}
   - component: {fileID: 4511540719456656364}
-  - component: {fileID: 3637197351666366310}
-  - component: {fileID: 122124491002519710}
+  - component: {fileID: -4100074159167036563}
+  - component: {fileID: 6093566969335152315}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -144,8 +144,8 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  statManager: {fileID: 3637197351666366310}
---- !u!114 &3637197351666366310
+  statManager: {fileID: -4100074159167036563}
+--- !u!114 &-4100074159167036563
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -161,13 +161,19 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   initStats:
-  - 1
-  - 1
-  - 1
-  - 1
-  - 1
-  - 1
---- !u!114 &122124491002519710
+  - stat: 0
+    val: 5
+  - stat: 1
+    val: 100
+  - stat: 2
+    val: 50
+  - stat: 3
+    val: 1
+  - stat: 4
+    val: 1
+  - stat: 5
+    val: 10
+--- !u!114 &6093566969335152315
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

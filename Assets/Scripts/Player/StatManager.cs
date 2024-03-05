@@ -13,16 +13,44 @@ public enum NumericalStats
     Range,
     NumberOfStats
 }
+
 public class StatManager : NetworkBehaviour
 {
+
+    [System.Serializable]
+    public class InitStatsDisplay
+    {
+        private static int nextStat = 0;
+        public NumericalStats stat;
+        public double val;
+        public InitStatsDisplay()
+        {
+            stat = (NumericalStats)(nextStat%((int)NumericalStats.NumberOfStats));
+            val = 1;
+            nextStat++;
+        }
+    }
+
     private readonly SyncList<double> stats = new SyncList<double>();
-    [SerializeField] private double[] initStats = new double[(int)NumericalStats.NumberOfStats];
+    [SerializeField] private InitStatsDisplay[] initStats = new InitStatsDisplay[(int)NumericalStats.NumberOfStats];
+
 
     public void Start()
     {
         if (isServer)
         {
-            for (int i = 0; i < (int)NumericalStats.NumberOfStats; i++) stats.Add(initStats[i]);
+            for (int i = 0; i < (int)NumericalStats.NumberOfStats; i++) stats.Add(initStats[i].val);
+        }
+    }
+
+    private void Update()
+    {
+        if (isServer)
+        {
+            if (stats[(int)NumericalStats.Health] <= 0)
+            {
+                NetworkServer.Destroy(gameObject); //Kill Actor in all Contexts
+            }
         }
     }
 
