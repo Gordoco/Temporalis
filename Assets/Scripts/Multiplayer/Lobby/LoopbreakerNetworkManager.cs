@@ -81,5 +81,6 @@ public class LoopbreakerNetworkManager : NetworkManager
         }
         if (Player == null) return;
         Player.RpcSetPosition(StartLocation);
+        Player.transform.position = StartLocation;
     }
 }
