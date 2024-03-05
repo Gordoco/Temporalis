@@ -118,20 +118,20 @@ public abstract class AttackManager : NetworkBehaviour
     protected void OnClientAbility4() { OnPrimaryAttack(); }
 
     [Command]
-    protected virtual void OnServerPrimaryAttack() { OnPrimaryAttack(); }
+    protected virtual void OnServerPrimaryAttack() { OnClientPrimaryAttack(); }
 
     [Command]
-    protected virtual void OnServerSecondaryAttack() { OnSecondaryAttack(); }
+    protected virtual void OnServerSecondaryAttack() { OnClientSecondaryAttack(); }
 
     [Command]
-    protected virtual void OnServerAbility1() { OnAbility1(); }
+    protected virtual void OnServerAbility1() { OnClientAbility1(); }
 
     [Command]
-    protected virtual void OnServerAbility2() { OnAbility2(); }
+    protected virtual void OnServerAbility2() { OnClientAbility2(); }
 
     [Command]
-    protected virtual void OnServerAbility3() { OnAbility3(); }
+    protected virtual void OnServerAbility3() { OnClientAbility3(); }
 
     [Command]
-    protected virtual void OnServerAbility4() { OnAbility4(); }
+    protected virtual void OnServerAbility4() { OnClientAbility4(); }
 }
