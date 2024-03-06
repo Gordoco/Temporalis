@@ -83,25 +83,19 @@ public class LoopbreakerNetworkManager : NetworkManager
         {
             playersLoaded++;
             if (playersLoaded == GamePlayers.Count) StartCoroutine(SpawnPlayersDelay());
-            /*PlayerObjectController Player = null;
-            foreach (PlayerObjectController GamePlayer in GamePlayers)
-            {
-                if (GamePlayer.ConnectionID == conn.connectionId) Player = GamePlayer;
-            }
-            if (Player == null) return;
-            GameObject gamePrefab = Instantiate(Player.GamePrefab, StartLocation, Quaternion.identity);
-            gamePrefab.transform.SetParent(Player.transform, false);
-            NetworkServer.Spawn(gamePrefab, GetConnectionFromID(Player.ConnectionID));
-            Player.RpcSetParent(gamePrefab, Player.gameObject);
-            Debug.Log("Teleported: " + StartLocation);
-            Player.RpcSetPosition(StartLocation);
-            Player.transform.position = StartLocation;*/
         }
+    }
+
+    [Server]
+    public void PlayerDied()
+    {
+        playersLoaded--;
+        if (playersLoaded == 0) NetworkServer.DisconnectAll();
     }
 
     IEnumerator SpawnPlayersDelay()
     {
-        yield return new WaitForSeconds(2);
+        yield return new WaitForSeconds(1);
         ServerSpawnAllPlayers();
     }
 }
