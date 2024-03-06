@@ -15,12 +15,12 @@ public class PlayerMove : NetworkBehaviour
     private void Start()
     {
         if (!isOwned || bDead) enabled = false;
+        StartCoroutine(Delay());
     }
 
     private IEnumerator Delay()
     {
         yield return new WaitForSeconds(1);
-        Random.seed = NetworkServer.localConnection.connectionId;
         transform.position = new Vector3(Random.Range(-20f, 20f), 100, Random.Range(-20.0f, 20.0f));
         bAwake = true;
     }
