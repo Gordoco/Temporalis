@@ -52,10 +52,10 @@ public abstract class AttackManager : NetworkBehaviour
         }
     }
 
-    /*
-     * TODO:
-     * Do this for all types of abilities/attacks
-     */
+    /// <summary>
+    /// RPC to the server to start a cooldown to enforce attack speed
+    /// Updates Server-Only Variables for network security.
+    /// </summary>
     [Command]
     private void ServerStartPrimaryAttackCooldown()
     {

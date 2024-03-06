@@ -5,6 +5,11 @@ using Mirror;
 
 public class CommandoAttack : AttackManager
 { 
+    /// <summary>
+    /// Implements the primary attack for the Commando class. Based around the existence of twin pistols
+    /// that fire in tandem. Triggers two hits per shot as an intended feature, interacting with On-Hit
+    /// effects.
+    /// </summary>
     protected override void OnPrimaryAttack()
     {
         GameObject Weapon = null;
@@ -30,8 +35,16 @@ public class CommandoAttack : AttackManager
         }
     }
 
+    /// <summary>
+    /// Template method for showcasing in a visual way a Weapon-Fired event
+    /// </summary>
+    /// <param name="Weapon">The GameObject which owns all weapon models (can be the sole model)</param>
+    /// <param name="AttackSpeed">Passed in parameter corresponding to the AttackSpeed stat of the entity</param>
+    /// <returns></returns>
     private IEnumerator WeaponSwell(GameObject Weapon, double AttackSpeed)
     {
+        //Debug call to check if clients are seeing the correct AttackSpeed val
+        if (isClient) Debug.Log("AttackSpeed = " + AttackSpeed);
         float swellSpeed = 0.02f;
         for (int i = 0; i < 12; i++)
         {
