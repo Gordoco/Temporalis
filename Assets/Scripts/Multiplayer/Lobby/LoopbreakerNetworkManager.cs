@@ -65,7 +65,7 @@ public class LoopbreakerNetworkManager : NetworkManager
         float time = 0.2f;
         for (int i = 0; i < GamePlayers.Count; i++)
         {
-            StartCoroutine(SpawnEachPlayerDelay(GamePlayers[i], time * i));
+            StartCoroutine(SpawnEachPlayerDelay(GamePlayers[i], time * (GamePlayers.Count - i)));
         }
     }
 
