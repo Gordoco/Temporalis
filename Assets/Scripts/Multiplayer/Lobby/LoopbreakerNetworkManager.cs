@@ -13,6 +13,9 @@ public class LoopbreakerNetworkManager : NetworkManager
     public List<PlayerObjectController> GamePlayers { get; } = new List<PlayerObjectController>();
     private List<NetworkConnectionToClient> Clients = new List<NetworkConnectionToClient>();
 
+    private bool bLoadingRealMap = false;
+    private int playersLoaded = 0;
+
     public override void Awake()
     {
         base.Awake();
@@ -52,6 +55,7 @@ public class LoopbreakerNetworkManager : NetworkManager
     public void ServerStartGame(string SceneName)
     {
         //ServerSpawnAllPlayers();
+        bLoadingRealMap = true;
         ServerChangeScene(SceneName);
     }
 
@@ -60,8 +64,9 @@ public class LoopbreakerNetworkManager : NetworkManager
     {
         foreach (PlayerObjectController GamePlayer in GamePlayers)
         {
+            GamePlayer.gameObject.transform.position = StartLocation;
             GameObject gamePrefab = Instantiate(GamePlayer.GamePrefab, StartLocation, Quaternion.identity);
-            gamePrefab.transform.SetParent(GamePlayer.transform, false);
+            gamePrefab.transform.SetParent(GamePlayer.transform, true);
             NetworkServer.Spawn(gamePrefab, GetConnectionFromID(GamePlayer.ConnectionID));
             GamePlayer.RpcSetParent(gamePrefab, GamePlayer.gameObject);
         }
@@ -73,19 +78,23 @@ public class LoopbreakerNetworkManager : NetworkManager
         base.OnServerReady(conn);
 
         Debug.Log("Player Ready And Ported");
-
-        PlayerObjectController Player = null;
-        foreach (PlayerObjectController GamePlayer in GamePlayers)
+        if (bLoadingRealMap)
         {
-            if (GamePlayer.ConnectionID == conn.connectionId) Player = GamePlayer;
+            playersLoaded++;
+            if (playersLoaded == GamePlayers.Count) ServerSpawnAllPlayers();
+            /*PlayerObjectController Player = null;
+            foreach (PlayerObjectController GamePlayer in GamePlayers)
+            {
+                if (GamePlayer.ConnectionID == conn.connectionId) Player = GamePlayer;
+            }
+            if (Player == null) return;
+            GameObject gamePrefab = Instantiate(Player.GamePrefab, StartLocation, Quaternion.identity);
+            gamePrefab.transform.SetParent(Player.transform, false);
+            NetworkServer.Spawn(gamePrefab, GetConnectionFromID(Player.ConnectionID));
+            Player.RpcSetParent(gamePrefab, Player.gameObject);
+            Debug.Log("Teleported: " + StartLocation);
+            Player.RpcSetPosition(StartLocation);
+            Player.transform.position = StartLocation;*/
         }
-        if (Player == null) return;
-        GameObject gamePrefab = Instantiate(Player.GamePrefab, StartLocation, Quaternion.identity);
-        gamePrefab.transform.SetParent(Player.transform, false);
-        NetworkServer.Spawn(gamePrefab, GetConnectionFromID(Player.ConnectionID));
-        Player.RpcSetParent(gamePrefab, Player.gameObject);
-        Debug.Log("Teleported: " + StartLocation);
-        Player.RpcSetPosition(StartLocation);
-        Player.transform.position = StartLocation;
     }
 }
