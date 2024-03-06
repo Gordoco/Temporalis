@@ -113,9 +113,9 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  projectileSpeed: 50
-  damage: 50
-  pierceLevel: 2
+  projectileSpeed: 60
+  damage: 100
+  pierceLevel: 10
   lifespan: 10
 --- !u!23 &347907090787072248
 MeshRenderer:

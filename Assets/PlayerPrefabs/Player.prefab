@@ -162,7 +162,7 @@ MonoBehaviour:
   syncInterval: 0
   initStats:
   - stat: 0
-    val: 5
+    val: 10
   - stat: 1
     val: 5
   - stat: 2
@@ -337,6 +337,7 @@ MonoBehaviour:
   mouseYSensitivity: 1
   playerBody: {fileID: 2654573300976310541}
   Weapon: {fileID: 3186172820372006579}
+  bIsServer: 0
 --- !u!1 &3186172820372006579
 GameObject:
   m_ObjectHideFlags: 0

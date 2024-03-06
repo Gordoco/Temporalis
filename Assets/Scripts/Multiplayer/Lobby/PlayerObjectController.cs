@@ -49,6 +49,7 @@ public class PlayerObjectController : NetworkBehaviour
     public void Die()
     {
         if (GetComponent<Camera>() == null) gameObject.AddComponent<Camera>();
+        Manager.PlayerDied();
         lookComp.enabled = true;
         DieRpc();
     }
