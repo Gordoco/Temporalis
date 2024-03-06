@@ -43,10 +43,12 @@ public class CommandoAttack : AttackManager
     /// <returns></returns>
     private IEnumerator WeaponSwell(GameObject Weapon, double AttackSpeed)
     {
+        Debug.Log("Started Swell");
         float swellSpeed = 0.02f;
         for (int i = 0; i < 12; i++)
         {
             Weapon.transform.localScale += new Vector3(swellSpeed, swellSpeed, swellSpeed);
+            Debug.Log(gameObject.name + " " + 0.01f / (float)AttackSpeed);
             yield return new WaitForSeconds(0.01f / (float)AttackSpeed);
         }
         for (int i = 0; i < 12; i++)
