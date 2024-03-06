@@ -37,25 +37,33 @@ public abstract class AttackManager : NetworkBehaviour
         if (Input.GetButtonDown("Ability1") && bCanAbility1)
         {
             Debug.Log("First Ability PewPew");
-            OnServerAbility1();
+            if (isClient) OnServerAbility1();
+            else if (isServer) OnClientAbility1();
+            ServerStartAbility1Cooldown();
         }
 
         if (Input.GetButtonDown("Ability2") && bCanAbility2)
         {
             Debug.Log("Second Ability PewPew");
-            OnServerAbility2();
+            if (isClient) OnServerAbility2();
+            else if (isServer) OnClientAbility2();
+            ServerStartAbility2Cooldown();
         }
 
         if (Input.GetButtonDown("Ability3") && bCanAbility3)
         {
             Debug.Log("Third Ability PewPew");
-            OnServerAbility3();
+            if (isClient) OnServerAbility3();
+            else if (isServer) OnClientAbility3();
+            ServerStartAbility3Cooldown();
         }
 
         if (Input.GetButtonDown("Ability4") && bCanAbility4)
         {
             Debug.Log("Fourth Ability PewPew");
-            OnServerAbility4();
+            if (isClient) OnServerAbility4();
+            else if (isServer) OnClientAbility4();
+            ServerStartAbility4Cooldown();
         }
     }
 
@@ -87,7 +95,7 @@ public abstract class AttackManager : NetworkBehaviour
     protected abstract void OnSecondaryAttack();
 
     /// <summary>
-    /// RPC to the server to start a cooldown to enforce attack speed
+    /// RPC to the server to start a cooldown to enforce cooldown
     /// Updates Server-Only Variables for network security.
     /// </summary>
     [Command]
@@ -109,9 +117,43 @@ public abstract class AttackManager : NetworkBehaviour
     protected abstract void OnAbility1();
 
     /// <summary>
+    /// RPC to the server to start a cooldown to enforce cooldown
+    /// Updates Server-Only Variables for network security.
+    /// </summary>
+    [Command]
+    private void ServerStartAbility1Cooldown()
+    {
+        bCanAbility1 = false;
+        StartCoroutine(Ability1Cooldown());
+    }
+
+    private IEnumerator Ability1Cooldown()
+    {
+        yield return new WaitForSeconds((float)statManager.GetStat(NumericalStats.Ability1Cooldown));
+        bCanAbility1 = true;
+    }
+
+    /// <summary>
     /// Method called on Server and all Clients after client-side input is pressed
     /// </summary>
     protected abstract void OnAbility2();
+
+    /// <summary>
+    /// RPC to the server to start a cooldown to enforce cooldown
+    /// Updates Server-Only Variables for network security.
+    /// </summary>
+    [Command]
+    private void ServerStartAbility2Cooldown()
+    {
+        bCanAbility2 = false;
+        StartCoroutine(Ability2Cooldown());
+    }
+
+    private IEnumerator Ability2Cooldown()
+    {
+        yield return new WaitForSeconds((float)statManager.GetStat(NumericalStats.Ability2Cooldown));
+        bCanAbility2 = true;
+    }
 
     /// <summary>
     /// Method called on Server and all Clients after client-side input is pressed
@@ -119,9 +161,43 @@ public abstract class AttackManager : NetworkBehaviour
     protected abstract void OnAbility3();
 
     /// <summary>
+    /// RPC to the server to start a cooldown to enforce cooldown
+    /// Updates Server-Only Variables for network security.
+    /// </summary>
+    [Command]
+    private void ServerStartAbility3Cooldown()
+    {
+        bCanAbility3 = false;
+        StartCoroutine(Ability3Cooldown());
+    }
+
+    private IEnumerator Ability3Cooldown()
+    {
+        yield return new WaitForSeconds((float)statManager.GetStat(NumericalStats.Ability3Cooldown));
+        bCanAbility3 = true;
+    }
+
+    /// <summary>
     /// Method called on Server and all Clients after client-side input is pressed
     /// </summary>
     protected abstract void OnAbility4();
+
+    /// <summary>
+    /// RPC to the server to start a cooldown to enforce cooldown
+    /// Updates Server-Only Variables for network security.
+    /// </summary>
+    [Command]
+    private void ServerStartAbility4Cooldown()
+    {
+        bCanAbility4 = false;
+        StartCoroutine(Ability4Cooldown());
+    }
+
+    private IEnumerator Ability4Cooldown()
+    {
+        yield return new WaitForSeconds((float)statManager.GetStat(NumericalStats.Ability4Cooldown));
+        bCanAbility4 = true;
+    }
 
     [ClientRpc]
     protected void OnClientPrimaryAttack() { OnPrimaryAttack(); }

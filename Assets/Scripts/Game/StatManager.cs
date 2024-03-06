@@ -21,7 +21,10 @@ public enum NumericalStats
 
 public class StatManager : NetworkBehaviour
 {
-
+    /// <summary>
+    /// Class for inspector assigning of elements.
+    /// Also to be utilized for "Base Stat" evaluations
+    /// </summary>
     [System.Serializable]
     public class InitStatsDisplay
     {
