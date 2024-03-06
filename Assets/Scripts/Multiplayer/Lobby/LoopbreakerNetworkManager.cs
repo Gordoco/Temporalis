@@ -66,11 +66,11 @@ public class LoopbreakerNetworkManager : NetworkManager
         {
             GamePlayer.gameObject.transform.position = StartLocation;
             GameObject gamePrefab = Instantiate(GamePlayer.GamePrefab, StartLocation, Quaternion.identity);
-            Debug.Log(gamePrefab.transform.parent.gameObject.name + " ONE: " + gamePrefab.transform.position);
+            Debug.Log(GamePlayer.ConnectionID + " ONE: " + gamePrefab.transform.position);
             gamePrefab.transform.SetParent(GamePlayer.transform, false);
             Debug.Log(gamePrefab.transform.parent.gameObject.name + " TWO: " + gamePrefab.transform.position);
             NetworkServer.Spawn(gamePrefab, GetConnectionFromID(GamePlayer.ConnectionID));
-            Debug.Log(gameObject.transform.parent.gameObject.name + " THREE_SERVER: " + gamePrefab.transform.position);
+            Debug.Log(gamePrefab.transform.parent.gameObject.name + " THREE_SERVER: " + gamePrefab.transform.position);
             GamePlayer.RpcSetParent(gamePrefab, GamePlayer.gameObject, false);
             //gamePrefab.GetComponent<PlayerMove>().SetStart();
         }
