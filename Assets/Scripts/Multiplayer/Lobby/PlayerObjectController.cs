@@ -37,6 +37,7 @@ public class PlayerObjectController : NetworkBehaviour
     public void RpcSetParent(GameObject obj, GameObject parent)
     {
         obj.transform.SetParent(parent.transform, true);
+        obj.GetComponent<PlayerMove>().SetStart();
     }
 
     [ClientRpc]

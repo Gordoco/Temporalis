@@ -62,22 +62,14 @@ public class LoopbreakerNetworkManager : NetworkManager
     [Server]
     private void ServerSpawnAllPlayers()
     {
-        float time = 0.2f;
-        for (int i = 0; i < GamePlayers.Count; i++)
+        foreach (PlayerObjectController GamePlayer in GamePlayers)
         {
-            StartCoroutine(SpawnEachPlayerDelay(GamePlayers[i], time * (GamePlayers.Count - i)));
+            GamePlayer.gameObject.transform.position = StartLocation;
+            GameObject gamePrefab = Instantiate(GamePlayer.GamePrefab, StartLocation, Quaternion.identity);
+            gamePrefab.transform.SetParent(GamePlayer.transform, true);
+            NetworkServer.Spawn(gamePrefab, GetConnectionFromID(GamePlayer.ConnectionID));
+            GamePlayer.RpcSetParent(gamePrefab, GamePlayer.gameObject);
         }
-    }
-
-    private IEnumerator SpawnEachPlayerDelay(PlayerObjectController GamePlayer, float time)
-    {
-        yield return new WaitForSeconds(time);
-        GamePlayer.gameObject.transform.position = StartLocation;
-        GameObject gamePrefab = Instantiate(GamePlayer.GamePrefab, StartLocation, Quaternion.identity);
-        gamePrefab.transform.SetParent(GamePlayer.transform, true);
-        NetworkServer.Spawn(gamePrefab, GetConnectionFromID(GamePlayer.ConnectionID));
-        GamePlayer.RpcSetParent(gamePrefab, GamePlayer.gameObject);
-        gamePrefab.GetComponent<PlayerMove>().SetStart();
     }
 
     [Server]
