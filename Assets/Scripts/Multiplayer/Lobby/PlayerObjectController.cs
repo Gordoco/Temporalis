@@ -36,7 +36,7 @@ public class PlayerObjectController : NetworkBehaviour
     [ClientRpc]
     public void RpcSetParent(GameObject obj, GameObject parent, Vector3 location)
     {
-        obj.transform.SetParent(parent.transform, false);
+        obj.transform.SetParent(parent.transform, true);
         obj.transform.position = location;
     }
 
