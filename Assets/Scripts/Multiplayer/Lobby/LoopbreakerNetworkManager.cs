@@ -82,7 +82,7 @@ public class LoopbreakerNetworkManager : NetworkManager
         if (bLoadingRealMap)
         {
             playersLoaded++;
-            if (playersLoaded == GamePlayers.Count) ServerSpawnAllPlayers();
+            if (playersLoaded == GamePlayers.Count) StartCoroutine(SpawnPlayersDelay());
             /*PlayerObjectController Player = null;
             foreach (PlayerObjectController GamePlayer in GamePlayers)
             {
@@ -97,5 +97,11 @@ public class LoopbreakerNetworkManager : NetworkManager
             Player.RpcSetPosition(StartLocation);
             Player.transform.position = StartLocation;*/
         }
+    }
+
+    IEnumerator SpawnPlayersDelay()
+    {
+        yield return new WaitForSeconds(2);
+        ServerSpawnAllPlayers();
     }
 }
