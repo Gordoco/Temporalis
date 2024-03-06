@@ -18,13 +18,13 @@ public class PlayerMove : NetworkBehaviour
         if (!isOwned || bDead) enabled = false;
     }
 
-    [Server]
+    //[Server]
     public void SetStart()
     {
         Debug.Log(gameObject.name + " Setting Position On Server");
         transform.position = new Vector3(Random.Range(-20f, 20f), 100, Random.Range(-20.0f, 20.0f));
         bAwake = true;
-        SetStartRPC();
+        //SetStartRPC();
     }
 
     [ClientRpc]
