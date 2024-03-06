@@ -6,6 +6,8 @@ using Steamworks;
 
 public class PlayerObjectController : NetworkBehaviour
 {
+    [SerializeField] private LookAround lookComp;
+
     //Player Data
     [SyncVar] public int ConnectionID;
     [SyncVar] public int PlayerIdNumber;
@@ -42,6 +44,13 @@ public class PlayerObjectController : NetworkBehaviour
     public void RpcSetPosition(Vector3 pos)
     {
         transform.position = pos;
+    }
+
+    [Server]
+    public void Die()
+    {
+        gameObject.AddComponent<Camera>();
+        lookComp.enabled = true;
     }
 
     private void PlayerReadyUpdate(bool OldValue, bool NewValue)

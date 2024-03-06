@@ -61,7 +61,12 @@ public class StatManager : NetworkBehaviour
         {
             if (stats[(int)NumericalStats.Health] <= 0)
             {
+                if (gameObject.tag == "Player") {
+                    gameObject.transform.parent.GetComponent<PlayerObjectController>().Die();
+                }
+                
                 NetworkServer.Destroy(gameObject); //Kill Actor in all Contexts
+                Destroy(gameObject);
             }
         }
     }

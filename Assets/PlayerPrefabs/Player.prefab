@@ -57,8 +57,6 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  speed: 15
-  jumpSpeed: 8
   gravity: 20
 --- !u!143 &2654573300976310545
 CharacterController:
@@ -180,9 +178,9 @@ MonoBehaviour:
   - stat: 7
     val: 25
   - stat: 8
-    val: 1
+    val: 8
   - stat: 9
-    val: 1
+    val: 12
   - stat: 10
     val: 25
 --- !u!114 &6548516037796861554
