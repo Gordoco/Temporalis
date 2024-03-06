@@ -15,7 +15,6 @@ public class PlayerMove : NetworkBehaviour
     private void Start()
     {
         if (!isOwned || bDead) enabled = false;
-        transform.position = new Vector3(Random.Range(-20f, 20f), 100, Random.Range(-20.0f, 20.0f));
     }
 
     [ClientRpc]
@@ -26,7 +25,7 @@ public class PlayerMove : NetworkBehaviour
 
     void Update() {
         if (!isOwned || bDead) return;
-
+        transform.position = new Vector3(Random.Range(-20f, 20f), 100, Random.Range(-20.0f, 20.0f));
         CharacterController controller = GetComponent<CharacterController>();
         StatManager manager = GetComponent<StatManager>();
         if (controller.isGrounded)
