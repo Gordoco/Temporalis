@@ -9,13 +9,13 @@ public class PlayerMove : NetworkBehaviour
     //public float jumpSpeed = 8.0f;
     public float gravity = 20.0f;
     private Vector3 moveDirection = Vector3.zero;
-    public Vector3 StartLocation;
+    [SyncVar] public Vector3 StartLocation;
     [SyncVar] private bool bDead = false;
 
     private void Start()
     {
         if (!isOwned || bDead) enabled = false;
-        transform.position = StartLocation;
+        transform.position = new Vector3(Random.Range(-20f, 20f), 100, Random.Range(-20.0f, 20.0f));
     }
 
     [ClientRpc]
