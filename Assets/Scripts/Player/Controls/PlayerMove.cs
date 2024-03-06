@@ -25,9 +25,10 @@ public class PlayerMove : NetworkBehaviour
         bDead = true;
     }
 
-    void Update() {
-        if (!isOwned || bDead || !bAwake) return;
+    void Update()
+    {
         Debug.Log(gameObject.transform.parent.gameObject.name + " FIVE: " + transform.position);
+        if (!isOwned || bDead || !bAwake) return;
         CharacterController controller = GetComponent<CharacterController>();
         StatManager manager = GetComponent<StatManager>();
         if (controller.isGrounded)
