@@ -34,10 +34,10 @@ public class PlayerObjectController : NetworkBehaviour
     }
 
     [ClientRpc]
-    public void RpcSetParent(GameObject obj, GameObject parent)
+    public void RpcSetParent(GameObject obj, GameObject parent, bool b)
     {
-        obj.transform.SetParent(parent.transform, true);
-        obj.GetComponent<PlayerMove>().SetStart();
+        Debug.Log(obj.transform.parent.gameObject.name + " THREE_CLIENT: " + obj.transform.position);
+        obj.transform.SetParent(parent.transform, b);
     }
 
     [ClientRpc]

@@ -9,30 +9,14 @@ public class PlayerMove : NetworkBehaviour
     //public float jumpSpeed = 8.0f;
     public float gravity = 20.0f;
     private Vector3 moveDirection = Vector3.zero;
-    [SyncVar] public Vector3 StartLocation;
     [SyncVar] private bool bDead = false;
     private bool bAwake = false;
 
     private void Start()
     {
         if (!isOwned || bDead) enabled = false;
-    }
-
-    //[Server]
-    public void SetStart()
-    {
-        Debug.Log(gameObject.name + " Setting Position On Server");
         transform.position = new Vector3(Random.Range(-20f, 20f), 100, Random.Range(-20.0f, 20.0f));
-        bAwake = true;
-        //SetStartRPC();
-    }
-
-    [ClientRpc]
-    private void SetStartRPC()
-    {
-        Debug.Log(gameObject.name + " Setting Position On Client");
-        transform.position = new Vector3(Random.Range(-20f, 20f), 100, Random.Range(-20.0f, 20.0f));
-        bAwake = true;
+        Debug.Log(gameObject.transform.parent.gameObject.name + " FOUR: " + transform.position);
     }
 
     [ClientRpc]
@@ -43,6 +27,7 @@ public class PlayerMove : NetworkBehaviour
 
     void Update() {
         if (!isOwned || bDead || !bAwake) return;
+        Debug.Log(gameObject.transform.parent.gameObject.name + " FIVE: " + transform.position);
         CharacterController controller = GetComponent<CharacterController>();
         StatManager manager = GetComponent<StatManager>();
         if (controller.isGrounded)
