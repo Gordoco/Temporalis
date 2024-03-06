@@ -11,10 +11,13 @@ public class PlayerMove : NetworkBehaviour
     private Vector3 moveDirection = Vector3.zero;
     [SyncVar] public Vector3 StartLocation;
     [SyncVar] private bool bDead = false;
+    private bool bAwake = false;
 
     private void Start()
     {
         if (!isOwned || bDead) enabled = false;
+        transform.position = new Vector3(Random.Range(-20f, 20f), 100, Random.Range(-20.0f, 20.0f));
+        bAwake = true;
     }
 
     [ClientRpc]
@@ -24,8 +27,7 @@ public class PlayerMove : NetworkBehaviour
     }
 
     void Update() {
-        if (!isOwned || bDead) return;
-        transform.position = new Vector3(Random.Range(-20f, 20f), 100, Random.Range(-20.0f, 20.0f));
+        if (!isOwned || bDead || !bAwake) return;
         CharacterController controller = GetComponent<CharacterController>();
         StatManager manager = GetComponent<StatManager>();
         if (controller.isGrounded)
