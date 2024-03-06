@@ -46,6 +46,13 @@ public class EnemyController : NetworkBehaviour
             return;
         }
 
+        if (GameObject.FindGameObjectsWithTag("Player").Length != Players.Length)
+        {
+            Players = GameObject.FindGameObjectsWithTag("Player");
+            playerTarget = Random.Range(0, Players.Length);
+            return;
+        }
+
         if (playerTarget < 0 || playerTarget >= Players.Length)
         {
             playerTarget = Random.Range(0, Players.Length);
