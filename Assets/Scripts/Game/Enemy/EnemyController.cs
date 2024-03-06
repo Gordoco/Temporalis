@@ -67,16 +67,15 @@ public class EnemyController : NetworkBehaviour
             GameObject proj = Instantiate(EnemyProjPrefab);
             proj.GetComponent<ProjectileCreator>().InitializeProjectile(gameObject, transform.position, dir);
         }
-
+        dir.Normalize();
         if (controller.isGrounded)
         {
             dir.y = 0;
         }
         else
         {
-            dir.y += -gravity;
+            dir.y -= gravity;
         }
-        dir.Normalize();
         transform.rotation = Quaternion.LookRotation(new Vector3(dir.x, 0, dir.z));
         controller.Move(dir * Time.deltaTime * (float)Manager.GetStat(NumericalStats.MovementSpeed));
     }

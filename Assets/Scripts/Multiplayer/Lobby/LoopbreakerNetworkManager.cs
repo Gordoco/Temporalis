@@ -51,7 +51,7 @@ public class LoopbreakerNetworkManager : NetworkManager
     [Server]
     public void ServerStartGame(string SceneName)
     {
-        ServerSpawnAllPlayers();
+        //ServerSpawnAllPlayers();
         ServerChangeScene(SceneName);
     }
 
@@ -61,12 +61,9 @@ public class LoopbreakerNetworkManager : NetworkManager
         foreach (PlayerObjectController GamePlayer in GamePlayers)
         {
             GameObject gamePrefab = Instantiate(GamePlayer.GamePrefab, StartLocation, Quaternion.identity);
-            Debug.Log("Created");
             gamePrefab.transform.SetParent(GamePlayer.transform, false);
             NetworkServer.Spawn(gamePrefab, GetConnectionFromID(GamePlayer.ConnectionID));
             GamePlayer.RpcSetParent(gamePrefab, GamePlayer.gameObject);
-            Debug.Log(gamePrefab.transform.position);
-            gamePrefab.transform.position = StartLocation;
         }
     }
 
@@ -83,6 +80,10 @@ public class LoopbreakerNetworkManager : NetworkManager
             if (GamePlayer.ConnectionID == conn.connectionId) Player = GamePlayer;
         }
         if (Player == null) return;
+        GameObject gamePrefab = Instantiate(Player.GamePrefab, StartLocation, Quaternion.identity);
+        gamePrefab.transform.SetParent(Player.transform, false);
+        NetworkServer.Spawn(gamePrefab, GetConnectionFromID(Player.ConnectionID));
+        Player.RpcSetParent(gamePrefab, Player.gameObject);
         Debug.Log("Teleported: " + StartLocation);
         Player.RpcSetPosition(StartLocation);
         Player.transform.position = StartLocation;
