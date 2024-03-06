@@ -6,6 +6,8 @@ using Steamworks;
 
 public class PlayerObjectController : NetworkBehaviour
 {
+    [SerializeField] private LookAround lookComp;
+
     //Player Data
     [SyncVar] public int ConnectionID;
     [SyncVar] public int PlayerIdNumber;
@@ -14,20 +16,50 @@ public class PlayerObjectController : NetworkBehaviour
     [SyncVar(hook = nameof(PlayerReadyUpdate))] public bool bReady;
     public GameObject GamePrefab;
 
-    private TemporalisNetworkManager manager;
 
-    private TemporalisNetworkManager Manager
+    private LoopbreakerNetworkManager manager;
+
+    private LoopbreakerNetworkManager Manager
     {
         get
         {
             if (manager != null) return manager;
-            return manager = TemporalisNetworkManager.singleton as TemporalisNetworkManager;
+            return manager = LoopbreakerNetworkManager.singleton as LoopbreakerNetworkManager;
         }
     }
 
     private void Start()
     {
         DontDestroyOnLoad(this.gameObject);
+    }
+
+    [ClientRpc]
+    public void RpcSetParent(GameObject obj, GameObject parent, bool b)
+    {
+        obj.transform.SetParent(parent.transform, b);
+    }
+
+    /*[ClientRpc]
+    public void RpcSetPosition(Vector3 pos)
+    {
+        transform.position = pos;
+    }*/
+
+    [Server]
+    public void Die()
+    {
+        if (GetComponent<Camera>() == null) gameObject.AddComponent<Camera>();
+        Manager.PlayerDied();
+        lookComp.enabled = true;
+        DieRpc();
+    }
+
+    [ClientRpc]
+    public void DieRpc()
+    {
+        if (!isOwned) return;
+        if (GetComponent<Camera>() == null) gameObject.AddComponent<Camera>();
+        lookComp.enabled = true;
     }
 
     private void PlayerReadyUpdate(bool OldValue, bool NewValue)
@@ -48,9 +80,16 @@ public class PlayerObjectController : NetworkBehaviour
         this.PlayerReadyUpdate(this.bReady, !this.bReady);
     }
 
+    public void ServerStartGame(string SceneName)
+    {
+        if (isServer)
+            Manager.ServerStartGame(SceneName);
+        else Debug.Log("ERROR: Trying to load scene from client");
+    }
+
     public void ChangeReady()
     {
-        if (authority)
+        if (isOwned)
         {
             CmdSetPlayerReady();
         }
@@ -74,7 +113,7 @@ public class PlayerObjectController : NetworkBehaviour
     public override void OnStopClient()
     {
         Manager.GamePlayers.Remove(this);
-        Manager.RemoveClient(Manager.GamePlayers.IndexOf(this));
+        if (Manager.GamePlayers.IndexOf(this) != -1) Manager.RemoveClient(Manager.GamePlayers.IndexOf(this));
         LobbyController.Instance.UpdatePlayerList();
     }
 
@@ -94,16 +133,5 @@ public class PlayerObjectController : NetworkBehaviour
         {
             LobbyController.Instance.UpdatePlayerList();
         }
-    }
-
-    public void CanStartGame(string SceneName)
-    {
-        if (authority) CmdCanStartGame(SceneName);
-    }
-
-    [Command]
-    public void CmdCanStartGame(string SceneName)
-    {
-        Manager.StartGame(SceneName);
     }
 }

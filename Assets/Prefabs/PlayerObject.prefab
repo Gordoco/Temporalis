@@ -11,6 +11,8 @@ GameObject:
   - component: {fileID: 7306299410085187454}
   - component: {fileID: 4415757097046807128}
   - component: {fileID: 6039204910684358694}
+  - component: {fileID: -6684785954337720041}
+  - component: {fileID: 284660354331858200}
   m_Layer: 0
   m_Name: PlayerObject
   m_TagString: Untagged
@@ -66,9 +68,64 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  lookComp: {fileID: 284660354331858200}
   ConnectionID: 0
   PlayerIdNumber: 0
   PlayerSteamID: 0
   PlayerName: 
   bReady: 0
   GamePrefab: {fileID: 2654573300976310538, guid: 570bb2126f3fb0a4d9ac456f01d60c02, type: 3}
+--- !u!114 &-6684785954337720041
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2864109583541918006}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a553cb17010b2403e8523b558bffbc14, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  target: {fileID: 7306299410085187454}
+  syncPosition: 1
+  syncRotation: 1
+  syncScale: 1
+  interpolatePosition: 1
+  interpolateRotation: 1
+  interpolateScale: 1
+  coordinateSpace: 0
+  sendIntervalMultiplier: 1
+  timelineOffset: 0
+  showGizmos: 0
+  showOverlay: 0
+  overlayColor: {r: 0, g: 0, b: 0, a: 0.5}
+  onlySyncOnChange: 1
+  compressRotation: 1
+  bufferResetMultiplier: 3
+  positionSensitivity: 0.01
+  rotationSensitivity: 0.01
+  scaleSensitivity: 0.01
+--- !u!114 &284660354331858200
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2864109583541918006}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d6711914a8dca624e91151f9ce72c673, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  mouseXSensitivity: 100
+  mouseYSensitivity: 1
+  playerBody: {fileID: 7306299410085187454}
+  Weapon: {fileID: 0}
+  bIsServer: 1

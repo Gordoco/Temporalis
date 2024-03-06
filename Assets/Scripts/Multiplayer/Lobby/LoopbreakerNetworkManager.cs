@@ -5,12 +5,25 @@ using Mirror;
 using UnityEngine.SceneManagement;
 using Steamworks;
 
-public class TemporalisNetworkManager : NetworkManager
+public class LoopbreakerNetworkManager : NetworkManager
 {
     [SerializeField] private PlayerObjectController GamePlayerPrefab;
+    [SerializeField] private Vector3 StartLocation = Vector3.zero;
+
     public List<PlayerObjectController> GamePlayers { get; } = new List<PlayerObjectController>();
     private List<NetworkConnectionToClient> Clients = new List<NetworkConnectionToClient>();
 
+    private bool bLoadingRealMap = false;
+    private int playersLoaded = 0;
+
+    public override void Awake()
+    {
+        base.Awake();
+        if (StartLocation == Vector3.zero)
+            StartLocation = new Vector3(Random.Range(-20f, 20f), 100, Random.Range(-20.0f, 20.0f));
+    }
+
+    [Server]
     public override void OnServerAddPlayer(NetworkConnectionToClient conn)
     {
         if (SceneManager.GetActiveScene().name == "Lobby")
@@ -27,24 +40,62 @@ public class TemporalisNetworkManager : NetworkManager
         }
     }
 
-    public void RemoveClient(int index) { Clients.RemoveAt(index); }
-
-    public void StartGame(string SceneName)
+    [Server]
+    private NetworkConnectionToClient GetConnectionFromID(int ConnectionID)
     {
+        NetworkConnectionToClient connection;
+        NetworkServer.connections.TryGetValue(ConnectionID, out connection);
+        return connection;
+    }
+
+    [Server]
+    public void RemoveClient(int index) { Debug.Log("Client Number: " + index + " Removed"); Clients.RemoveAt(index); }
+
+    [Server]
+    public void ServerStartGame(string SceneName)
+    {
+        //ServerSpawnAllPlayers();
+        bLoadingRealMap = true;
         ServerChangeScene(SceneName);
     }
 
-    public override void OnServerChangeScene(string newSceneName)
+    [Server]
+    private void ServerSpawnAllPlayers()
     {
-        base.OnServerChangeScene(newSceneName);
-
-        for (int i = 0; i < GamePlayers.Count; i++)
+        foreach (PlayerObjectController GamePlayer in GamePlayers)
         {
-            GameObject playerPrefab = Instantiate(GamePlayers[i].GamePrefab);
-            playerPrefab.GetComponent<NetworkIdentity>().AssignClientAuthority(Clients[i]);
-            //Initialize Location Through Some Spawn Calcs
-            playerPrefab.transform.SetParent(GamePlayers[i].gameObject.transform);
+            GamePlayer.gameObject.transform.position = StartLocation;
+            GameObject gamePrefab = Instantiate(GamePlayer.GamePrefab, StartLocation, Quaternion.identity);
+            gamePrefab.transform.SetParent(GamePlayer.transform, false);
+            NetworkServer.Spawn(gamePrefab, GetConnectionFromID(GamePlayer.ConnectionID));
+            GamePlayer.RpcSetParent(gamePrefab, GamePlayer.gameObject, false);
+            //gamePrefab.GetComponent<PlayerMove>().SetStart();
         }
     }
 
+    [Server]
+    public override void OnServerReady(NetworkConnectionToClient conn)
+    {
+        base.OnServerReady(conn);
+
+        Debug.Log("Player Ready And Ported");
+        if (bLoadingRealMap)
+        {
+            playersLoaded++;
+            if (playersLoaded == GamePlayers.Count) StartCoroutine(SpawnPlayersDelay());
+        }
+    }
+
+    [Server]
+    public void PlayerDied()
+    {
+        playersLoaded--;
+        if (playersLoaded == 0) NetworkServer.DisconnectAll();
+    }
+
+    IEnumerator SpawnPlayersDelay()
+    {
+        yield return new WaitForSeconds(1);
+        ServerSpawnAllPlayers();
+    }
 }
