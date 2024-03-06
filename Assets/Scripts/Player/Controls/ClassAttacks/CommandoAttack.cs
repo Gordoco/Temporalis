@@ -43,8 +43,6 @@ public class CommandoAttack : AttackManager
     /// <returns></returns>
     private IEnumerator WeaponSwell(GameObject Weapon, double AttackSpeed)
     {
-        //Debug call to check if clients are seeing the correct AttackSpeed val
-        if (isClient) Debug.Log("AttackSpeed = " + AttackSpeed);
         float swellSpeed = 0.02f;
         for (int i = 0; i < 12; i++)
         {
