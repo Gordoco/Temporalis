@@ -87,10 +87,17 @@ public class LoopbreakerNetworkManager : NetworkManager
     }
 
     [Server]
-    public void PlayerDied()
+    public void PlayerDied(PlayerObjectController player)
     {
         playersLoaded--;
-        if (playersLoaded == 0) NetworkServer.DisconnectAll();
+        if (playersLoaded <= 0)
+        {
+            Debug.Log("EVERYONE DEAD");
+            NetworkServer.DisconnectAll();
+            SceneManager.LoadScene("MainMenu");
+            player.GetComponent<LookAround>().enabled = false;
+            Cursor.lockState = CursorLockMode.None;
+        }
     }
 
     IEnumerator SpawnPlayersDelay()

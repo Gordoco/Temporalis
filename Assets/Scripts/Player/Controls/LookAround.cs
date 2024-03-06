@@ -43,8 +43,7 @@ public class LookAround : NetworkBehaviour
     {
         if (!isOwned) return;
 
-        if (!bIsServer) UpdateFunctionality();
-        else CmdUpdateFunctionality();
+        UpdateFunctionality();
     }
 
     [Command]

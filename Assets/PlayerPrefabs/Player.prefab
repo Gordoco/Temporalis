@@ -145,6 +145,8 @@ MonoBehaviour:
   syncInterval: 0
   statManager: {fileID: 1250715329504170301}
   SecondaryAttackProjPrefab: {fileID: 4154122368009565914, guid: 493b3a1316111254b850d1d2c19d8175, type: 3}
+  PrimaryAttackParticleEffect: {fileID: 945835148339455510, guid: 09c0f376280083f48be83864b2fcd95d, type: 3}
+  HitParticleEffect: {fileID: 945835148339455510, guid: d9f062b5c10ab724792bb710c6379134, type: 3}
 --- !u!114 &1250715329504170301
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -182,7 +184,7 @@ MonoBehaviour:
   - stat: 9
     val: 12
   - stat: 10
-    val: 25
+    val: 50
 --- !u!114 &6548516037796861554
 MonoBehaviour:
   m_ObjectHideFlags: 0

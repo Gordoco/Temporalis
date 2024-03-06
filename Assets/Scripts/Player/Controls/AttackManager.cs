@@ -6,6 +6,7 @@ using Mirror;
 public abstract class AttackManager : NetworkBehaviour
 {
     [SerializeField] protected StatManager statManager;
+    [SerializeField] protected bool FullAuto = true;
     [SyncVar] private bool bCanAttack = true;
     [SyncVar] private bool bCanSecondary = true;
     [SyncVar] private bool bCanAbility1 = true;
@@ -18,7 +19,8 @@ public abstract class AttackManager : NetworkBehaviour
     {
         if (!isOwned) { this.enabled = false; return; }
 
-        if (Input.GetButtonDown("PrimaryAttack") && bCanAttack)
+        bool primaryInput = FullAuto ? Input.GetButton("PrimaryAttack") : Input.GetButtonDown("PrimaryAttack");
+        if (primaryInput && bCanAttack)
         {
             Debug.Log("Shot Gat");
             if (isClient) OnServerPrimaryAttack();
