@@ -21,6 +21,7 @@ public class PlayerMove : NetworkBehaviour
     {
         yield return new WaitForSeconds(1);
         transform.position = new Vector3(Random.Range(-20f, 20f), 100, Random.Range(-20.0f, 20.0f));
+        bAwake = true;
     }
 
     [ClientRpc]
