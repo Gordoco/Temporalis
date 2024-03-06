@@ -67,8 +67,8 @@ MonoBehaviour:
   sendRate: 60
   autoStartServerBuild: 0
   autoConnectClientBuild: 0
-  offlineScene: 
-  onlineScene: 
+  offlineScene: Assets/Scenes/Menus/MainMenu.unity
+  onlineScene: Assets/Scenes/Menus/Lobby.unity
   transport: {fileID: 8851137220212218537}
   networkAddress: localhost
   maxConnections: 100
@@ -80,6 +80,10 @@ MonoBehaviour:
   playerSpawnMethod: 0
   spawnPrefabs:
   - {fileID: 2864109583541918006, guid: bb751b10c0d487741bf3bbff4a921bcc, type: 3}
+  - {fileID: 4154122368009565914, guid: 493b3a1316111254b850d1d2c19d8175, type: 3}
+  - {fileID: 2654573300976310538, guid: 570bb2126f3fb0a4d9ac456f01d60c02, type: 3}
+  - {fileID: 4154122368009565914, guid: 8326341b88a6b9d4bb3e06b992aa5854, type: 3}
+  - {fileID: 5377742575258131845, guid: 36ba6b31cdb352c4797a46eecd57067f, type: 3}
   exceptionsDisconnect: 1
   snapshotSettings:
     bufferTimeMultiplier: 2
@@ -96,6 +100,7 @@ MonoBehaviour:
   evaluationInterval: 3
   timeInterpolationGui: 0
   GamePlayerPrefab: {fileID: 6039204910684358694, guid: bb751b10c0d487741bf3bbff4a921bcc, type: 3}
+  StartLocation: {x: 0, y: 0, z: 0}
 --- !u!114 &3665213327758499923
 MonoBehaviour:
   m_ObjectHideFlags: 0

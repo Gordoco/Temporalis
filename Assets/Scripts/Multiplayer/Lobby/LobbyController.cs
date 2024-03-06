@@ -32,14 +32,17 @@ public class LobbyController : MonoBehaviour
     public TMP_Text ReadyButtonText;
 
     //Manager
-    private TemporalisNetworkManager manager;
+    private LoopbreakerNetworkManager manager;
 
-    private TemporalisNetworkManager Manager
+    /// <summary>
+    /// Singleton for the LoopbreakerNetworkManager
+    /// </summary>
+    private LoopbreakerNetworkManager Manager
     {
         get
         {
             if (manager != null) return manager;
-            return manager = TemporalisNetworkManager.singleton as TemporalisNetworkManager;
+            return manager = LoopbreakerNetworkManager.singleton as LoopbreakerNetworkManager;
         }
     }
 
@@ -48,21 +51,36 @@ public class LobbyController : MonoBehaviour
         if (Instance == null) Instance = this;
     }
 
+    /// <summary>
+    /// Public Server-Only method for launching the main game once all players have readied.
+    /// </summary>
+    /// <param name="SceneName"></param>
+    [Server]
     public virtual void LaunchGame(string SceneName)
     {
-        LocalPlayerController.CanStartGame(SceneName);
+        LocalPlayerController.ServerStartGame(SceneName);
     }
 
+    /// <summary>
+    /// Method called when a player clicks their "Ready" button in the lobby menu
+    /// Relies on UI hooks set in editor.
+    /// </summary>
     public void ReadyPlayer()
     {
         LocalPlayerController.ChangeReady();
     }
 
+    /// <summary>
+    /// Method to update ReadyButton text appropriately based on the Player's ready status.
+    /// </summary>
     public void UpdateButton()
     {
         ReadyButtonText.text = LocalPlayerController.bReady ? "Not Ready" : "Ready";
     }
 
+    /// <summary>
+    /// Method for evaluating when all players have readied and allowing the match to be started.
+    /// </summary>
     public void CheckIfAllReady()
     {
         bool bAllReady = false;
@@ -84,12 +102,18 @@ public class LobbyController : MonoBehaviour
         else StartGameButton.interactable = false;
     }
 
+    /// <summary>
+    /// Update the Lobby Name text to correspond to the owner's name.
+    /// </summary>
     public void UpdateLobbyName()
     {
         CurrentLobbyID = Manager.GetComponent<SteamLobby>().CurrentLobbyID;
         LobbyNameText.text = SteamMatchmaking.GetLobbyData(new CSteamID(CurrentLobbyID), "name");
     }
 
+    /// <summary>
+    /// Update method to syncronize the UI of all Player's in the Lobby
+    /// </summary>
     public void UpdatePlayerList()
     {
         if (!PlayerItemCreated) { CreateHostPlayerItem(); }
@@ -98,12 +122,19 @@ public class LobbyController : MonoBehaviour
         if (PlayerListItems.Count == Manager.GamePlayers.Count) { UpdatePlayerItem(); }
     }
 
+    /// <summary>
+    /// Method to find the local player object by its designated name in the Scene hierarchy.
+    /// See PlayerObjectController for name reference.
+    /// </summary>
     public void FindLocalPlayer()
     {
         LocalPlayerObject = GameObject.Find("LocalGamePlayer");
         LocalPlayerController = LocalPlayerObject.GetComponent<PlayerObjectController>();
     }
 
+    /// <summary>
+    /// Server-Side Player UI element creation method
+    /// </summary>
     public void CreateHostPlayerItem()
     {
         foreach(PlayerObjectController player in Manager.GamePlayers)
@@ -113,6 +144,9 @@ public class LobbyController : MonoBehaviour
         PlayerItemCreated = true;
     }
 
+    /// <summary>
+    /// Client-Side Player UI element creation method
+    /// </summary>
     public void CreateClientPlayerItem()
     {
         foreach (PlayerObjectController player in Manager.GamePlayers)
@@ -124,6 +158,10 @@ public class LobbyController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Implementation for creating a UI element for a designated player entity, runs on both Server and Client.
+    /// </summary>
+    /// <param name="player"></param>
     private void CreatePlayerItem(PlayerObjectController player)
     {
         GameObject NewPlayerItem = Instantiate(PlayerListItemPrefab, Vector3.zero, Quaternion.identity) as GameObject;
@@ -141,6 +179,9 @@ public class LobbyController : MonoBehaviour
         PlayerListItems.Add(NewPlayerItemScript);
     }
 
+    /// <summary>
+    /// Updates a Player lobby UI element to match current values in the Player object
+    /// </summary>
     public void UpdatePlayerItem()
     {
         foreach (PlayerObjectController player in Manager.GamePlayers)
@@ -162,6 +203,9 @@ public class LobbyController : MonoBehaviour
         CheckIfAllReady();
     }
 
+    /// <summary>
+    /// Removes a player from the lobby menu upon them leaving the game
+    /// </summary>
     public void RemovePlayerItem()
     {
         List<PlayerListItem> playerListItemsToRemove = new List<PlayerListItem>();
