@@ -60,10 +60,9 @@ public class LoopbreakerNetworkManager : NetworkManager
     {
         foreach (PlayerObjectController GamePlayer in GamePlayers)
         {
-            GameObject gamePrefab = Instantiate(GamePlayer.GamePrefab);
+            GameObject gamePrefab = Instantiate(GamePlayer.GamePrefab, StartLocation, Quaternion.identity);
             Debug.Log("Created");
             gamePrefab.transform.SetParent(GamePlayer.transform, false);
-            gamePrefab.transform.localPosition = Vector3.zero;
             NetworkServer.Spawn(gamePrefab, GetConnectionFromID(GamePlayer.ConnectionID));
             GamePlayer.RpcSetParent(gamePrefab, GamePlayer.gameObject);
             Debug.Log(gamePrefab.transform.position);
