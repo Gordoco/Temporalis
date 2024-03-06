@@ -79,9 +79,8 @@ public class LobbyController : MonoBehaviour
     }
 
     /// <summary>
-    /// Server-Only method for evaluating when all players have readied and allowing the match to be started.
+    /// Method for evaluating when all players have readied and allowing the match to be started.
     /// </summary>
-    [Server]
     public void CheckIfAllReady()
     {
         bool bAllReady = false;
