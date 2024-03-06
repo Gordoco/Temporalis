@@ -41,9 +41,9 @@ public class StatManager : NetworkBehaviour
         {
             for (int i = 0; i < (int)NumericalStats.NumberOfStats; i++) stats.Add(initStats[i].val);
         }
-        else if (gameObject.tag == "Player")
+        else if (gameObject.tag == "Player" && isClient)
         {
-            for (int i = 0; i < (int)NumericalStats.NumberOfStats; i++)
+            for (int i = 0; i < stats.Count; i++)
             {
                 Debug.Log((NumericalStats)i + " = " + stats[i]);
             }
