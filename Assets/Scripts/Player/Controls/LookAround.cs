@@ -83,8 +83,8 @@ public class LookAround : NetworkBehaviour
                 Mathf.Lerp(StraightView.rot.z, TopDownView.rot.z, (yRotation - 0.5f) * 2)
             ));
 
-        transform.position = pos + transform.parent.position;
-        transform.rotation = rot;
+        transform.localPosition = pos;
+        transform.localRotation = rot;
 
         //X Rotation
         playerBody.Rotate(Vector3.up * mouseX);
