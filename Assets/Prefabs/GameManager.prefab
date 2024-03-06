@@ -80,6 +80,7 @@ MonoBehaviour:
   playerSpawnMethod: 0
   spawnPrefabs:
   - {fileID: 2864109583541918006, guid: bb751b10c0d487741bf3bbff4a921bcc, type: 3}
+  - {fileID: 4154122368009565914, guid: 493b3a1316111254b850d1d2c19d8175, type: 3}
   exceptionsDisconnect: 1
   snapshotSettings:
     bufferTimeMultiplier: 2
@@ -96,6 +97,7 @@ MonoBehaviour:
   evaluationInterval: 3
   timeInterpolationGui: 0
   GamePlayerPrefab: {fileID: 6039204910684358694, guid: bb751b10c0d487741bf3bbff4a921bcc, type: 3}
+  StartLocation: {x: 0, y: 0, z: 0}
 --- !u!114 &3665213327758499923
 MonoBehaviour:
   m_ObjectHideFlags: 0
