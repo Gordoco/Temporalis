@@ -6,6 +6,11 @@ using Mirror;
 public enum NumericalStats
 {
     AttackSpeed,
+    SecondaryCooldown,
+    Ability1Cooldown,
+    Ability2Cooldown,
+    Ability3Cooldown,
+    Ability4Cooldown,
     Health,
     Damage,
     JumpHeight,

@@ -12,9 +12,9 @@ GameObject:
   - component: {fileID: 5022183174979428450}
   - component: {fileID: 1838173308775004086}
   - component: {fileID: 6755479470878986711}
-  - component: {fileID: 8589758893235243589}
-  - component: {fileID: 1549149655870582581}
   - component: {fileID: 8886073245102713936}
+  - component: {fileID: -1751277440325997356}
+  - component: {fileID: -9095591412428583769}
   m_Layer: 0
   m_Name: Alien
   m_TagString: Untagged
@@ -105,7 +105,21 @@ MonoBehaviour:
   serverOnly: 0
   visible: 0
   hasSpawned: 0
---- !u!114 &8589758893235243589
+--- !u!136 &8886073245102713936
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5377742575258131845}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 0.5
+  m_Height: 2
+  m_Direction: 1
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &-1751277440325997356
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -124,16 +138,26 @@ MonoBehaviour:
   - stat: 0
     val: 1
   - stat: 1
-    val: 100
+    val: 1
   - stat: 2
-    val: 10
+    val: 1
   - stat: 3
     val: 1
   - stat: 4
     val: 1
   - stat: 5
     val: 1
---- !u!114 &1549149655870582581
+  - stat: 6
+    val: 100
+  - stat: 7
+    val: 10
+  - stat: 8
+    val: 1
+  - stat: 9
+    val: 1
+  - stat: 10
+    val: 1
+--- !u!114 &-9095591412428583769
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -148,17 +172,3 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
---- !u!136 &8886073245102713936
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5377742575258131845}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  m_Radius: 0.5
-  m_Height: 2
-  m_Direction: 1
-  m_Center: {x: 0, y: 0, z: 0}

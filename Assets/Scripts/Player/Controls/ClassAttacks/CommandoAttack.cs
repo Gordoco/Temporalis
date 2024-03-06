@@ -4,7 +4,9 @@ using UnityEngine;
 using Mirror;
 
 public class CommandoAttack : AttackManager
-{ 
+{
+    [SerializeField] private GameObject SecondaryAttackProjPrefab;
+
     /// <summary>
     /// Implements the primary attack for the Commando class. Based around the existence of twin pistols
     /// that fire in tandem. Triggers two hits per shot as an intended feature, interacting with On-Hit
@@ -61,7 +63,25 @@ public class CommandoAttack : AttackManager
 
     protected override void OnSecondaryAttack()
     {
+        if (isServer && SecondaryAttackProjPrefab != null)
+        {
+            GameObject Weapon = null;
+            for (int i = 0; i < gameObject.transform.childCount; i++) if (gameObject.transform.GetChild(i).tag == "Weapon") { Weapon = gameObject.transform.GetChild(i).gameObject; break; }
 
+            GameObject Camera = null;
+            for (int i = 0; i < gameObject.transform.childCount; i++) if (gameObject.transform.GetChild(i).tag == "MainCamera") { Camera = gameObject.transform.GetChild(i).gameObject; break; }
+
+            GameObject proj = Instantiate(SecondaryAttackProjPrefab);
+
+            //Handle Bad Prefab/Weapon
+            if (proj.GetComponent<ProjectileCreator>() == null || Weapon == null)
+            {
+                Destroy(proj);
+                return;
+            }
+            float forwardOffset = 5;
+            proj.GetComponent<ProjectileCreator>().InitializeProjectile(gameObject, Camera.transform.position + (Camera.transform.forward * forwardOffset), Camera.transform.forward);
+        }
     }
 
     protected override void OnAbility1()
