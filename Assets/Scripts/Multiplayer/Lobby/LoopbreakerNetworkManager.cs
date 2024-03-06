@@ -95,8 +95,7 @@ public class LoopbreakerNetworkManager : NetworkManager
             Debug.Log("EVERYONE DEAD");
             NetworkServer.DisconnectAll();
             SceneManager.LoadScene("MainMenu");
-            player.GetComponent<LookAround>().enabled = false;
-            Cursor.lockState = CursorLockMode.None;
+            player.DisableCameraMove();
         }
     }
 

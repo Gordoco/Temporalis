@@ -62,6 +62,13 @@ public class PlayerObjectController : NetworkBehaviour
         lookComp.enabled = true;
     }
 
+    [ClientRpc]
+    public void DisableCameraMove()
+    {
+        player.GetComponent<LookAround>().enabled = false;
+        Cursor.lockState = CursorLockMode.None;
+    }
+
     private void PlayerReadyUpdate(bool OldValue, bool NewValue)
     {
         if (isServer)
