@@ -18,10 +18,19 @@ public class PlayerMove : NetworkBehaviour
         if (!isOwned || bDead) enabled = false;
     }
 
-    [ClientRpc]
+    [Server]
     public void SetStart()
     {
         transform.position = new Vector3(Random.Range(-20f, 20f), 100, Random.Range(-20.0f, 20.0f));
+        bAwake = true;
+        SetStartRPC();
+    }
+
+    [ClientRpc]
+    private void SetStartRPC()
+    {
+        transform.position = new Vector3(Random.Range(-20f, 20f), 100, Random.Range(-20.0f, 20.0f));
+        bAwake = true;
     }
 
     [ClientRpc]
