@@ -20,6 +20,7 @@ public class PlayerMove : NetworkBehaviour
     private IEnumerator Delay()
     {
         yield return new WaitForSeconds(1);
+        Random.seed = NetworkServer.localConnection.connectionId;
         transform.position = new Vector3(Random.Range(-20f, 20f), 100, Random.Range(-20.0f, 20.0f));
         bAwake = true;
     }
@@ -32,7 +33,6 @@ public class PlayerMove : NetworkBehaviour
 
     void Update()
     {
-        Debug.Log(gameObject.transform.parent.gameObject.name + " FIVE: " + transform.position);
         if (!isOwned || bDead || !bAwake) return;
         CharacterController controller = GetComponent<CharacterController>();
         StatManager manager = GetComponent<StatManager>();
