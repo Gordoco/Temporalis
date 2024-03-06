@@ -15,8 +15,12 @@ public class PlayerMove : NetworkBehaviour
     private void Start()
     {
         if (!isOwned || bDead) enabled = false;
+    }
+
+    private IEnumerator Delay()
+    {
+        yield return new WaitForSeconds(1);
         transform.position = new Vector3(Random.Range(-20f, 20f), 100, Random.Range(-20.0f, 20.0f));
-        Debug.Log(gameObject.transform.parent.gameObject.name + " FOUR: " + transform.position);
     }
 
     [ClientRpc]

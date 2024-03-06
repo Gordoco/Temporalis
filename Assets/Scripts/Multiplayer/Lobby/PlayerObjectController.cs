@@ -36,15 +36,14 @@ public class PlayerObjectController : NetworkBehaviour
     [ClientRpc]
     public void RpcSetParent(GameObject obj, GameObject parent, bool b)
     {
-        Debug.Log(ConnectionID + " THREE_CLIENT: " + obj.transform.position);
         obj.transform.SetParent(parent.transform, b);
     }
 
-    [ClientRpc]
+    /*[ClientRpc]
     public void RpcSetPosition(Vector3 pos)
     {
         transform.position = pos;
-    }
+    }*/
 
     [Server]
     public void Die()
