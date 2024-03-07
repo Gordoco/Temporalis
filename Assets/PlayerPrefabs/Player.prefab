@@ -241,7 +241,7 @@ MonoBehaviour:
   syncInterval: 0
   initStats:
   - stat: 0
-    val: 10
+    val: 5
   - stat: 1
     val: 5
   - stat: 2
@@ -255,7 +255,7 @@ MonoBehaviour:
   - stat: 6
     val: 100
   - stat: 7
-    val: 25
+    val: 33
   - stat: 8
     val: 8
   - stat: 9
@@ -671,7 +671,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   slider: {fileID: 4108330440198693518}
   manager: {fileID: 1250715329504170301}
-  text: {fileID: 0}
+  text: {fileID: 5451338760596452108}
 --- !u!1 &3893254396912013703
 GameObject:
   m_ObjectHideFlags: 0

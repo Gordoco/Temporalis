@@ -22,6 +22,7 @@ public abstract class AttackManager : NetworkBehaviour
         bool primaryInput = FullAuto ? Input.GetButton("PrimaryAttack") : Input.GetButtonDown("PrimaryAttack");
         if (primaryInput && bCanAttack)
         {
+            bCanAttack = false;
             Debug.Log("Shot Gat");
             if (isClient) OnServerPrimaryAttack();
             else if (isServer) OnClientPrimaryAttack();
@@ -30,6 +31,7 @@ public abstract class AttackManager : NetworkBehaviour
 
         if (Input.GetButtonDown("SecondaryAttack") && bCanSecondary)
         {
+            bCanSecondary = false;
             Debug.Log("Shot Gat Extra Good");
             if (isClient) OnServerSecondaryAttack();
             else if (isServer) OnClientSecondaryAttack();
@@ -38,6 +40,7 @@ public abstract class AttackManager : NetworkBehaviour
 
         if (Input.GetButtonDown("Ability1") && bCanAbility1)
         {
+            bCanAbility1 = false;
             Debug.Log("First Ability PewPew");
             if (isClient) OnServerAbility1();
             else if (isServer) OnClientAbility1();
@@ -46,6 +49,7 @@ public abstract class AttackManager : NetworkBehaviour
 
         if (Input.GetButtonDown("Ability2") && bCanAbility2)
         {
+            bCanAbility2 = false;
             Debug.Log("Second Ability PewPew");
             if (isClient) OnServerAbility2();
             else if (isServer) OnClientAbility2();
@@ -54,6 +58,7 @@ public abstract class AttackManager : NetworkBehaviour
 
         if (Input.GetButtonDown("Ability3") && bCanAbility3)
         {
+            bCanAbility3 = false;
             Debug.Log("Third Ability PewPew");
             if (isClient) OnServerAbility3();
             else if (isServer) OnClientAbility3();
@@ -62,6 +67,7 @@ public abstract class AttackManager : NetworkBehaviour
 
         if (Input.GetButtonDown("Ability4") && bCanAbility4)
         {
+            bCanAbility4 = false;
             Debug.Log("Fourth Ability PewPew");
             if (isClient) OnServerAbility4();
             else if (isServer) OnClientAbility4();

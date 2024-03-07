@@ -46,4 +46,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ItemList:
   - {fileID: 5183151968355300350, guid: 59248a440bdcea2428480e781918661e, type: 3}
-  Weights: 01000000
+  - {fileID: 5183151968355300350, guid: 6c13fbbf157d5eb4e9e6b51b118d6b1b, type: 3}
+  Weights: 0100000001000000

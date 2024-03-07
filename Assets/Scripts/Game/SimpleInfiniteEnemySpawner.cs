@@ -8,7 +8,7 @@ public class SimpleInfiniteEnemySpawner : NetworkBehaviour
 {
     [SerializeField] private double DifficultyScale = 0;
     [SerializeField] private Vector3[] SpawnPoints;
-    [SerializeField] private float EnemySpawnInterval = 10;
+    [SerializeField] private float EnemySpawnInterval = 20;
     [SerializeField] private int BaseNumEnemies = 3;
     [SerializeField] private GameObject[] EnemyTypes;
 
