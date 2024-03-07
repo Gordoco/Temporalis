@@ -98,8 +98,8 @@ public class LoopbreakerNetworkManager : NetworkManager
                 GamePlayers[i].DisableCameraMove();
                 GetConnectionFromID(GamePlayers[i].ConnectionID).Disconnect();
             }
+            SceneManager.LoadScene("MainMenu");
         }
-        SceneManager.LoadScene("MainMenu");
     }
 
     IEnumerator SpawnPlayersDelay()
