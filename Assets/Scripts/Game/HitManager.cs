@@ -22,9 +22,9 @@ public class HitManager : NetworkBehaviour
     [Server]
     public virtual bool Hit(double damage)
     {
-        Debug.Log(gameObject.name + " has been hit for: " + damage + " damage. Has: " + ((float)manager.GetStat(NumericalStats.Health) - damage) + " Health");
-        manager.ModifyStat(NumericalStats.Health, -damage);
-        if (manager.GetStat(NumericalStats.Health) <= 0) return true;
+        Debug.Log(gameObject.name + " has been hit for: " + damage + " damage. Has: " + ((float)manager.GetHealth() - damage) + " Health");
+        manager.DealDamage(damage);
+        if (manager.GetHealth() <= 0) return true;
         return false;
     }
 }

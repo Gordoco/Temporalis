@@ -8,7 +8,7 @@ public class SimpleInfiniteEnemySpawner : NetworkBehaviour
 {
     [SerializeField] private double DifficultyScale = 0;
     [SerializeField] private Vector3[] SpawnPoints;
-    [SerializeField] private float EnemySpawnInterval = 5;
+    [SerializeField] private float EnemySpawnInterval = 10;
     [SerializeField] private int BaseNumEnemies = 3;
     [SerializeField] private GameObject[] EnemyTypes;
 
@@ -26,7 +26,7 @@ public class SimpleInfiniteEnemySpawner : NetworkBehaviour
         while (SceneManager.GetActiveScene().name == "SampleScene")
         {
             yield return new WaitForSeconds(EnemySpawnInterval);
-            for (int i = 0; i < (BaseNumEnemies + (int)(difficulty/5)); i++)
+            for (int i = 0; i < (BaseNumEnemies + (int)(difficulty/25)); i++)
             {
                 int randEnemy = Random.Range(0, EnemyTypes.Length);
                 int randSpawn = Random.Range(0, SpawnPoints.Length);

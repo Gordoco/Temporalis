@@ -18,15 +18,18 @@ public class CommandoAttack : AttackManager
     {
         GameObject Weapon = null;
         for (int i = 0; i < gameObject.transform.childCount; i++) if (gameObject.transform.GetChild(i).tag == "Weapon") { Weapon = gameObject.transform.GetChild(i).gameObject; break; }
+        GameObject Camera = null;
+        for (int i = 0; i < gameObject.transform.childCount; i++) if (gameObject.transform.GetChild(i).tag == "MainCamera") { Camera = gameObject.transform.GetChild(i).gameObject; break; }
+
         StartCoroutine(WeaponSwell(Weapon.transform.GetChild(0).gameObject, statManager.GetStat(NumericalStats.AttackSpeed)));
         StartCoroutine(WeaponSwell(Weapon.transform.GetChild(1).gameObject, statManager.GetStat(NumericalStats.AttackSpeed)));
 
         if (isServer) //Server Side Only
         {
-            Vector3 start1 = Weapon.transform.position;
+            Vector3 start1 = Camera.transform.position;
             Vector3 start2 = start1;
 
-            Vector3 dir = Weapon.transform.forward;
+            Vector3 dir = Camera.transform.forward;
             dir.Normalize();
 
             RaycastHit hit1;

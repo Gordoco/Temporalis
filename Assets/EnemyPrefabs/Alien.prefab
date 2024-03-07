@@ -162,6 +162,10 @@ MonoBehaviour:
     val: 9
   - stat: 10
     val: 30
+  - stat: 11
+    val: 1
+  - stat: 12
+    val: 1
 --- !u!114 &-9095591412428583769
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -49,9 +49,9 @@ public class PlayerObjectController : NetworkBehaviour
     public void Die()
     {
         if (GetComponent<Camera>() == null) gameObject.AddComponent<Camera>();
+        DieRpc();
         Manager.PlayerDied(this);
         lookComp.enabled = true;
-        DieRpc();
     }
 
     [ClientRpc]
@@ -65,8 +65,14 @@ public class PlayerObjectController : NetworkBehaviour
     [ClientRpc]
     public void DisableCameraMove()
     {
-        player.GetComponent<LookAround>().enabled = false;
+        GetComponent<LookAround>().enabled = false;
         Cursor.lockState = CursorLockMode.None;
+    }
+
+    [Server]
+    public void Disconnect()
+    {
+        Manager.StopClient();
     }
 
     private void PlayerReadyUpdate(bool OldValue, bool NewValue)

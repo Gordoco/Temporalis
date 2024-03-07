@@ -93,10 +93,13 @@ public class LoopbreakerNetworkManager : NetworkManager
         if (playersLoaded <= 0)
         {
             Debug.Log("EVERYONE DEAD");
-            NetworkServer.DisconnectAll();
-            SceneManager.LoadScene("MainMenu");
-            player.DisableCameraMove();
+            for (int i = 0; i < GamePlayers.Count; i++)
+            {
+                GamePlayers[i].DisableCameraMove();
+                GetConnectionFromID(GamePlayers[i].ConnectionID).Disconnect();
+            }
         }
+        SceneManager.LoadScene("MainMenu");
     }
 
     IEnumerator SpawnPlayersDelay()
