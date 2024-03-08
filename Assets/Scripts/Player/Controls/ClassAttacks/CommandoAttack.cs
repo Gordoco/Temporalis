@@ -43,18 +43,18 @@ public class CommandoAttack : AttackManager
             NetworkServer.Spawn(MF1);
             NetworkServer.Spawn(MF2);
 
-            if (Physics.Raycast(start1, dir, out hit1, (float)statManager.GetStat(NumericalStats.Range))) { Debug.Log("GUN 1 HIT OBJECT"); }
-            if (Physics.Raycast(start2, dir, out hit2, (float)statManager.GetStat(NumericalStats.Range))) { Debug.Log("GUN 2 HIT OBJECT"); }
+            if (Physics.Raycast(start1, dir, out hit1, (float)statManager.GetStat(NumericalStats.Range))) { /*Debug.Log("GUN 1 HIT OBJECT");*/ }
+            if (Physics.Raycast(start2, dir, out hit2, (float)statManager.GetStat(NumericalStats.Range))) { /*Debug.Log("GUN 2 HIT OBJECT");*/ }
 
             if (hit1.collider != null && hit1.collider.gameObject != null && hit1.collider.gameObject.GetComponent<HitManager>() != null) 
             { 
-                hit1.collider.gameObject.GetComponent<HitManager>().Hit((float)statManager.GetStat(NumericalStats.Damage));
+                hit1.collider.gameObject.GetComponent<HitManager>().Hit((float)statManager.GetStat(NumericalStats.PrimaryDamage));
                 GameObject HP1 = Instantiate(HitParticleEffect, hit1.transform.position, Quaternion.LookRotation(dir));
                 NetworkServer.Spawn(HP1);
             }
             if (hit2.collider != null && hit2.collider.gameObject != null && hit2.collider.gameObject.GetComponent<HitManager>() != null) 
             { 
-                hit2.collider.gameObject.GetComponent<HitManager>().Hit((float)statManager.GetStat(NumericalStats.Damage));
+                hit2.collider.gameObject.GetComponent<HitManager>().Hit((float)statManager.GetStat(NumericalStats.PrimaryDamage));
                 GameObject HP2 = Instantiate(HitParticleEffect, hit2.transform.position, Quaternion.LookRotation(dir));
                 NetworkServer.Spawn(HP2);
             }
@@ -89,6 +89,7 @@ public class CommandoAttack : AttackManager
     {
         if (isServer && SecondaryAttackProjPrefab != null)
         {
+            Debug.Log(statManager.GetStat(NumericalStats.SecondaryCooldown));
             GameObject Weapon = null;
             for (int i = 0; i < gameObject.transform.childCount; i++) if (gameObject.transform.GetChild(i).tag == "Weapon") { Weapon = gameObject.transform.GetChild(i).gameObject; break; }
 
@@ -104,7 +105,7 @@ public class CommandoAttack : AttackManager
                 return;
             }
             float forwardOffset = 5;
-            proj.GetComponent<ProjectileCreator>().InitializeProjectile(gameObject, Camera.transform.position + (Camera.transform.forward * forwardOffset), Camera.transform.forward);
+            proj.GetComponent<ProjectileCreator>().InitializeProjectile(gameObject, Camera.transform.position + (Camera.transform.forward * forwardOffset), Camera.transform.forward, statManager.GetStat(NumericalStats.SecondaryDamage));
         }
     }
 

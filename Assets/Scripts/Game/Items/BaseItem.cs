@@ -8,6 +8,7 @@ public class BaseItem
     public string ItemName;
     public NumericalStats[] stats;
     public double[] values;
+    public bool percent;
 
     public BaseItem()
     {

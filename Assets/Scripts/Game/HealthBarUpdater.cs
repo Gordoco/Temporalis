@@ -14,6 +14,6 @@ public class HealthBarUpdater : MonoBehaviour
     void Update()
     {
         slider.value = (float)(manager.GetHealth() / manager.GetStat(NumericalStats.Health));
-        text.text = manager.GetHealth() + "/" + manager.GetStat(NumericalStats.Health);
+        text.text = (int)manager.GetHealth() + "/" + (int)manager.GetStat(NumericalStats.Health);
     }
 }

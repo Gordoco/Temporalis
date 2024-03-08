@@ -72,9 +72,19 @@ public class EnemyController : NetworkBehaviour
             bCanAttack = false;
             StartCoroutine(AttackCooldown());
             GameObject proj = Instantiate(EnemyProjPrefab);
-            proj.GetComponent<ProjectileCreator>().InitializeProjectile(gameObject, transform.position, dir);
+            proj.GetComponent<ProjectileCreator>().InitializeProjectile(gameObject, transform.position, dir, Manager.GetStat(NumericalStats.PrimaryDamage));
         }
         dir.Normalize();
+
+
+        transform.rotation = Quaternion.LookRotation(new Vector3(dir.x, 0, dir.z));
+
+        if (Vector3.Distance(Players[playerTarget].transform.position, transform.position) <= Manager.GetStat(NumericalStats.Range)/2)
+        {
+            dir = new Vector3(0, dir.y, 0);
+            dir.Normalize();
+        }
+
         if (controller.isGrounded)
         {
             dir.y = 0;
@@ -83,7 +93,6 @@ public class EnemyController : NetworkBehaviour
         {
             dir.y -= gravity;
         }
-        transform.rotation = Quaternion.LookRotation(new Vector3(dir.x, 0, dir.z));
         controller.Move(dir * Time.deltaTime * (float)Manager.GetStat(NumericalStats.MovementSpeed));
     }
 

@@ -233,7 +233,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 2654573300976310538}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6fe018f5407705c4dacdc14fcc1dc6ac, type: 3}
+  m_Script: {fileID: 11500000, guid: 25596c841f8cfa047947768dd23f6146, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   syncDirection: 0
@@ -257,14 +257,24 @@ MonoBehaviour:
   - stat: 7
     val: 33
   - stat: 8
-    val: 8
+    val: 100
   - stat: 9
-    val: 12
+    val: 1
   - stat: 10
-    val: 50
+    val: 1
   - stat: 11
     val: 1
   - stat: 12
+    val: 1
+  - stat: 13
+    val: 8
+  - stat: 14
+    val: 12
+  - stat: 15
+    val: 50
+  - stat: 16
+    val: 1
+  - stat: 17
     val: 1
 --- !u!114 &6548516037796861554
 MonoBehaviour:

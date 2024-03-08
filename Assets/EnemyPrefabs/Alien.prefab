@@ -133,7 +133,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 5377742575258131845}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6fe018f5407705c4dacdc14fcc1dc6ac, type: 3}
+  m_Script: {fileID: 11500000, guid: 5ae77341cbc03b84f90af3dfc1b1291c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   syncDirection: 0
@@ -159,13 +159,25 @@ MonoBehaviour:
   - stat: 8
     val: 1
   - stat: 9
-    val: 9
+    val: 1
   - stat: 10
-    val: 30
+    val: 1
   - stat: 11
     val: 1
   - stat: 12
     val: 1
+  - stat: 13
+    val: 1
+  - stat: 14
+    val: 5
+  - stat: 15
+    val: 30
+  - stat: 16
+    val: 1
+  - stat: 17
+    val: 1
+  ItemWeightMult: 1
+  EnemySpawnWeight: 5
 --- !u!114 &-9095591412428583769
 MonoBehaviour:
   m_ObjectHideFlags: 0

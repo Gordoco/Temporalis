@@ -12,7 +12,12 @@ public enum NumericalStats
     Ability3Cooldown,
     Ability4Cooldown,
     Health,
-    Damage,
+    PrimaryDamage,
+    SecondaryDamage,
+    Ability1Damage,
+    Ability2Damage,
+    Ability3Damage,
+    Ability4Damage,
     JumpHeight,
     MovementSpeed,
     Range,
@@ -21,7 +26,7 @@ public enum NumericalStats
     NumberOfStats
 }
 
-public class StatManager : NetworkBehaviour
+public abstract class StatManager : NetworkBehaviour
 {
     /// <summary>
     /// Class for inspector assigning of elements.
@@ -45,6 +50,9 @@ public class StatManager : NetworkBehaviour
     private readonly SyncList<BaseItem> items = new SyncList<BaseItem>();
     [SerializeField] private InitStatsDisplay[] initStats = new InitStatsDisplay[(int)NumericalStats.NumberOfStats];
 
+    /// <summary>
+    /// double value representing current entity health
+    /// </summary>
     [SyncVar] private double Health;
 
 
@@ -65,6 +73,16 @@ public class StatManager : NetworkBehaviour
         }
     }
 
+    /// <summary>
+    /// Method for applying health changes outside the damage system (ie. Healing)
+    /// </summary>
+    /// <param name="value">Amount current health value should be changed by</param>
+    [Server]
+    public void ModifyCurrentHealth(double value)
+    {
+        Health = Mathf.Clamp((float)(value + Health), 0, (float)GetStat(NumericalStats.Health));
+    }
+
     private IEnumerator HealthRegen()
     {
         while (true)
@@ -74,32 +92,28 @@ public class StatManager : NetworkBehaviour
         }
     }
 
-        private void Update()
+    private void Update()
     {
         if (isServer)
         {
             if (Health <= 0)
             {
-                if (gameObject.tag == "Player")
-                {
-                    gameObject.transform.parent.GetComponent<PlayerObjectController>().Die();
-                }
-                else
-                {
-                    int chance = Random.Range(0, 20);
-                    if (chance == 0)
-                    {
-                        GameObject ItemList = GameObject.FindGameObjectWithTag("ItemList");
-                        GameObject itemType = ItemList.GetComponent<WeightedItemList>().GetRandomItemPrefab();
-                        GameObject item = Instantiate(itemType, transform.position, Quaternion.identity);
-                        NetworkServer.Spawn(item);
-                    }
-                }
-                
-                NetworkServer.Destroy(gameObject); //Kill Actor in all Contexts
-                Destroy(gameObject);
+                OnDeath();
             }
         }
+    }
+
+    [Server]
+    protected virtual void OnDeath()
+    {
+        NetworkServer.Destroy(gameObject); //Kill Actor in all Contexts
+        Destroy(gameObject);
+    }
+
+    [Server]
+    private void EnemyDeath()
+    {
+
     }
 
     /// <summary>
@@ -148,6 +162,7 @@ public class StatManager : NetworkBehaviour
         if (item.stats.Length > 0 && item.stats.Length == item.values.Length)
         {
             BaseItem newItem = item.CreateCopy();
+            item.CustomItemEffect(this);
             items.Add(newItem);
         }
         else Debug.Log("ERROR: Bad Item Insertion in " + gameObject.name);
@@ -155,12 +170,19 @@ public class StatManager : NetworkBehaviour
 
     private double GetCombinedValueFromItems(NumericalStats stat)
     {
-        double val = 0;
+        double val = stats[(int)stat];
         foreach (BaseItem item in items)
         {
             for (int i = 0; i < item.stats.Length; i++)
             {
-                if (item.stats[i] == stat) val += item.values[i];
+                if (item.stats[i] == stat)
+                {
+                    if (item.percent)
+                    {
+                        if (val > 0) val *= item.values[i];
+                    }
+                    else val += item.values[i];
+                }
             }
         }
         return val;
@@ -174,6 +196,6 @@ public class StatManager : NetworkBehaviour
     public double GetStat(NumericalStats stat)
     {
         if ((int)stat >= (int)NumericalStats.NumberOfStats || (int)stat < 0) return Mathf.Infinity;
-        return stats[(int)stat] + GetCombinedValueFromItems(stat);
+        return GetCombinedValueFromItems(stat);
     }
 }

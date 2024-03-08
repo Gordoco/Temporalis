@@ -9,7 +9,7 @@ using Mirror;
 public class ProjectileCreator : NetworkBehaviour
 {
     [SerializeField] private float projectileSpeed;
-    [SerializeField] private float damage;
+    private float damage;
 
     /// <summary>
     /// Number of entities that can have damage applied from this projectile.
@@ -31,11 +31,12 @@ public class ProjectileCreator : NetworkBehaviour
     /// <param name="startLocation">World space position for the projectile to start, overwrites instantiation transform position</param>
     /// <param name="direction">Direction of travel for the projectile, will be normalized</param>
     [Server]
-    public void InitializeProjectile(GameObject owningObj, Vector3 startLocation, Vector3 direction)
+    public void InitializeProjectile(GameObject owningObj, Vector3 startLocation, Vector3 direction, double damage)
     {
         direction.Normalize();
         hitObjects.Add(owningObj);
         this.direction = direction;
+        this.damage = (float)damage;
         gameObject.transform.position = startLocation;
         bAlive = true;
         NetworkServer.Spawn(gameObject);
