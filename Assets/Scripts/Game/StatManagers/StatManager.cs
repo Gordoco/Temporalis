@@ -175,6 +175,7 @@ public abstract class StatManager : NetworkBehaviour
 
     private double GetCombinedValueFromItems(NumericalStats stat)
     {
+        if ((int)stat < 0 || (int)stat >= (int)NumericalStats.NumberOfStats) return 0;
         double val = stats[(int)stat];
         foreach (BaseItem item in items)
         {

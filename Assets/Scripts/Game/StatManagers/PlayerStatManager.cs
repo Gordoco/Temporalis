@@ -8,8 +8,7 @@ public struct ItemUnique { public BaseItem item; public bool bUnique; public Ite
 
 public class PlayerStatManager : StatManager
 {
-    public event System.EventHandler<ItemUnique> OnItemAdded;
-
+    [SerializeField] private ItemDisplay display;
     protected override void OnDeath()
     {
         gameObject.transform.parent.GetComponent<PlayerObjectController>().Die();
@@ -34,6 +33,6 @@ public class PlayerStatManager : StatManager
                 }
             }
         }
-        if (OnItemAdded.GetInvocationList().Length > 0) OnItemAdded.Invoke(this, new ItemUnique(item, unique));
+        display.OnItemAdded(new ItemUnique(item, unique));
     }
 }

@@ -14,11 +14,10 @@ public class ItemDisplay : NetworkBehaviour
 
     private void Start()
     {
-        if (isServer) manager.OnItemAdded += OnItemAdded;
     }
 
     [Server]
-    private void OnItemAdded(object sender, ItemUnique IU)
+    public void OnItemAdded(ItemUnique IU)
     {
         OnItemAddedClient(IU);
     }
