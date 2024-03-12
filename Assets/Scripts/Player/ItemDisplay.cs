@@ -25,6 +25,7 @@ public class ItemDisplay : NetworkBehaviour
     [ClientRpc]
     void OnItemAddedClient(ItemUnique IU)
     {
+        if (!isOwned) return;
         GameObject itemListing = Instantiate(ItemListPrefab);
         itemListing.GetComponent<ItemListItem>().Initialize(IU.item.ItemName, IU.item.stats, IU.item.values, IU.item.percent);
         itemListing.transform.SetParent(panel.transform);
