@@ -47,7 +47,7 @@ public abstract class StatManager : NetworkBehaviour
     }
 
     private readonly SyncList<double> stats = new SyncList<double>();
-    private readonly SyncList<BaseItem> items = new SyncList<BaseItem>();
+    protected readonly SyncList<BaseItem> items = new SyncList<BaseItem>();
     [SerializeField] private InitStatsDisplay[] initStats = new InitStatsDisplay[(int)NumericalStats.NumberOfStats];
 
     /// <summary>
@@ -164,9 +164,14 @@ public abstract class StatManager : NetworkBehaviour
             BaseItem newItem = item.CreateCopy();
             item.CustomItemEffect(this);
             items.Add(newItem);
+            AddItemChild(newItem);
         }
         else Debug.Log("ERROR: Bad Item Insertion in " + gameObject.name);
     }
+
+    [Server]
+    protected virtual void AddItemChild(BaseItem item) {}
+
 
     private double GetCombinedValueFromItems(NumericalStats stat)
     {

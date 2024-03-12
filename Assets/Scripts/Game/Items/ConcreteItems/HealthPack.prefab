@@ -369,9 +369,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ItemName: Health Pack
-  stats: 0b000000
+  stats: 10000000
   values:
   - 0.1
+  percent: 0
 --- !u!135 &4635472133798165137
 SphereCollider:
   m_ObjectHideFlags: 0

@@ -65,7 +65,7 @@ MonoBehaviour:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
-  EnemySpawnInterval: 5
+  EnemySpawnInterval: 10
   BaseNumEnemies: 3
   EnemyTypes:
   - {fileID: 5377742575258131845, guid: 36ba6b31cdb352c4797a46eecd57067f, type: 3}

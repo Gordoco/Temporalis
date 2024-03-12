@@ -105,7 +105,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ItemName: Donut
-  stats: 090000000600000008000000
+  stats: 0e000000060000000d000000
   values:
   - -1
   - 50

@@ -113,8 +113,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  projectileSpeed: 100
-  damage: 100
+  projectileSpeed: 80
   pierceLevel: 10
   lifespan: 10
 --- !u!23 &347907090787072248
