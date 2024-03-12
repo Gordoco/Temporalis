@@ -88,30 +88,6 @@ public class CommandoAttack : AttackManager
 
     protected override void OnSecondaryAttack()
     {
-        if (isServer && SecondaryAttackProjPrefab != null)
-        {
-            Debug.Log(statManager.GetStat(NumericalStats.SecondaryCooldown));
-            GameObject Weapon = null;
-            for (int i = 0; i < gameObject.transform.childCount; i++) if (gameObject.transform.GetChild(i).tag == "Weapon") { Weapon = gameObject.transform.GetChild(i).gameObject; break; }
-
-            GameObject Camera = null;
-            for (int i = 0; i < gameObject.transform.childCount; i++) if (gameObject.transform.GetChild(i).tag == "MainCamera") { Camera = gameObject.transform.GetChild(i).gameObject; break; }
-
-            GameObject proj = Instantiate(SecondaryAttackProjPrefab);
-
-            //Handle Bad Prefab/Weapon
-            if (proj.GetComponent<ProjectileCreator>() == null || Weapon == null)
-            {
-                Destroy(proj);
-                return;
-            }
-            float forwardOffset = 5;
-            proj.GetComponent<ProjectileCreator>().InitializeProjectile(gameObject, Camera.transform.position + (Camera.transform.forward * forwardOffset), Camera.transform.forward, statManager.GetStat(NumericalStats.SecondaryDamage));
-        }
-    }
-
-    protected override void OnAbility1()
-    {
         if (isServer && GrenadePrefab != null)
         {
             GameObject Camera = null;
@@ -125,8 +101,13 @@ public class CommandoAttack : AttackManager
             }
             float forwardOffset = 5;
             proj.GetComponent<ProjectileCreator>().InitializeProjectile(gameObject, Camera.transform.position + (Camera.transform.forward * forwardOffset), Camera.transform.forward, 0);
-            proj.GetComponent<GrenadeTimedExplosion>().Init(gameObject, 20, (float)statManager.GetStat(NumericalStats.Ability1Damage));
+            proj.GetComponent<GrenadeTimedExplosion>().Init(gameObject, 20, (float)statManager.GetStat(NumericalStats.SecondaryDamage));
         }
+    }
+
+    protected override void OnAbility1()
+    {
+        
     }
 
     protected override void OnAbility2()
@@ -144,3 +125,27 @@ public class CommandoAttack : AttackManager
 
     }
 }
+
+//OLD SECONDARY ATTACK
+/*
+if (isServer && SecondaryAttackProjPrefab != null)
+{
+    Debug.Log(statManager.GetStat(NumericalStats.SecondaryCooldown));
+    GameObject Weapon = null;
+    for (int i = 0; i < gameObject.transform.childCount; i++) if (gameObject.transform.GetChild(i).tag == "Weapon") { Weapon = gameObject.transform.GetChild(i).gameObject; break; }
+
+    GameObject Camera = null;
+    for (int i = 0; i < gameObject.transform.childCount; i++) if (gameObject.transform.GetChild(i).tag == "MainCamera") { Camera = gameObject.transform.GetChild(i).gameObject; break; }
+
+    GameObject proj = Instantiate(SecondaryAttackProjPrefab);
+
+    //Handle Bad Prefab/Weapon
+    if (proj.GetComponent<ProjectileCreator>() == null || Weapon == null)
+    {
+        Destroy(proj);
+        return;
+    }
+    float forwardOffset = 5;
+    proj.GetComponent<ProjectileCreator>().InitializeProjectile(gameObject, Camera.transform.position + (Camera.transform.forward * forwardOffset), Camera.transform.forward, statManager.GetStat(NumericalStats.SecondaryDamage));
+}
+*/

@@ -14,6 +14,27 @@ public abstract class AttackManager : NetworkBehaviour
     [SyncVar] private bool bCanAbility3 = true;
     [SyncVar] private bool bCanAbility4 = true;
 
+    public bool GetAbilityReady(int abilityNum)
+    {
+        switch (abilityNum)
+        {
+            case 0:
+                return bCanAttack;
+            case 1:
+                return bCanSecondary;
+            case 2:
+                return bCanAbility1;
+            case 3:
+                return bCanAbility2;
+            case 4:
+                return bCanAbility3;
+            case 5:
+                return bCanAbility4;
+            default:
+                return false;
+        }
+    }
+
     // Update is called once per frame
     void Update()
     {

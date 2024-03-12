@@ -25,6 +25,8 @@ public class ProjectileCreator : NetworkBehaviour
     private bool bAlive = false;
     private List<GameObject> hitObjects = new List<GameObject>();
 
+    public event System.EventHandler<Collider> OnHitEnemy;
+
     /// <summary>
     /// Server-Only method to be called on Instantiated projectile prefab. Handles client spawning and awakens the projectile to start moving.
     /// </summary>
@@ -63,6 +65,7 @@ public class ProjectileCreator : NetworkBehaviour
         {
             if (!hitObjects.Contains(collision.gameObject) && collision.gameObject.GetComponent<HitManager>() != null)
             {
+                if (OnHitEnemy != null) OnHitEnemy.Invoke(this, collision);
                 collision.gameObject.GetComponent<HitManager>().Hit(damage);
                 hitObjects.Add(collision.gameObject);
                 pierceLevel--;

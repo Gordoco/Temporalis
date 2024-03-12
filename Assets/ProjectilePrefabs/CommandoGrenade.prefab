@@ -159,7 +159,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  ExplosionPrefab: {fileID: 1348362176780116727, guid: d08a3cecd02a1ca4cb4f797047d6a053, type: 3}
+  ExplosionPrefab: {fileID: 945835148339455510, guid: e6e6807596d016543bcc5713be6dc97d, type: 3}
   time: 1.5
 --- !u!65 &6438751516539485028
 BoxCollider:
