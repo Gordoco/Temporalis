@@ -16,6 +16,7 @@ public class PlayerStatManager : StatManager
         base.OnDeath();
     }
 
+    [Server]
     protected override void AddItemChild(BaseItem item)
     {
         base.AddItemChild(item);
@@ -33,13 +34,6 @@ public class PlayerStatManager : StatManager
                 }
             }
         }
-        AddedItem_Client(item, unique);
-    }
-
-    [ClientRpc]
-    private void AddedItem_Client(BaseItem item, bool unique)
-    {
-        Debug.Log(unique);
         OnItemAdded.Invoke(this, new ItemUnique(item, unique));
     }
 }

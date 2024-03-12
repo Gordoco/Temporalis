@@ -2,8 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Mirror;
 
-public class ItemDisplay : MonoBehaviour
+public class ItemDisplay : NetworkBehaviour
 {
     [SerializeField] private GameObject ItemListPrefab;
     [SerializeField] private GameObject ItemPopupPrefab;
@@ -17,6 +18,12 @@ public class ItemDisplay : MonoBehaviour
     }
 
     private void OnItemAdded(object sender, ItemUnique IU)
+    {
+        OnItemAddedClient(IU);
+    }
+
+    [ClientRpc]
+    void OnItemAddedClient(ItemUnique IU)
     {
         GameObject itemListing = Instantiate(ItemListPrefab);
         itemListing.GetComponent<ItemListItem>().Initialize(IU.item.ItemName, IU.item.stats, IU.item.values, IU.item.percent);
@@ -33,7 +40,7 @@ public class ItemDisplay : MonoBehaviour
                 {
                     string plusminus = IU.item.values[i] > 1 ? "+" : "-";
                     float val = IU.item.values[i] > 1 ? (float)IU.item.values[i] - 1 : Mathf.Abs((float)IU.item.values[i] - 1);
-                    desc += plusminus + val*100 + "% " + IU.item.stats[i].ToString() + "\n";
+                    desc += plusminus + val * 100 + "% " + IU.item.stats[i].ToString() + "\n";
                 }
                 else
                 {
