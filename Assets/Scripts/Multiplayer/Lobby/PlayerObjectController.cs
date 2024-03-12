@@ -69,9 +69,10 @@ public class PlayerObjectController : NetworkBehaviour
         Cursor.lockState = CursorLockMode.None;
     }
 
-    [Server]
+    [ClientRpc]
     public void Disconnect()
     {
+        if (!isOwned) return;
         Manager.StopClient();
     }
 

@@ -96,7 +96,8 @@ public class LoopbreakerNetworkManager : NetworkManager
             for (int i = 0; i < GamePlayers.Count; i++)
             {
                 GamePlayers[i].DisableCameraMove();
-                GetConnectionFromID(GamePlayers[i].ConnectionID).Disconnect();
+                //GetConnectionFromID(GamePlayers[i].ConnectionID).Disconnect();
+                GamePlayers[i].Disconnect();
             }
             SceneManager.LoadScene("MainMenu");
         }
