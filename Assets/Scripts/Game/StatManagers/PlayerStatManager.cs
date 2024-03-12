@@ -34,6 +34,6 @@ public class PlayerStatManager : StatManager
                 }
             }
         }
-        OnItemAdded.Invoke(this, new ItemUnique(item, unique));
+        if (OnItemAdded != null) OnItemAdded.Invoke(this, new ItemUnique(item, unique));
     }
 }
