@@ -429,6 +429,7 @@ MonoBehaviour:
     val: 1
   - stat: 17
     val: 1
+  display: {fileID: 5148757987814439470}
 --- !u!114 &6548516037796861554
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2293,6 +2294,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab658367cc6b77649ad039bf49d72e9c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   ItemListPrefab: {fileID: 7144562296021476863, guid: 09477d5c20e1bab4fafb51e663548c13, type: 3}
   ItemPopupPrefab: {fileID: 1179007282926345232, guid: 4e07cf4137bb2b34f85225d52f013779, type: 3}
   manager: {fileID: 1250715329504170301}
