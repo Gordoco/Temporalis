@@ -26,7 +26,6 @@ public class ItemObjManger : NetworkBehaviour
 
     public void OnTriggerEnter(Collider collision)
     {
-        Debug.Log("COLLIDED");
         if (!isServer) return;
         if (collision.gameObject.tag == "Player")
         {

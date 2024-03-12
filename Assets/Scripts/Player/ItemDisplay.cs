@@ -17,6 +17,7 @@ public class ItemDisplay : NetworkBehaviour
         if (isServer) manager.OnItemAdded += OnItemAdded;
     }
 
+    [Server]
     private void OnItemAdded(object sender, ItemUnique IU)
     {
         OnItemAddedClient(IU);
