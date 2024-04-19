@@ -9,6 +9,7 @@ public class EnemyController : NetworkBehaviour
 {
     [SerializeField] private GameObject EnemyProjPrefab;
     [SerializeField] private float gravity = 20;
+    [SerializeField] private Vector3 ProjectileOffset = Vector3.zero;
 
     private GameObject[] Players;
 
@@ -59,7 +60,7 @@ public class EnemyController : NetworkBehaviour
         }
 
         Vector3 dir;
-        if (Players[playerTarget] != null) dir = Players[playerTarget].transform.position - transform.position;
+        if (Players[playerTarget] != null) dir = Players[playerTarget].transform.position - (transform.position + ProjectileOffset);
         else
         {
             Players = GameObject.FindGameObjectsWithTag("Player");
@@ -72,7 +73,7 @@ public class EnemyController : NetworkBehaviour
             bCanAttack = false;
             StartCoroutine(AttackCooldown());
             GameObject proj = Instantiate(EnemyProjPrefab);
-            proj.GetComponent<ProjectileCreator>().InitializeProjectile(gameObject, transform.position, dir, Manager.GetStat(NumericalStats.PrimaryDamage));
+            proj.GetComponent<ProjectileCreator>().InitializeProjectile(gameObject, transform.position + ProjectileOffset, dir, Manager.GetStat(NumericalStats.PrimaryDamage));
         }
         dir.Normalize();
 
