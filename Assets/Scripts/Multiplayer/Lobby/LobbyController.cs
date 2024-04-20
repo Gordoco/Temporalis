@@ -183,6 +183,7 @@ public class LobbyController : MonoBehaviour
         NewPlayerItemScript.ConnectionID = player.ConnectionID;
         NewPlayerItemScript.PlayerSteamID = player.PlayerSteamID;
         NewPlayerItemScript.bReady = player.bReady;
+        NewPlayerItemScript.ChangePlayerCharacterSelection(player.PlayerCharacterChoice);
         NewPlayerItemScript.SetPlayerValues();
 
         NewPlayerItem.transform.SetParent(PlayerListViewContents.transform, false);
