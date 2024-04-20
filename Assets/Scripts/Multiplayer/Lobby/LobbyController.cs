@@ -205,6 +205,7 @@ public class LobbyController : MonoBehaviour
                 {
                     PlayerListItemScript.PlayerName = player.PlayerName;
                     PlayerListItemScript.bReady = player.bReady;
+                    Debug.Log("SELECTED CHARACTER INDEX: " + player.PlayerCharacterChoice);
                     PlayerListItemScript.ChangePlayerCharacterSelection(player.PlayerCharacterChoice);
                     PlayerListItemScript.SetPlayerValues();
                     if (player == LocalPlayerController)
