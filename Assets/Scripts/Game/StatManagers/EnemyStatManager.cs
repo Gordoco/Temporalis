@@ -26,6 +26,25 @@ public class EnemyStatManager : StatManager
         return a.GetEnemySpawnWeight() < b.GetEnemySpawnWeight() ? a : b;
     }
 
+    private static string ITEM_PATH = "ConcreteItems";
+    private GameObject GetRandomWeightedItem()
+    {
+        GameObject[] itemPrefabs = Resources.LoadAll<GameObject>(ITEM_PATH);
+        Debug.Log("NUM ITEMS: " + itemPrefabs.Length);
+        int sum = 0;
+        foreach (GameObject i in itemPrefabs)
+        {
+            if (i.GetComponent<BaseItemComponent>())
+                sum += i.GetComponent<BaseItemComponent>().GetItemWeight();
+        }
+        int rand = Random.Range(0, sum);
+        int index = -1;
+        Debug.Log("SUM: " + sum + "RAND: " + rand);
+        sum = 0;
+        for (int i = 0; i < itemPrefabs.Length; i++) { sum += itemPrefabs[i].GetComponent<BaseItemComponent>().GetItemWeight(); if (sum > rand) { index = i; break; } }
+        return itemPrefabs[index];
+    }
+
     [Server]
     protected override void OnDeath()
     {
@@ -34,9 +53,7 @@ public class EnemyStatManager : StatManager
         if (chance == 0)
         {
             Debug.Log("SPAWNED ITEM YAYYYYYYYYYYYYY");
-            GameObject ItemList = GameObject.FindGameObjectWithTag("ItemList");
-            GameObject itemType = ItemList.GetComponent<WeightedItemList>().GetRandomItemPrefab();
-            GameObject item = Instantiate(itemType, transform.position + (transform.up * 10), Quaternion.identity);
+            GameObject item = Instantiate(GetRandomWeightedItem(), transform.position + (transform.up * 10), Quaternion.identity);
             NetworkServer.Spawn(item);
         }
         base.OnDeath();

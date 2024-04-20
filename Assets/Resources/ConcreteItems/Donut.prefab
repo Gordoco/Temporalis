@@ -20,7 +20,7 @@ GameObject:
   - component: {fileID: 8347415641330424883}
   m_Layer: 0
   m_Name: Donut
-  m_TagString: Untagged
+  m_TagString: Item
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -104,6 +104,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 592678e8c20549c48a2644490dbe1b7e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ItemWeight: 4
+  ItemImage: {fileID: 2800000, guid: d062be45abb667e49acbdadf10737c85, type: 3}
   ItemName: Donut
   stats: 0e000000060000000d000000
   values:

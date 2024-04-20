@@ -14,14 +14,16 @@ public class ItemListItem : MonoBehaviour
     private double[] statsChanged;
     private bool percent;
 
-    public void Initialize(string name, NumericalStats[] inStats, double[] inVals, bool bPercent)
+    public string GetItemName() { return ItemName; }
+
+    public void Initialize(string name, Texture2D texture, NumericalStats[] inStats, double[] inVals, bool bPercent)
     {
-        ItemImageList = GameObject.FindGameObjectWithTag("ItemImageList");
+        //ItemImageList = GameObject.FindGameObjectWithTag("ItemImageList");
         ItemName = name;
         statsAffected = inStats;
         statsChanged = inVals;
         percent = bPercent;
-        Texture2D tex = ItemImageList.GetComponent<ItemImageList>().GetItemImage(name);
+        Texture2D tex = texture;
         image.sprite = Sprite.Create(tex, new Rect(Vector2.zero, new Vector2(tex.width, tex.height)), Vector2.zero);
     }
 }

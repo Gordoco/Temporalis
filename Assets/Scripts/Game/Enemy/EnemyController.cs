@@ -77,7 +77,6 @@ public class EnemyController : NetworkBehaviour
         }
         dir.Normalize();
 
-
         transform.rotation = Quaternion.LookRotation(new Vector3(dir.x, 0, dir.z));
 
         if (Vector3.Distance(Players[playerTarget].transform.position, transform.position) <= Manager.GetStat(NumericalStats.Range)/2)
@@ -99,7 +98,7 @@ public class EnemyController : NetworkBehaviour
 
     private IEnumerator AttackCooldown()
     {
-        yield return new WaitForSeconds(1/(int)Manager.GetStat(NumericalStats.AttackSpeed));
+        yield return new WaitForSeconds(1/(float)Manager.GetStat(NumericalStats.AttackSpeed));
         bCanAttack = true;
     }
 }

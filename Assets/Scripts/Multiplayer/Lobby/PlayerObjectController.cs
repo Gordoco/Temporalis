@@ -14,8 +14,8 @@ public class PlayerObjectController : NetworkBehaviour
     [SyncVar] public ulong PlayerSteamID;
     [SyncVar(hook = nameof(PlayerNameUpdate))] public string PlayerName;
     [SyncVar(hook = nameof(PlayerReadyUpdate))] public bool bReady;
-    public GameObject GamePrefab;
-
+    [SyncVar] public int PlayerCharacterChoice = 0;
+    public GameObject[] GamePrefabs;
 
     private LoopbreakerNetworkManager manager;
 
@@ -38,12 +38,6 @@ public class PlayerObjectController : NetworkBehaviour
     {
         obj.transform.SetParent(parent.transform, b);
     }
-
-    /*[ClientRpc]
-    public void RpcSetPosition(Vector3 pos)
-    {
-        transform.position = pos;
-    }*/
 
     [Server]
     public void Die()
@@ -107,6 +101,32 @@ public class PlayerObjectController : NetworkBehaviour
         if (isOwned)
         {
             CmdSetPlayerReady();
+        }
+    }
+
+    public void SelectCharacter(int character)
+    {
+        if (isOwned)
+        {
+            CmdSetPlayerCharacter(character);
+        }
+    }
+
+    [Command]
+    private void CmdSetPlayerCharacter(int character)
+    {
+        this.PlayerCharacterUpdate(this.PlayerCharacterChoice, character);
+    }
+
+    public void PlayerCharacterUpdate(int OldValue, int NewValue)
+    {
+        if (isServer)
+        {
+            this.PlayerCharacterChoice = NewValue;
+        }
+        if (isClient)
+        {
+            LobbyController.Instance.UpdatePlayerList();
         }
     }
 

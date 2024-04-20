@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 using Mirror;
 
 public class ItemDisplay : NetworkBehaviour
@@ -22,17 +23,30 @@ public class ItemDisplay : NetworkBehaviour
         OnItemAddedClient(IU);
     }
 
+    private static string ITEM_PATH = "ConcreteItems";
     [ClientRpc]
     void OnItemAddedClient(ItemUnique IU)
     {
         if (!isOwned) return;
-        GameObject itemListing = Instantiate(ItemListPrefab);
-        itemListing.GetComponent<ItemListItem>().Initialize(IU.item.ItemName, IU.item.stats, IU.item.values, IU.item.percent);
-        itemListing.transform.SetParent(panel.transform);
-        itemListing.transform.localScale = Vector3.one;
 
+        //Add a popup and display image
         if (IU.bUnique)
         {
+            GameObject itemListing = Instantiate(ItemListPrefab);
+            GameObject[] itemPrefabs = Resources.LoadAll<GameObject>(ITEM_PATH);
+            Texture2D image = null;
+            foreach (GameObject item in itemPrefabs) 
+            {
+                if (item.GetComponent<BaseItemComponent>().ItemName == IU.item.ItemName)
+                {
+                    image = item.GetComponent<BaseItemComponent>().GetItemImage();
+                    break;
+                }
+            }
+            itemListing.GetComponent<ItemListItem>().Initialize(IU.item.ItemName, image, IU.item.stats, IU.item.values, IU.item.percent);
+            itemListing.transform.localScale = new Vector3(0.25f, 0.25f, 0.25f);
+            itemListing.transform.SetParent(panel.transform);
+            itemListing.transform.localScale = Vector3.one;
             GameObject itemPopup = Instantiate(ItemPopupPrefab, canvas.transform);
             string desc = "";
             for (int i = 0; i < IU.item.stats.Length; i++)
@@ -51,6 +65,20 @@ public class ItemDisplay : NetworkBehaviour
             }
             itemPopup.GetComponent<ItemPopup>().Init(IU.item.ItemName, desc);
             StartCoroutine(DisablePopup(itemPopup));
+        }
+        //Update the display image count
+        else
+        {
+            for (int i = 0; i < panel.transform.childCount; i++)
+            {
+                GameObject child = panel.transform.GetChild(i).gameObject;
+                ItemListItem LI = child.GetComponent<ItemListItem>();
+                if (LI.GetItemName() == IU.item.ItemName)
+                {
+                    string text = child.transform.GetChild(0).gameObject.GetComponent<TMP_Text>().text;
+                    child.transform.GetChild(0).gameObject.GetComponent<TMP_Text>().text = "" + (int.Parse(text) + 1);
+                }
+            }
         }
     }
 

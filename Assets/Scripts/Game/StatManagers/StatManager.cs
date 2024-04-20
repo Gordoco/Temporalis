@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 
+/// <summary>
+/// Stat enum
+/// </summary>
 public enum NumericalStats
 {
     AttackSpeed,
@@ -83,6 +86,10 @@ public abstract class StatManager : NetworkBehaviour
         Health = Mathf.Clamp((float)(value + Health), 0, (float)GetStat(NumericalStats.Health));
     }
 
+    /// <summary>
+    /// Coroutine for passive health regen
+    /// </summary>
+    /// <returns></returns>
     private IEnumerator HealthRegen()
     {
         while (true)
@@ -103,17 +110,14 @@ public abstract class StatManager : NetworkBehaviour
         }
     }
 
+    /// <summary>
+    /// Server handler for death
+    /// </summary>
     [Server]
     protected virtual void OnDeath()
     {
         NetworkServer.Destroy(gameObject); //Kill Actor in all Contexts
         Destroy(gameObject);
-    }
-
-    [Server]
-    private void EnemyDeath()
-    {
-
     }
 
     /// <summary>
@@ -156,6 +160,10 @@ public abstract class StatManager : NetworkBehaviour
         stats[(int)stat] = value;
     }
 
+    /// <summary>
+    /// Server method for adding an item to the manager
+    /// </summary>
+    /// <param name="item"></param>
     [Server]
     public void AddItem(BaseItemComponent item)
     {
@@ -172,7 +180,11 @@ public abstract class StatManager : NetworkBehaviour
     [Server]
     protected virtual void AddItemChild(BaseItem item) {}
 
-
+    /// <summary>
+    /// Calculates item stat values
+    /// </summary>
+    /// <param name="stat"></param>
+    /// <returns></returns>
     private double GetCombinedValueFromItems(NumericalStats stat)
     {
         if ((int)stat < 0 || (int)stat >= (int)NumericalStats.NumberOfStats) return 0;

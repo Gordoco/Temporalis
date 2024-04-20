@@ -31,6 +31,9 @@ public class LobbyController : MonoBehaviour
     public Button StartGameButton;
     public TMP_Text ReadyButtonText;
 
+    //Character Selection
+    public TMP_Dropdown CharacterSelector;
+
     //Manager
     private LoopbreakerNetworkManager manager;
 
@@ -68,6 +71,15 @@ public class LobbyController : MonoBehaviour
     public void ReadyPlayer()
     {
         LocalPlayerController.ChangeReady();
+    }
+
+    /// <summary>
+    /// Method called when a player selects a character in the lobby menu
+    /// Relies on UI hooks set in editor.
+    /// </summary>
+    public void SelectCharacter()
+    {
+        LocalPlayerController.SelectCharacter(CharacterSelector.value);
     }
 
     /// <summary>
@@ -192,6 +204,7 @@ public class LobbyController : MonoBehaviour
                 {
                     PlayerListItemScript.PlayerName = player.PlayerName;
                     PlayerListItemScript.bReady = player.bReady;
+                    PlayerListItemScript.ChangePlayerCharacterSelection(player.PlayerCharacterChoice);
                     PlayerListItemScript.SetPlayerValues();
                     if (player == LocalPlayerController)
                     {
