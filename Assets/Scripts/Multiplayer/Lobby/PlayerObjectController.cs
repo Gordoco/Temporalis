@@ -14,7 +14,7 @@ public class PlayerObjectController : NetworkBehaviour
     [SyncVar] public ulong PlayerSteamID;
     [SyncVar(hook = nameof(PlayerNameUpdate))] public string PlayerName;
     [SyncVar(hook = nameof(PlayerReadyUpdate))] public bool bReady;
-    [SyncVar] public int PlayerCharacterChoice = 0;
+    [SyncVar(hook = nameof(PlayerCharacterUpdate))] public int PlayerCharacterChoice = 0;
     public GameObject[] GamePrefabs;
 
     private LoopbreakerNetworkManager manager;
