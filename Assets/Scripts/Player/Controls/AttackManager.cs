@@ -5,6 +5,7 @@ using Mirror;
 
 public abstract class AttackManager : NetworkBehaviour
 {
+    [SerializeField] private GameObject PauseMenuPrefab;
     [SerializeField] protected StatManager statManager;
     [SerializeField] protected bool FullAuto = true;
     [SyncVar] private bool bCanAttack = true;
@@ -13,6 +14,8 @@ public abstract class AttackManager : NetworkBehaviour
     [SyncVar] private bool bCanAbility2 = true;
     [SyncVar] private bool bCanAbility3 = true;
     [SyncVar] private bool bCanAbility4 = true;
+
+    private GameObject PauseMenu;
 
     public bool GetAbilityReady(int abilityNum)
     {
@@ -93,6 +96,32 @@ public abstract class AttackManager : NetworkBehaviour
             if (isClient) OnServerAbility4();
             else if (isServer) OnClientAbility4();
             ServerStartAbility4Cooldown();
+        }
+
+        if (Input.GetButtonDown("Pause"))
+        {
+            if (PauseMenuPrefab == null)
+            {
+                Debug.Log("ERROR: No Pause Menu Defined AttackManager");
+                Debug.Break();
+                return;
+            }
+
+            if (PauseMenu == null)
+            {
+                PauseMenu = Instantiate(PauseMenuPrefab);
+                PauseMenu.GetComponentInChildren<DisconnectHandler>().isServer = isServer;
+                PauseMenu.transform.SetParent(transform);
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
+            }
+            else
+            {
+                Destroy(PauseMenu);
+                PauseMenu = null;
+                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
+            }
         }
     }
 

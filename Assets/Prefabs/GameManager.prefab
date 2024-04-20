@@ -11,12 +11,11 @@ GameObject:
   - component: {fileID: 3986446382075150033}
   - component: {fileID: 4247238720660609097}
   - component: {fileID: 541125147151204917}
-  - component: {fileID: 3665213327758499923}
   - component: {fileID: 8851137220212218537}
   - component: {fileID: 4632737976490893940}
   m_Layer: 0
   m_Name: GameManager
-  m_TagString: Untagged
+  m_TagString: GameManager
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -75,27 +74,29 @@ MonoBehaviour:
   disconnectInactiveConnections: 0
   disconnectInactiveTimeout: 60
   authenticator: {fileID: 0}
-  playerPrefab: {fileID: 6260487750158653239, guid: 0f8aa09afc983bc4a9437e190c8c5b26, type: 3}
+  playerPrefab: {fileID: 2864109583541918006, guid: bb751b10c0d487741bf3bbff4a921bcc, type: 3}
   autoCreatePlayer: 1
   playerSpawnMethod: 0
   spawnPrefabs:
-  - {fileID: 2864109583541918006, guid: bb751b10c0d487741bf3bbff4a921bcc, type: 3}
-  - {fileID: 4154122368009565914, guid: 493b3a1316111254b850d1d2c19d8175, type: 3}
-  - {fileID: 2654573300976310538, guid: 570bb2126f3fb0a4d9ac456f01d60c02, type: 3}
-  - {fileID: 4154122368009565914, guid: 8326341b88a6b9d4bb3e06b992aa5854, type: 3}
   - {fileID: 5377742575258131845, guid: 36ba6b31cdb352c4797a46eecd57067f, type: 3}
   - {fileID: 5377742575258131845, guid: 1e54f550bec05d849974df16e0160d1f, type: 3}
-  - {fileID: 945835148339455510, guid: 09c0f376280083f48be83864b2fcd95d, type: 3}
-  - {fileID: 945835148339455510, guid: d9f062b5c10ab724792bb710c6379134, type: 3}
-  - {fileID: 5183151968355300350, guid: 59248a440bdcea2428480e781918661e, type: 3}
-  - {fileID: 5183151968355300350, guid: 6c13fbbf157d5eb4e9e6b51b118d6b1b, type: 3}
-  - {fileID: 5183151968355300350, guid: 97779ce126f4cf54eb3876e6ae626b7d, type: 3}
-  - {fileID: 5183151968355300350, guid: f9ffaaa0d95518840a31b68dd09618bd, type: 3}
   - {fileID: 5183151968355300350, guid: 020f6659ef0481d4ea903390b845b38b, type: 3}
   - {fileID: 5183151968355300350, guid: 58f7bc1b64af0754db5b76c5d22ed4c2, type: 3}
-  - {fileID: 5183151968355300350, guid: 603012b4ee17f4442bbad25c9132c471, type: 3}
-  - {fileID: 945835148339455510, guid: e6e6807596d016543bcc5713be6dc97d, type: 3}
+  - {fileID: 5183151968355300350, guid: 6c13fbbf157d5eb4e9e6b51b118d6b1b, type: 3}
   - {fileID: 1367405910388641099, guid: 200ffc2267958b941a261bdf26e321db, type: 3}
+  - {fileID: 2654573300976310538, guid: 570bb2126f3fb0a4d9ac456f01d60c02, type: 3}
+  - {fileID: 4154122368009565914, guid: 493b3a1316111254b850d1d2c19d8175, type: 3}
+  - {fileID: 945835148339455510, guid: 09c0f376280083f48be83864b2fcd95d, type: 3}
+  - {fileID: 5183151968355300350, guid: 59248a440bdcea2428480e781918661e, type: 3}
+  - {fileID: 1573736966802298661, guid: f0f76905d32332c47b7fa09e29d1cf93, type: 3}
+  - {fileID: 945835148339455510, guid: e6e6807596d016543bcc5713be6dc97d, type: 3}
+  - {fileID: 5183151968355300350, guid: 97779ce126f4cf54eb3876e6ae626b7d, type: 3}
+  - {fileID: 945835148339455510, guid: d9f062b5c10ab724792bb710c6379134, type: 3}
+  - {fileID: 5183151968355300350, guid: 603012b4ee17f4442bbad25c9132c471, type: 3}
+  - {fileID: 5183151968355300350, guid: f9ffaaa0d95518840a31b68dd09618bd, type: 3}
+  - {fileID: 4154122368009565914, guid: 8326341b88a6b9d4bb3e06b992aa5854, type: 3}
+  - {fileID: 4154122368009565914, guid: c331897800308234d8bfa4d2f8b28044, type: 3}
+  - {fileID: 2654573300976310538, guid: aa5e4acd00de9e440b5ed6f76db83ec7, type: 3}
   exceptionsDisconnect: 1
   snapshotSettings:
     bufferTimeMultiplier: 2
@@ -113,18 +114,6 @@ MonoBehaviour:
   timeInterpolationGui: 0
   GamePlayerPrefab: {fileID: 6039204910684358694, guid: bb751b10c0d487741bf3bbff4a921bcc, type: 3}
   StartLocation: {x: 0, y: 0, z: 0}
---- !u!114 &3665213327758499923
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8744167803507189703}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ef4bffeda13d7a748973ff9204401c07, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &8851137220212218537
 MonoBehaviour:
   m_ObjectHideFlags: 0

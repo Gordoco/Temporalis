@@ -103,6 +103,29 @@ public class LoopbreakerNetworkManager : NetworkManager
         }
     }
 
+    /// <summary>
+    /// Way for clients or host to leave the game
+    /// </summary>
+    public void Disconnect(bool isServer)
+    {
+        if (isServer)
+        {
+            Debug.Log("STOPPING SERVER");
+            StopHost();
+        }
+        else
+        {
+            Debug.Log("STOPPING CLIENT");
+            StopClient();
+        }
+    }
+
+    public override void OnStopHost()
+    {
+        base.OnStopHost();
+        Debug.Log("STOPPED");
+    }
+
     IEnumerator SpawnPlayersDelay()
     {
         yield return new WaitForSeconds(1);

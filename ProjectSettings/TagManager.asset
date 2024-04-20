@@ -8,6 +8,7 @@ TagManager:
   - ItemList
   - ItemImageList
   - Item
+  - GameManager
   layers:
   - Default
   - TransparentFX
