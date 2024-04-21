@@ -35,6 +35,7 @@ public class HitManager : NetworkBehaviour
     public virtual void Stun(float time)
     {
         GetComponent<CharacterController>().enabled = false; //Stop Movement
+        Client_ToggleController(false);
         if (GetComponent<PlayerStatManager>())
         {
             //If Player, Disable Attack Manager
@@ -43,10 +44,17 @@ public class HitManager : NetworkBehaviour
         StartCoroutine(UnStun(time));
     }
 
+    [ClientRpc]
+    private void Client_ToggleController(bool b)
+    {
+        GetComponent<CharacterController>().enabled = b ? true : false;
+    }
+
     private IEnumerator UnStun(float time)
     {
         yield return new WaitForSeconds(time);
         GetComponent<CharacterController>().enabled = true; //Start Movement
+        Client_ToggleController(true);
         if (GetComponent<PlayerStatManager>())
         {
             //If Player, Enable Attack Manager
