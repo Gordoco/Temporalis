@@ -47,7 +47,7 @@ public class PlayerMove : NetworkBehaviour
 
     void Update()
     {
-        if (!isOwned || bDead || !bAwake) return;
+        if (!isOwned || bDead || !bAwake || !isClient) return;
         Server_Update(new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical")));
     }
 
