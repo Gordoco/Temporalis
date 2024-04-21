@@ -27,7 +27,7 @@ public class SimpleInfiniteEnemySpawner : NetworkBehaviour
         {
             yield return new WaitForSeconds(Random.Range(EnemySpawnInterval - 5, EnemySpawnInterval + 5));
             int i = 0;
-            while(i < (BaseNumEnemies + (int)(difficulty/15)))
+            while(i < (BaseNumEnemies + (int)(difficulty/30)))
             {
                 GameObject randEnemy = GetRandomEnemyPrefab();
                 int randSpawn = Random.Range(0, SpawnPoints.Length);
