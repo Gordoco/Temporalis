@@ -120,7 +120,7 @@ public class CommandoAttack : AttackManager
     {
         CharacterController controller = GetComponent<CharacterController>();
         StatManager manager = GetComponent<StatManager>();
-        JetpackParticleEffect.SetActive(true);
+        if (JetpackParticleEffect != null) JetpackParticleEffect.SetActive(true);
         StartCoroutine(JetpackBoost(controller, manager));
     }
 
@@ -134,7 +134,7 @@ public class CommandoAttack : AttackManager
             yield return new WaitForSeconds(0.02f);
         }
         count = 0;
-        JetpackParticleEffect.SetActive(false);
+        if (JetpackParticleEffect != null) JetpackParticleEffect.SetActive(false);
     }
 
     protected override void OnAbility4()
