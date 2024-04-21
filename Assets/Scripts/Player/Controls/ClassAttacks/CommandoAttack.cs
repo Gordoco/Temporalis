@@ -121,6 +121,7 @@ public class CommandoAttack : AttackManager
         CharacterController controller = GetComponent<CharacterController>();
         StatManager manager = GetComponent<StatManager>();
         if (JetpackParticleEffect != null) JetpackParticleEffect.SetActive(true);
+        GetComponent<PlayerMove>().SetFlying(true);
         StartCoroutine(JetpackBoost(controller, manager));
     }
 
@@ -135,6 +136,7 @@ public class CommandoAttack : AttackManager
         }
         count = 0;
         if (JetpackParticleEffect != null) JetpackParticleEffect.SetActive(false);
+        GetComponent<PlayerMove>().SetFlying(false);
     }
 
     protected override void OnAbility4()
