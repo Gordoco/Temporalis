@@ -62,6 +62,7 @@ public class PlayerMove : NetworkBehaviour
                 moveDirection.y = (float)manager.GetStat(NumericalStats.JumpHeight);
         }
         if (!bFlying) moveDirection.y -= gravity * Time.deltaTime;
+        else Debug.Log("Flying");
         controller.Move(moveDirection * Time.deltaTime);
     }
 }

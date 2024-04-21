@@ -124,15 +124,14 @@ public class CommandoAttack : AttackManager
         StartCoroutine(JetpackBoost(controller, manager));
     }
 
+    Vector3 start;
     int count = 0;
     IEnumerator JetpackBoost(CharacterController controller, StatManager manager)
     {
-        //DEBUG*************
-        Debug.Log((float)manager.GetStat(NumericalStats.JumpHeight));
-
+        start = transform.position;
         if (JetpackParticleEffect != null) JetpackParticleEffect.SetActive(true);
         GetComponent<PlayerMove>().SetFlying(true);
-        if (isServer) ClientsToggleFlying(true);
+        //if (isServer) ClientsToggleFlying(true);
         while (count < 50)
         {
             if (controller.enabled) controller.Move(Vector3.up * (float)manager.GetStat(NumericalStats.JumpHeight) * 5 * Time.deltaTime);
@@ -142,41 +141,18 @@ public class CommandoAttack : AttackManager
         count = 0;
         if (JetpackParticleEffect != null) JetpackParticleEffect.SetActive(false);
         GetComponent<PlayerMove>().SetFlying(false);
-        if (isServer) ClientsToggleFlying(false);
+        Debug.Log(Vector3.up * (float)manager.GetStat(NumericalStats.JumpHeight) * 5 * Time.deltaTime * 50 + " <- THIS HIGH EXPECTED, THIS HIGH ACTUAL -> " + (transform.position.y - start.y));
+        //if (isServer) ClientsToggleFlying(false);
     }
 
-    [ClientRpc]
+    /*[ClientRpc]
     void ClientsToggleFlying(bool b)
     {
         GetComponent<PlayerMove>().SetFlying(b);
-    }
+    }*/
 
     protected override void OnAbility4()
     {
 
     }
 }
-
-//OLD SECONDARY ATTACK
-/*
-if (isServer && SecondaryAttackProjPrefab != null)
-{
-    Debug.Log(statManager.GetStat(NumericalStats.SecondaryCooldown));
-    GameObject Weapon = null;
-    for (int i = 0; i < gameObject.transform.childCount; i++) if (gameObject.transform.GetChild(i).tag == "Weapon") { Weapon = gameObject.transform.GetChild(i).gameObject; break; }
-
-    GameObject Camera = null;
-    for (int i = 0; i < gameObject.transform.childCount; i++) if (gameObject.transform.GetChild(i).tag == "MainCamera") { Camera = gameObject.transform.GetChild(i).gameObject; break; }
-
-    GameObject proj = Instantiate(SecondaryAttackProjPrefab);
-
-    //Handle Bad Prefab/Weapon
-    if (proj.GetComponent<ProjectileCreator>() == null || Weapon == null)
-    {
-        Destroy(proj);
-        return;
-    }
-    float forwardOffset = 5;
-    proj.GetComponent<ProjectileCreator>().InitializeProjectile(gameObject, Camera.transform.position + (Camera.transform.forward * forwardOffset), Camera.transform.forward, statManager.GetStat(NumericalStats.SecondaryDamage));
-}
-*/
