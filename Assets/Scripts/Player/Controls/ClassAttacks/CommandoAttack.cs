@@ -131,17 +131,18 @@ public class CommandoAttack : AttackManager
         Debug.Log((float)manager.GetStat(NumericalStats.JumpHeight));
 
         if (JetpackParticleEffect != null) JetpackParticleEffect.SetActive(true);
-        if (isClient) GetComponent<PlayerMove>().SetFlying(true);
+        GetComponent<PlayerMove>().SetFlying(true);
         while (count < 50)
         {
-            if (isClient && controller.enabled) controller.Move(Vector3.up * (float)manager.GetStat(NumericalStats.JumpHeight) * 5 * Time.deltaTime);
+            if (controller.enabled) controller.Move(Vector3.up * (float)manager.GetStat(NumericalStats.JumpHeight) * 5 * Time.deltaTime);
             count++;
             yield return new WaitForSeconds(0.02f);
         }
         count = 0;
         if (JetpackParticleEffect != null) JetpackParticleEffect.SetActive(false);
-        if (isClient) GetComponent<PlayerMove>().SetFlying(false);
+        GetComponent<PlayerMove>().SetFlying(false);
     }
+
     protected override void OnAbility4()
     {
 
