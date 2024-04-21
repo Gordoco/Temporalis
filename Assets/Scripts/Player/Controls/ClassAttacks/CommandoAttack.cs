@@ -117,7 +117,21 @@ public class CommandoAttack : AttackManager
 
     protected override void OnAbility3()
     {
+        CharacterController controller = GetComponent<CharacterController>();
+        StatManager manager = GetComponent<StatManager>();
+        StartCoroutine(JetpackBoost(controller, manager));
+    }
 
+    int count = 0;
+    IEnumerator JetpackBoost(CharacterController controller, StatManager manager)
+    {
+        while (count < 50)
+        {
+            controller.Move(Vector3.up * (float)manager.GetStat(NumericalStats.JumpHeight) * 5 * Time.deltaTime);
+            count++;
+            yield return new WaitForSeconds(0.02f);
+        }
+        count = 0;
     }
 
     protected override void OnAbility4()

@@ -62,6 +62,7 @@ public abstract class AttackManager : NetworkBehaviour
             ServerStartSecondaryAttackCooldown();
         }
 
+        //Q
         if (Input.GetButtonDown("Ability1") && bCanAbility1)
         {
             bCanAbility1 = false;
@@ -71,6 +72,7 @@ public abstract class AttackManager : NetworkBehaviour
             ServerStartAbility1Cooldown();
         }
 
+        //E
         if (Input.GetButtonDown("Ability2") && bCanAbility2)
         {
             bCanAbility2 = false;
@@ -80,6 +82,7 @@ public abstract class AttackManager : NetworkBehaviour
             ServerStartAbility2Cooldown();
         }
 
+        //LEFT-CTRL
         if (Input.GetButtonDown("Ability3") && bCanAbility3)
         {
             bCanAbility3 = false;
@@ -89,6 +92,7 @@ public abstract class AttackManager : NetworkBehaviour
             ServerStartAbility3Cooldown();
         }
 
+        //R
         if (Input.GetButtonDown("Ability4") && bCanAbility4)
         {
             bCanAbility4 = false;
