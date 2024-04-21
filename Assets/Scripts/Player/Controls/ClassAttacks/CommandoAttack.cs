@@ -134,7 +134,7 @@ public class CommandoAttack : AttackManager
         GetComponent<PlayerMove>().SetFlying(true);
         while (count < 50)
         {
-            if (isClient) controller.Move(Vector3.up * (float)manager.GetStat(NumericalStats.JumpHeight) * 5 * Time.deltaTime);
+            if (controller.enabled) controller.Move(Vector3.up * (float)manager.GetStat(NumericalStats.JumpHeight) * 5 * Time.deltaTime);
             count++;
             yield return new WaitForSeconds(0.02f);
         }
