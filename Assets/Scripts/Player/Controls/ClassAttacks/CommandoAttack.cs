@@ -141,6 +141,9 @@ public class CommandoAttack : AttackManager
         count = 0;
         if (JetpackParticleEffect != null) JetpackParticleEffect.SetActive(false);
         GetComponent<PlayerMove>().SetFlying(false);
+        Debug.Log("UP " + Vector3.up);
+        Debug.Log("JH " + (float)manager.GetStat(NumericalStats.JumpHeight));
+        Debug.Log("DT " + Time.deltaTime);
         Debug.Log(Vector3.up * (float)manager.GetStat(NumericalStats.JumpHeight) * 5 * Time.deltaTime * 50 + " <- THIS HIGH EXPECTED, THIS HIGH ACTUAL -> " + (transform.position.y - start.y));
         //if (isServer) ClientsToggleFlying(false);
     }
