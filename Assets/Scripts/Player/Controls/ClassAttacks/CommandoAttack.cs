@@ -129,7 +129,7 @@ public class CommandoAttack : AttackManager
     {
         while (count < 50)
         {
-            controller.Move(Vector3.up * (float)manager.GetStat(NumericalStats.JumpHeight) * 5 * Time.deltaTime);
+            if (isClient) controller.Move(Vector3.up * (float)manager.GetStat(NumericalStats.JumpHeight) * 5 * Time.deltaTime);
             count++;
             yield return new WaitForSeconds(0.02f);
         }
