@@ -43,7 +43,10 @@ public class LookAround : NetworkBehaviour
     {
         if (!isOwned) return;
 
-        UpdateFunctionality();
+        //UpdateFunctionality();
+        float mouseX = Input.GetAxis("Mouse X") * mouseXSensitivity * Time.deltaTime;
+        float mouseY = -1 * Input.GetAxis("Mouse Y") * mouseYSensitivity * Time.deltaTime;
+        CmdUpdateFunctionality(mouseX, mouseY);
     }
 
     [Command]
