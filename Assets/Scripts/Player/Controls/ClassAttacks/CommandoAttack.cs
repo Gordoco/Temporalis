@@ -120,8 +120,12 @@ public class CommandoAttack : AttackManager
     {
         CharacterController controller = GetComponent<CharacterController>();
         StatManager manager = GetComponent<StatManager>();
-        
-        if (isOwned && isClient) StartCoroutine(JetpackBoost(controller, manager));
+
+        if (isClient)
+        {
+            StartCoroutine(JetpackBoost(controller, manager));
+            Debug.Log("TEST");
+        }
     }
 
     int count = 0;
