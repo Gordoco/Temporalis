@@ -134,7 +134,7 @@ public class CommandoAttack : AttackManager
         //if (isServer) ClientsToggleFlying(true);
         while (count < 50)
         {
-            if (controller.enabled) controller.Move(Vector3.up * (float)manager.GetStat(NumericalStats.JumpHeight) * 5 * Time.deltaTime);
+            if (controller.enabled) controller.Move(Vector3.up * (float)manager.GetStat(NumericalStats.JumpHeight) * 5);
             count++;
             yield return new WaitForSeconds(0.02f);
         }
@@ -144,7 +144,7 @@ public class CommandoAttack : AttackManager
         Debug.Log("UP " + Vector3.up);
         Debug.Log("JH " + (float)manager.GetStat(NumericalStats.JumpHeight));
         Debug.Log("DT " + Time.deltaTime);
-        Debug.Log(Vector3.up * (float)manager.GetStat(NumericalStats.JumpHeight) * 5 * Time.deltaTime * 50 + " <- THIS HIGH EXPECTED, THIS HIGH ACTUAL -> " + (transform.position.y - start.y));
+        Debug.Log(Vector3.up * (float)manager.GetStat(NumericalStats.JumpHeight) * 50 + " <- THIS HIGH EXPECTED, THIS HIGH ACTUAL -> " + (transform.position.y - start.y));
         //if (isServer) ClientsToggleFlying(false);
     }
 
