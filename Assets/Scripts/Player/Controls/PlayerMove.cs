@@ -48,17 +48,11 @@ public class PlayerMove : NetworkBehaviour
     void Update()
     {
         if (!isOwned || bDead || !bAwake) return;
-        Server_Update(new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical")));
-    }
-
-    [Command]
-    void Server_Update(Vector3 input)
-    {
         CharacterController controller = GetComponent<CharacterController>();
         StatManager manager = GetComponent<StatManager>();
         if (controller.isGrounded)
         {
-            moveDirection = input;
+            moveDirection = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
             moveDirection.Normalize();
             moveDirection = transform.TransformDirection(moveDirection);
             moveDirection *= (float)manager.GetStat(NumericalStats.MovementSpeed);
