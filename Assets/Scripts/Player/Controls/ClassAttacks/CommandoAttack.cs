@@ -7,6 +7,7 @@ public class CommandoAttack : AttackManager
 {
     [SerializeField] private GameObject SecondaryAttackProjPrefab;
     [SerializeField] private GameObject PrimaryAttackParticleEffect;
+    [SerializeField] private GameObject JetpackParticleEffect;
     [SerializeField] private GameObject HitParticleEffect;
     [SerializeField] private GameObject GrenadePrefab;
 
@@ -119,6 +120,7 @@ public class CommandoAttack : AttackManager
     {
         CharacterController controller = GetComponent<CharacterController>();
         StatManager manager = GetComponent<StatManager>();
+        JetpackParticleEffect.SetActive(true);
         StartCoroutine(JetpackBoost(controller, manager));
     }
 
@@ -132,6 +134,7 @@ public class CommandoAttack : AttackManager
             yield return new WaitForSeconds(0.02f);
         }
         count = 0;
+        JetpackParticleEffect.SetActive(false);
     }
 
     protected override void OnAbility4()
