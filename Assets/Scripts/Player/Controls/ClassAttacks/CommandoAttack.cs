@@ -120,23 +120,38 @@ public class CommandoAttack : AttackManager
     {
         CharacterController controller = GetComponent<CharacterController>();
         StatManager manager = GetComponent<StatManager>();
-        if (JetpackParticleEffect != null) JetpackParticleEffect.SetActive(true);
-        GetComponent<PlayerMove>().SetFlying(true);
-        StartCoroutine(JetpackBoost(controller, manager));
+        
+        if (isClient) StartCoroutine(JetpackBoost(controller, manager));
     }
 
     int count = 0;
     IEnumerator JetpackBoost(CharacterController controller, StatManager manager)
     {
+        if (JetpackParticleEffect != null) JetpackParticleEffect.SetActive(true);
+        GetComponent<PlayerMove>().SetFlying(true);
+        StartJetpackVisuals();
         while (count < 50)
         {
-            if (isClient) controller.Move(Vector3.up * (float)manager.GetStat(NumericalStats.JumpHeight) * 5 * Time.deltaTime);
+            controller.Move(Vector3.up * (float)manager.GetStat(NumericalStats.JumpHeight) * 5 * Time.deltaTime);
             count++;
             yield return new WaitForSeconds(0.02f);
         }
         count = 0;
         if (JetpackParticleEffect != null) JetpackParticleEffect.SetActive(false);
         GetComponent<PlayerMove>().SetFlying(false);
+        StopJetpackVisuals();
+    }
+
+    [Command]
+    void StartJetpackVisuals()
+    {
+        if (JetpackParticleEffect != null) JetpackParticleEffect.SetActive(true);
+    }
+
+    [Command]
+    void StopJetpackVisuals()
+    {
+        if (JetpackParticleEffect != null) JetpackParticleEffect.SetActive(false);
     }
 
     protected override void OnAbility4()
