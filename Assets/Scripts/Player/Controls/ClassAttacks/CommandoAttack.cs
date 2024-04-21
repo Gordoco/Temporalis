@@ -123,12 +123,15 @@ public class CommandoAttack : AttackManager
 
         StartCoroutine(JetpackBoost(controller, manager));
     }
-
+    int TEST_NUM_RUNS = 0;
     int count = 0;
     IEnumerator JetpackBoost(CharacterController controller, StatManager manager)
     {
+        //DEBUG*************
+        Debug.Log(TEST_NUM_RUNS);
+        TEST_NUM_RUNS++;
+
         if (JetpackParticleEffect != null) JetpackParticleEffect.SetActive(true);
-        if (isClient && isOwned) CmdSetFlying(true);
         GetComponent<PlayerMove>().SetFlying(true);
         while (count < 50)
         {
@@ -139,15 +142,7 @@ public class CommandoAttack : AttackManager
         count = 0;
         if (JetpackParticleEffect != null) JetpackParticleEffect.SetActive(false);
         GetComponent<PlayerMove>().SetFlying(false);
-        if (isClient && isOwned) CmdSetFlying(false);
     }
-
-    [Command]
-    void CmdSetFlying(bool b)
-    {
-        GetComponent<PlayerMove>().SetFlying(b);
-    }
-
     protected override void OnAbility4()
     {
 
