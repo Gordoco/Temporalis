@@ -46,6 +46,50 @@ public class LookAround : NetworkBehaviour
         UpdateFunctionality();
     }
 
+    [Command]
+    void CmdUpdateFunctionality(float mouseX, float mouseY)
+    {
+        
+
+        yRotation = Mathf.Clamp(yRotation + mouseY, 0, 1);
+
+        UpdateWeapon(yRotation);
+
+        Vector3 pos;
+        if (yRotation <= 0.5)
+            pos = new Vector3(
+                Mathf.Lerp(DownTopView.loc.x, StraightView.loc.x, yRotation * 2),
+                Mathf.Lerp(DownTopView.loc.y, StraightView.loc.y, yRotation * 2),
+                Mathf.Lerp(DownTopView.loc.z, StraightView.loc.z, yRotation * 2)
+            );
+        else
+            pos = new Vector3(
+                Mathf.Lerp(StraightView.loc.x, TopDownView.loc.x, (yRotation - 0.5f) * 2),
+                Mathf.Lerp(StraightView.loc.y, TopDownView.loc.y, (yRotation - 0.5f) * 2),
+                Mathf.Lerp(StraightView.loc.z, TopDownView.loc.z, (yRotation - 0.5f) * 2)
+            );
+
+        Quaternion rot;
+        if (yRotation <= 0.5)
+            rot = Quaternion.Euler(new Vector3(
+                Mathf.Lerp(DownTopView.rot.x, StraightView.rot.x, yRotation * 2),
+                Mathf.Lerp(DownTopView.rot.y, StraightView.rot.y, yRotation * 2),
+                Mathf.Lerp(DownTopView.rot.z, StraightView.rot.z, yRotation * 2)
+            ));
+        else
+            rot = Quaternion.Euler(new Vector3(
+                Mathf.Lerp(StraightView.rot.x, TopDownView.rot.x, (yRotation - 0.5f) * 2),
+                Mathf.Lerp(StraightView.rot.y, TopDownView.rot.y, (yRotation - 0.5f) * 2),
+                Mathf.Lerp(StraightView.rot.z, TopDownView.rot.z, (yRotation - 0.5f) * 2)
+            ));
+
+        transform.localPosition = pos;
+        transform.localRotation = rot;
+
+        //X Rotation
+        playerBody.Rotate(Vector3.up * mouseX);
+    }
+
     void UpdateFunctionality()
     {
         float mouseX = Input.GetAxis("Mouse X") * mouseXSensitivity * Time.deltaTime;
