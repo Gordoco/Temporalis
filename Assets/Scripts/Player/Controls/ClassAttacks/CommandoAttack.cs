@@ -123,13 +123,12 @@ public class CommandoAttack : AttackManager
 
         StartCoroutine(JetpackBoost(controller, manager));
     }
-    int TEST_NUM_RUNS = 0;
+
     int count = 0;
     IEnumerator JetpackBoost(CharacterController controller, StatManager manager)
     {
         //DEBUG*************
-        Debug.Log(TEST_NUM_RUNS);
-        TEST_NUM_RUNS++;
+        Debug.Log((float)manager.GetStat(NumericalStats.JumpHeight));
 
         if (JetpackParticleEffect != null) JetpackParticleEffect.SetActive(true);
         GetComponent<PlayerMove>().SetFlying(true);
