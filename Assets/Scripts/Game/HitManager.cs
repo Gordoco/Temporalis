@@ -27,4 +27,30 @@ public class HitManager : NetworkBehaviour
         if (manager.GetHealth() <= 0) return true;
         return false;
     }
+
+    /// <summary>
+    /// Server-Only method which stuns the selected entity, preventing actions
+    /// </summary>
+    [Server]
+    public virtual void Stun(float time)
+    {
+        GetComponent<CharacterController>().enabled = false; //Stop Movement
+        if (GetComponent<PlayerStatManager>())
+        {
+            //If Player, Disable Attack Manager
+            GetComponent<AttackManager>().SetEnabled(false);
+        }
+        StartCoroutine(UnStun(time));
+    }
+
+    private IEnumerator UnStun(float time)
+    {
+        yield return new WaitForSeconds(time);
+        GetComponent<CharacterController>().enabled = true; //Start Movement
+        if (GetComponent<PlayerStatManager>())
+        {
+            //If Player, Enable Attack Manager
+            GetComponent<AttackManager>().SetEnabled(true);
+        }
+    }
 }

@@ -50,26 +50,27 @@ MonoBehaviour:
   syncInterval: 0
   DifficultyScale: 0
   SpawnPoints:
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
+  - {x: -25, y: 50, z: -120}
+  - {x: -200, y: 50, z: -65}
+  - {x: -134, y: 50, z: -11}
+  - {x: -67, y: 50, z: -46}
+  - {x: -83, y: 50, z: -98}
+  - {x: -184, y: 50, z: -187}
+  - {x: -232, y: 50, z: -12}
+  - {x: -11, y: 50, z: -220}
+  - {x: -95, y: 50, z: -137}
+  - {x: -46, y: 50, z: -25}
+  - {x: -81, y: 50, z: -65}
+  - {x: -100, y: 50, z: -82}
+  - {x: -111, y: 50, z: -43}
+  - {x: -222, y: 50, z: -69}
+  - {x: -13, y: 50, z: -224}
   EnemySpawnInterval: 10
   BaseNumEnemies: 3
   EnemyTypes:
   - {fileID: 5377742575258131845, guid: 36ba6b31cdb352c4797a46eecd57067f, type: 3}
   - {fileID: 5377742575258131845, guid: 1e54f550bec05d849974df16e0160d1f, type: 3}
+  - {fileID: 5377742575258131845, guid: c544f1754fec91b4a87c4ebeb976705d, type: 3}
 --- !u!114 &-1177985677736977396
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -14,6 +14,7 @@ public abstract class AttackManager : NetworkBehaviour
     [SyncVar] private bool bCanAbility2 = true;
     [SyncVar] private bool bCanAbility3 = true;
     [SyncVar] private bool bCanAbility4 = true;
+    [SyncVar] private bool bEnabled = true;
 
     private GameObject PauseMenu;
 
@@ -38,9 +39,12 @@ public abstract class AttackManager : NetworkBehaviour
         }
     }
 
+    public void SetEnabled(bool b) { bEnabled = b; }
+
     // Update is called once per frame
     void Update()
     {
+        if (!bEnabled) return;
         if (!isOwned) { this.enabled = false; return; }
 
         bool primaryInput = FullAuto ? Input.GetButton("PrimaryAttack") : Input.GetButtonDown("PrimaryAttack");

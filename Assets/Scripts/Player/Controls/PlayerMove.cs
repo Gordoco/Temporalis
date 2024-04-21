@@ -49,6 +49,7 @@ public class PlayerMove : NetworkBehaviour
     {
         if (!isOwned || bDead || !bAwake || !isClient) return;
         CharacterController controller = GetComponent<CharacterController>();
+        if (!controller.enabled) return;
         StatManager manager = GetComponent<StatManager>();
         if (controller.isGrounded)
         {

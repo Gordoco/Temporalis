@@ -924,7 +924,7 @@ MonoBehaviour:
   syncInterval: 0
   initStats:
   - stat: 0
-    val: 2.5
+    val: 3.5
   - stat: 1
     val: 1
   - stat: 2

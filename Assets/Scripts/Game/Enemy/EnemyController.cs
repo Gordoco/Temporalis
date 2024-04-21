@@ -7,17 +7,17 @@ using Mirror;
 [RequireComponent(typeof(CharacterController))]
 public class EnemyController : NetworkBehaviour
 {
-    [SerializeField] private GameObject EnemyProjPrefab;
+    [SerializeField] protected GameObject EnemyProjPrefab;
     [SerializeField] private float gravity = 20;
-    [SerializeField] private Vector3 ProjectileOffset = Vector3.zero;
+    [SerializeField] protected Vector3 ProjectileOffset = Vector3.zero;
 
     private GameObject[] Players;
 
-    private StatManager Manager;
-    private CharacterController controller;
+    protected StatManager Manager;
+    protected CharacterController controller;
 
-    private bool bCanAttack = true;
-    private int playerTarget = -1;
+    protected bool bCanAttack = true;
+    protected int playerTarget = -1;
 
     // Start is called before the first frame update
     void Start()
@@ -33,6 +33,7 @@ public class EnemyController : NetworkBehaviour
     void Update()
     {
         if (!isServer) return;
+        if (!controller.enabled) return;
 
         if (Players == null)
         {
@@ -68,14 +69,7 @@ public class EnemyController : NetworkBehaviour
             return;
         }
 
-        if (dir.magnitude <= Manager.GetStat(NumericalStats.Range) && bCanAttack)
-        {
-            bCanAttack = false;
-            StartCoroutine(AttackCooldown());
-            GameObject proj = Instantiate(EnemyProjPrefab);
-            proj.GetComponent<ProjectileCreator>().InitializeProjectile(gameObject, transform.position + ProjectileOffset, dir, Manager.GetStat(NumericalStats.PrimaryDamage));
-        }
-        dir.Normalize();
+        AttackFunctionality(Players, dir);
 
         transform.rotation = Quaternion.LookRotation(new Vector3(dir.x, 0, dir.z));
 
@@ -84,7 +78,7 @@ public class EnemyController : NetworkBehaviour
             dir = new Vector3(0, dir.y, 0);
             dir.Normalize();
         }
-
+        dir.Normalize();
         if (controller.isGrounded)
         {
             dir.y = 0;
@@ -96,9 +90,20 @@ public class EnemyController : NetworkBehaviour
         controller.Move(dir * Time.deltaTime * (float)Manager.GetStat(NumericalStats.MovementSpeed));
     }
 
-    private IEnumerator AttackCooldown()
+    protected IEnumerator AttackCooldown()
     {
         yield return new WaitForSeconds(1/(float)Manager.GetStat(NumericalStats.AttackSpeed));
         bCanAttack = true;
+    }
+
+    protected virtual void AttackFunctionality(GameObject[] Players, Vector3 dir)
+    {
+        if (dir.magnitude <= Manager.GetStat(NumericalStats.Range) && bCanAttack)
+        {
+            bCanAttack = false;
+            StartCoroutine(AttackCooldown());
+            GameObject proj = Instantiate(EnemyProjPrefab);
+            proj.GetComponent<ProjectileCreator>().InitializeProjectile(gameObject, transform.position + ProjectileOffset, dir, Manager.GetStat(NumericalStats.PrimaryDamage));
+        }
     }
 }
