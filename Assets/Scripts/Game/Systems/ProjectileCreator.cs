@@ -42,6 +42,8 @@ public class ProjectileCreator : NetworkBehaviour
         gameObject.transform.position = startLocation;
         bAlive = true;
         NetworkServer.Spawn(gameObject);
+
+        GetComponent<Rigidbody>().AddForce(direction * projectileSpeed, ForceMode.VelocityChange);
     }
 
     float counter = 0;
@@ -50,7 +52,7 @@ public class ProjectileCreator : NetworkBehaviour
         if (isServer && bAlive)
         {
             counter += Time.deltaTime;
-            transform.position += direction * projectileSpeed * Time.deltaTime;
+            //transform.position += direction * projectileSpeed * Time.deltaTime;
             if (counter >= lifespan)
             {
                 NetworkServer.Destroy(gameObject);
