@@ -132,6 +132,7 @@ public class CommandoAttack : AttackManager
 
         if (JetpackParticleEffect != null) JetpackParticleEffect.SetActive(true);
         GetComponent<PlayerMove>().SetFlying(true);
+        if (isServer) ClientsToggleFlying(true);
         while (count < 50)
         {
             if (controller.enabled) controller.Move(Vector3.up * (float)manager.GetStat(NumericalStats.JumpHeight) * 5 * Time.deltaTime);
@@ -141,6 +142,13 @@ public class CommandoAttack : AttackManager
         count = 0;
         if (JetpackParticleEffect != null) JetpackParticleEffect.SetActive(false);
         GetComponent<PlayerMove>().SetFlying(false);
+        if (isServer) ClientsToggleFlying(false);
+    }
+
+    [ClientRpc]
+    void ClientsToggleFlying(bool b)
+    {
+        GetComponent<PlayerMove>().SetFlying(b);
     }
 
     protected override void OnAbility4()
