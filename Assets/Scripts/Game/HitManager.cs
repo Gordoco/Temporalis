@@ -22,9 +22,9 @@ public class HitManager : NetworkBehaviour
     /// </summary>
     /// <param name="damage"> Value to be subtracted from the health of the owning entity </param>
     /// <returns> True if entity died, false otherwise </returns>
-    [Server]
     public virtual bool Hit(double damage)
     {
+        if (!isServer) return false;
         //Debug.Log(gameObject.name + " has been hit for: " + damage + " damage. Has: " + ((float)manager.GetHealth() - damage) + " Health");
         manager.DealDamage(damage);
         if (manager.GetHealth() <= 0) return true;

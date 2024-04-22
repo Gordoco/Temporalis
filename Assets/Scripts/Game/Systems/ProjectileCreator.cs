@@ -74,7 +74,7 @@ public class ProjectileCreator : NetworkBehaviour
                     return;
                 }
                 if (OnHitEnemy != null) OnHitEnemy.Invoke(this, collision);
-                if (isServer) collision.gameObject.GetComponent<HitManager>().Hit(damage);
+                collision.gameObject.GetComponent<HitManager>().Hit(damage);
                 hitObjects.Add(collision.gameObject);
                 pierceLevel--;
                 if (pierceLevel <= 0)

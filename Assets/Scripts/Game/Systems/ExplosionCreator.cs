@@ -17,6 +17,7 @@ public class ExplosionCreator : NetworkBehaviour
     /// <param name="damage"></param>
     public void InitializeExplosion(GameObject owningObject, Vector3 startLocation, float radius, float damage, bool bPlayer)
     {
+        if (isServer) Debug.Log("SHOULD EXPLODE SERVER");
         owner = owningObject;
         this.radius = radius;
         this.damage = damage;
@@ -29,9 +30,10 @@ public class ExplosionCreator : NetworkBehaviour
             if (hits[i].collider.gameObject != owningObject)
             {
                 if (bPlayer && hits[i].collider.gameObject.GetComponent<PlayerMove>()) continue;
-                if (isServer && hits[i].collider.gameObject.GetComponent<HitManager>())
+                if (hits[i].collider.gameObject.GetComponent<HitManager>())
                 {
                     hits[i].collider.gameObject.GetComponent<HitManager>().Hit(damage);
+                    Debug.Log("HIT SOMONE: " + hits[i].collider.gameObject.name);
                 }
             }
         }
