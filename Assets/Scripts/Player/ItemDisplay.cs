@@ -73,6 +73,7 @@ public class ItemDisplay : NetworkBehaviour
             {
                 GameObject child = panel.transform.GetChild(i).gameObject;
                 ItemListItem LI = child.GetComponent<ItemListItem>();
+                if (LI == null) continue;
                 if (LI.GetItemName() == IU.item.ItemName)
                 {
                     string text = child.transform.GetChild(0).gameObject.GetComponent<TMP_Text>().text;
