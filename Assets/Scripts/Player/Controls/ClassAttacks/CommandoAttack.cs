@@ -211,7 +211,7 @@ public class CommandoAttack : AttackManager
         PlayerStatManager manager = GetComponent<PlayerStatManager>();
         if (isServer) manager.ToggleCCImmune(true);
         GetComponent<PlayerMove>().SetTempGravity(200);
-        StartCoroutine(CheckForGrounded(startLoc));
+        if (isServer) StartCoroutine(CheckForGrounded(startLoc));
     }
 
     private IEnumerator CheckForGrounded(float startLoc)
