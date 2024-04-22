@@ -35,8 +35,8 @@ public class LookAround : NetworkBehaviour
             return;
         }
 
-        playerBody.GetComponent<HitManager>().OnStunned += OnStunned;
-        playerBody.GetComponent<HitManager>().OnUnStunned += OnUnStunned;
+        playerBody.gameObject.GetComponent<HitManager>().OnStunned += OnStunned;
+        playerBody.gameObject.GetComponent<HitManager>().OnUnStunned += OnUnStunned;
         if (Weapon != null) weaponMiddle = Weapon.transform.localPosition;
         Cursor.lockState = CursorLockMode.Locked;
     }
