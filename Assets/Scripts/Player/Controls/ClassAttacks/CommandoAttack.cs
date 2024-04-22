@@ -32,7 +32,6 @@ public class CommandoAttack : AttackManager
 
         if (isServer) //Server Side Only
         {
-            Debug.Log(Camera.transform.localRotation);
             Vector3 start1 = Camera.transform.position;
             Vector3 start2 = start1;
 
