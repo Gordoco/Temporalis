@@ -31,7 +31,7 @@ public class LookAround : NetworkBehaviour
     {
         if (!isOwned)
         {
-            gameObject.SetActive(false);
+            //gameObject.SetActive(false);
             return;
         }
 
@@ -132,8 +132,6 @@ public class LookAround : NetworkBehaviour
 
         transform.localPosition = pos;
         transform.localRotation = rot;
-
-        if (isClient) DEBUG_Print(transform.localRotation);
 
         //X Rotation
         playerBody.Rotate(Vector3.up * mouseX);
