@@ -28,22 +28,24 @@ public class ProjectileCreator : NetworkBehaviour
     public event System.EventHandler<Collider> OnHitEnemy;
 
     private bool bEnemy = false;
+    private bool bFromServer = false;
 
     /// <summary>
     /// Universal method to be called on Instantiated projectile prefab. Handles client spawning and awakens the projectile to start moving.
     /// </summary>
     /// <param name="startLocation">World space position for the projectile to start, overwrites instantiation transform position</param>
     /// <param name="direction">Direction of travel for the projectile, will be normalized</param>
-    public void InitializeProjectile(GameObject owningObj, Vector3 startLocation, Vector3 direction, double damage)
+    public void InitializeProjectile(GameObject owningObj, Vector3 startLocation, Vector3 direction, double damage, bool inServer = false)
     {
         bEnemy = owningObj.tag == "Enemy";
         direction.Normalize();
         hitObjects.Add(owningObj);
         this.direction = direction;
         this.damage = (float)damage;
+        this.bFromServer = inServer;
         gameObject.transform.position = startLocation;
         bAlive = true;
-        if (isServer) NetworkServer.Spawn(gameObject);
+        if (bFromServer) NetworkServer.Spawn(gameObject);
 
         GetComponent<Rigidbody>().AddForce(direction * projectileSpeed, ForceMode.VelocityChange);
     }

@@ -103,7 +103,7 @@ public class EnemyController : NetworkBehaviour
             bCanAttack = false;
             StartCoroutine(AttackCooldown());
             GameObject proj = Instantiate(EnemyProjPrefab);
-            proj.GetComponent<ProjectileCreator>().InitializeProjectile(gameObject, transform.position + ProjectileOffset, dir, Manager.GetStat(NumericalStats.PrimaryDamage));
+            proj.GetComponent<ProjectileCreator>().InitializeProjectile(gameObject, transform.position + ProjectileOffset, dir, Manager.GetStat(NumericalStats.PrimaryDamage), true);
         }
     }
 }
