@@ -36,7 +36,6 @@ public class CommandoAttack : AttackManager
             Vector3 start2 = start1;
 
             Vector3 dir = Camera.transform.forward;
-            Debug.Log("NAME: " + gameObject.name + " VAL: " + Camera.transform.forward);
             dir.Normalize();
 
             RaycastHit hit1;
