@@ -30,11 +30,10 @@ public class ProjectileCreator : NetworkBehaviour
     private bool bEnemy = false;
 
     /// <summary>
-    /// Server-Only method to be called on Instantiated projectile prefab. Handles client spawning and awakens the projectile to start moving.
+    /// Universal method to be called on Instantiated projectile prefab. Handles client spawning and awakens the projectile to start moving.
     /// </summary>
     /// <param name="startLocation">World space position for the projectile to start, overwrites instantiation transform position</param>
     /// <param name="direction">Direction of travel for the projectile, will be normalized</param>
-    [Server]
     public void InitializeProjectile(GameObject owningObj, Vector3 startLocation, Vector3 direction, double damage)
     {
         bEnemy = owningObj.tag == "Enemy";
@@ -44,7 +43,7 @@ public class ProjectileCreator : NetworkBehaviour
         this.damage = (float)damage;
         gameObject.transform.position = startLocation;
         bAlive = true;
-        NetworkServer.Spawn(gameObject);
+        //NetworkServer.Spawn(gameObject);
 
         GetComponent<Rigidbody>().AddForce(direction * projectileSpeed, ForceMode.VelocityChange);
     }
@@ -57,7 +56,7 @@ public class ProjectileCreator : NetworkBehaviour
             counter += Time.deltaTime;
             if (counter >= lifespan)
             {
-                NetworkServer.Destroy(gameObject);
+                /*NetworkServer.*/Destroy(gameObject);
             }
         }
     }
@@ -65,7 +64,7 @@ public class ProjectileCreator : NetworkBehaviour
     public void OnTriggerEnter(Collider collision)
     {
         Debug.Log("COLLIDED WITH: " + collision.gameObject.name);
-        if (isServer && bAlive)
+        if (bAlive)
         {
             if (!hitObjects.Contains(collision.gameObject) && collision.gameObject.GetComponent<HitManager>() != null)
             {
@@ -75,12 +74,12 @@ public class ProjectileCreator : NetworkBehaviour
                     return;
                 }
                 if (OnHitEnemy != null) OnHitEnemy.Invoke(this, collision);
-                collision.gameObject.GetComponent<HitManager>().Hit(damage);
+                if (isServer) collision.gameObject.GetComponent<HitManager>().Hit(damage);
                 hitObjects.Add(collision.gameObject);
                 pierceLevel--;
                 if (pierceLevel <= 0)
                 {
-                    NetworkServer.Destroy(gameObject);
+                    /*NetworkServer.*/Destroy(gameObject);
                 }
             }
         }

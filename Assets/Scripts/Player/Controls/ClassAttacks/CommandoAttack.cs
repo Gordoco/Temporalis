@@ -90,7 +90,7 @@ public class CommandoAttack : AttackManager
 
     protected override void OnSecondaryAttack()
     {
-        if (isServer && GrenadePrefab != null)
+        if (GrenadePrefab != null)
         {
             GameObject Camera = null;
             for (int i = 0; i < gameObject.transform.childCount; i++) if (gameObject.transform.GetChild(i).tag == "MainCamera") { Camera = gameObject.transform.GetChild(i).gameObject; break; }

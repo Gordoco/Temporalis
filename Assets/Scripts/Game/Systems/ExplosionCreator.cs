@@ -10,27 +10,26 @@ public class ExplosionCreator : NetworkBehaviour
     private GameObject owner;
 
     /// <summary>
-    /// Server-Only method to spawn in an explosion
+    /// Universal method to spawn in an explosion
     /// </summary>
     /// <param name="owningObject"></param>
     /// <param name="radius"></param>
     /// <param name="damage"></param>
-    [Server]
     public void InitializeExplosion(GameObject owningObject, Vector3 startLocation, float radius, float damage, bool bPlayer)
     {
         owner = owningObject;
         this.radius = radius;
         this.damage = damage;
         gameObject.transform.position = startLocation;
-        NetworkServer.Spawn(gameObject);
+        //NetworkServer.Spawn(gameObject);
         RaycastHit[] hits = Physics.SphereCastAll(startLocation, radius, Vector3.up, 0);
-        Debug.Log(hits.Length);
+        //Debug.Log(hits.Length);
         for (int i = 0; i < hits.Length; i++)
         {
             if (hits[i].collider.gameObject != owningObject)
             {
                 if (bPlayer && hits[i].collider.gameObject.GetComponent<PlayerMove>()) continue;
-                if (hits[i].collider.gameObject.GetComponent<HitManager>())
+                if (isServer && hits[i].collider.gameObject.GetComponent<HitManager>())
                 {
                     hits[i].collider.gameObject.GetComponent<HitManager>().Hit(damage);
                 }
