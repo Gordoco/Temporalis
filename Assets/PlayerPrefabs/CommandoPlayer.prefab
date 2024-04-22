@@ -718,6 +718,7 @@ MonoBehaviour:
   mouseYSensitivity: 1
   playerBody: {fileID: 2654573300976310541}
   Weapon: {fileID: 3186172820372006579}
+  UI: {fileID: 3893254396912013703}
   bIsServer: 0
 --- !u!114 &7799289223723896186
 MonoBehaviour:

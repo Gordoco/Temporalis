@@ -18,6 +18,7 @@ public class LookAround : NetworkBehaviour
     public float mouseYSensitivity = 1f;
     public Transform playerBody;
     [SerializeField] GameObject Weapon;
+    [SerializeField] GameObject UI;
     public bool bIsServer = false;
 
     private View TopDownView = new View(new Vector3(0, 3, -2), new Vector3(52, 0, 0));
@@ -32,6 +33,7 @@ public class LookAround : NetworkBehaviour
         if (!isOwned)
         {
             gameObject.GetComponent<Camera>().enabled = false;
+            UI.SetActive(false);
             return;
         }
 
