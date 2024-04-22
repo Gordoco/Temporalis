@@ -544,7 +544,6 @@ MonoBehaviour:
   StimImage: {fileID: 2143320022909794954}
   HitParticleEffect: {fileID: 945835148339455510, guid: d9f062b5c10ab724792bb710c6379134, type: 3}
   GrenadePrefab: {fileID: 1367405910388641099, guid: 200ffc2267958b941a261bdf26e321db, type: 3}
-  PlayerCamera: {fileID: 2654573301701016692}
 --- !u!114 &1250715329504170301
 MonoBehaviour:
   m_ObjectHideFlags: 0
