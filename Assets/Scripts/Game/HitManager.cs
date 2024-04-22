@@ -52,7 +52,7 @@ public class HitManager : NetworkBehaviour
     [ClientRpc]
     private void Client_ToggleController(bool b)
     {
-        GetComponent<CharacterController>().enabled = b ? true : false;
+        GetComponent<CharacterController>().enabled = b;
         if (GetComponent<PlayerStatManager>())
         {
             //If Player, Disable Attack Manager

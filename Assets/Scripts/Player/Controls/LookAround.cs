@@ -34,14 +34,27 @@ public class LookAround : NetworkBehaviour
             gameObject.SetActive(false);
             return;
         }
+
+        playerBody.GetComponent<HitManager>().OnStunned += OnStunned;
+        playerBody.GetComponent<HitManager>().OnUnStunned += OnUnStunned;
         if (Weapon != null) weaponMiddle = Weapon.transform.localPosition;
         Cursor.lockState = CursorLockMode.Locked;
+    }
+
+    [SyncVar] bool bActive = true;
+    private void OnStunned(object sender, System.EventArgs e)
+    {
+        bActive = false;
+    }
+    private void OnUnStunned(object sender, System.EventArgs e)
+    {
+        bActive = true;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (!isOwned) return;
+        if (!isOwned || !bActive) return;
 
         UpdateFunctionality();
     }
