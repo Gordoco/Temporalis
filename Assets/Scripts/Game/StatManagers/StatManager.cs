@@ -142,6 +142,7 @@ public abstract class StatManager : NetworkBehaviour
     [Server]
     public void DealDamage(double Damage)
     {
+        Debug.Log("DAMAGED");
         Health -= Damage;
     }
 
