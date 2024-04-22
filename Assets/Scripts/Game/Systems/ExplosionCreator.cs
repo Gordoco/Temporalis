@@ -10,11 +10,12 @@ public class ExplosionCreator : NetworkBehaviour
     private GameObject owner;
 
     /// <summary>
-    /// Universal method to spawn in an explosion
+    /// Server-Only method to spawn in an explosion
     /// </summary>
     /// <param name="owningObject"></param>
     /// <param name="radius"></param>
     /// <param name="damage"></param>
+    [Server]
     public void InitializeExplosion(GameObject owningObject, Vector3 startLocation, float radius, float damage, bool bPlayer)
     {
         if (isServer) Debug.Log("SHOULD EXPLODE SERVER");
@@ -22,7 +23,7 @@ public class ExplosionCreator : NetworkBehaviour
         this.radius = radius;
         this.damage = damage;
         gameObject.transform.position = startLocation;
-        //NetworkServer.Spawn(gameObject);
+        NetworkServer.Spawn(gameObject);
         RaycastHit[] hits = Physics.SphereCastAll(startLocation, radius, Vector3.up, 0);
         //Debug.Log(hits.Length);
         for (int i = 0; i < hits.Length; i++)
