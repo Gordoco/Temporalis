@@ -8,7 +8,6 @@ public class ExplosionCreator : NetworkBehaviour
     private float damage;
     private float radius;
     private GameObject owner;
-    private string Name;
 
     /// <summary>
     /// Server-Only method to spawn in an explosion
@@ -17,10 +16,8 @@ public class ExplosionCreator : NetworkBehaviour
     /// <param name="radius"></param>
     /// <param name="damage"></param>
     [Server]
-    public void InitializeExplosion(GameObject owningObject, Vector3 startLocation, float radius, float damage, bool bPlayer, string name = "")
+    public void InitializeExplosion(GameObject owningObject, Vector3 startLocation, float radius, float damage, bool bPlayer)
     {
-        this.Name = name;
-        TriggerClient();
         if (isServer) Debug.Log("SHOULD EXPLODE SERVER");
         owner = owningObject;
         this.radius = radius;
@@ -41,12 +38,5 @@ public class ExplosionCreator : NetworkBehaviour
                 }
             }
         }
-    }
-
-    [ClientRpc]
-    void TriggerClient()
-    {
-        Destroy(GameObject.Find(name));
-
     }
 }

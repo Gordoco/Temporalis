@@ -23,6 +23,14 @@ public class GrenadeTimedExplosion : NetworkBehaviour
         StartCoroutine(Explode_Delay(owner, radius, damage, time));
     }
 
+    public void OnTriggerEnter(Collider collision)
+    {
+        if (!bFromServer && collision.gameObject.GetComponent<EnemyStatManager>())
+        {
+            EarlyTrigger(this, collision);
+        }
+    }
+
     private void EarlyTrigger(object sender, Collider collision)
     {
         StopAllCoroutines();
@@ -40,7 +48,7 @@ public class GrenadeTimedExplosion : NetworkBehaviour
         if (bFromServer)
         {
             GameObject explosion = Instantiate(ExplosionPrefab);
-            explosion.GetComponent<ExplosionCreator>().InitializeExplosion(owner, gameObject.transform.position, radius, damage, true, gameObject.name);
+            explosion.GetComponent<ExplosionCreator>().InitializeExplosion(owner, gameObject.transform.position, radius, damage, true);
         }
         Destroy(gameObject);
     }
