@@ -40,9 +40,8 @@ public class GrenadeTimedExplosion : NetworkBehaviour
         if (bFromServer)
         {
             GameObject explosion = Instantiate(ExplosionPrefab);
-            explosion.GetComponent<ExplosionCreator>().InitializeExplosion(owner, gameObject.transform.position, radius, damage, true);
+            explosion.GetComponent<ExplosionCreator>().InitializeExplosion(owner, gameObject.transform.position, radius, damage, true, gameObject.name);
         }
         Destroy(gameObject);
-        //NetworkServer.Destroy(gameObject);
     }
 }
