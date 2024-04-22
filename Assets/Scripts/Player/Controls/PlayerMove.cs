@@ -20,14 +20,16 @@ public class PlayerMove : NetworkBehaviour
         {
             moveDirection.y = 0;
             bFlying = true;
+            tempGravity = -1 * (2 * gravity);
         }
-        else
+        else if (bFlying)
         {
             bFlying = false;
+            tempGravity = 0;
         }
     }
 
-    public void SetTempGravity(float val) { tempGravity = val; }
+    public void SetTempGravity(float val) { tempGravity = val; bFlying = false; }
 
     private void Start()
     {
@@ -65,8 +67,7 @@ public class PlayerMove : NetworkBehaviour
             if (Input.GetButton("Jump"))
                 moveDirection.y = (float)manager.GetStat(NumericalStats.JumpHeight);
         }
-        if (!bFlying) moveDirection.y -= (gravity + tempGravity) * Time.deltaTime;
-        else Debug.Log("Flying");
+        moveDirection.y -= (gravity + tempGravity) * Time.deltaTime;
         controller.Move(moveDirection * Time.deltaTime);
 
         if (isServer) UpdateTransform(transform.position);

@@ -170,8 +170,17 @@ public class CommandoAttack : AttackManager
     {
         CharacterController controller = GetComponent<CharacterController>();
         StatManager manager = GetComponent<StatManager>();
+        if (JetpackParticleEffect != null) JetpackParticleEffect.SetActive(true);
+        GetComponent<PlayerMove>().SetFlying(true);
+        //StartCoroutine(JetpackBoost(controller, manager));
+        StartCoroutine(EndJetpack(manager.GetStat(NumericalStats.JumpHeight)/8));
+    }
 
-        StartCoroutine(JetpackBoost(controller, manager));
+    IEnumerator EndJetpack(double time)
+    {
+        yield return new WaitForSeconds((float)time);
+        if (JetpackParticleEffect != null) JetpackParticleEffect.SetActive(false);
+        GetComponent<PlayerMove>().SetFlying(false);
     }
 
     Vector3 start;

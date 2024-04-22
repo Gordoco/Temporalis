@@ -583,7 +583,7 @@ MonoBehaviour:
   - stat: 10
     val: 4
   - stat: 11
-    val: 1
+    val: 5
   - stat: 12
     val: 10
   - stat: 13
