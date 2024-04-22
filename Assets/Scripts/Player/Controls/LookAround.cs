@@ -31,7 +31,7 @@ public class LookAround : NetworkBehaviour
     {
         if (!isOwned)
         {
-            gameObject.SetActive(false);
+            gameObject.GetComponent<Camera>().enabled = false;
             return;
         }
 
