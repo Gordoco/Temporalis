@@ -211,7 +211,7 @@ public class CommandoAttack : AttackManager
         PlayerStatManager manager = GetComponent<PlayerStatManager>();
         if (isServer) manager.ToggleCCImmune(true);
         GetComponent<PlayerMove>().SetTempGravity(200);
-        if (isServer) StartCoroutine(CheckForGrounded(startLoc));
+        StartCoroutine(CheckForGrounded(startLoc));
     }
 
     private IEnumerator CheckForGrounded(float startLoc)
@@ -220,13 +220,16 @@ public class CommandoAttack : AttackManager
         {
             yield return new WaitForSeconds(0.01f);
         }
-        float endLoc = transform.position.y;
-        float magnitude = Mathf.Clamp(startLoc - endLoc, 0, 100f);
-        PlayerStatManager manager = GetComponent<PlayerStatManager>();
-        GameObject explosionObj = Instantiate(DiveBombExplosionPrefab);
-        ExplosionCreator explosion = explosionObj.GetComponent<ExplosionCreator>();
-        explosionObj.transform.localScale *= (float)manager.GetStat(NumericalStats.Range) / 2;
-        explosion.InitializeExplosion(gameObject, transform.position, (float)manager.GetStat(NumericalStats.Range)/2, (float)manager.GetStat(NumericalStats.Ability4Damage) * magnitude, true);
-        if (isServer) manager.ToggleCCImmune(false);
+        if (isServer)
+        {
+            float endLoc = transform.position.y;
+            float magnitude = Mathf.Clamp(startLoc - endLoc, 0, 100f);
+            PlayerStatManager manager = GetComponent<PlayerStatManager>();
+            GameObject explosionObj = Instantiate(DiveBombExplosionPrefab);
+            ExplosionCreator explosion = explosionObj.GetComponent<ExplosionCreator>();
+            explosionObj.transform.localScale *= (float)manager.GetStat(NumericalStats.Range) / 2;
+            explosion.InitializeExplosion(gameObject, transform.position, (float)manager.GetStat(NumericalStats.Range) / 2, (float)manager.GetStat(NumericalStats.Ability4Damage) * magnitude, true);
+            manager.ToggleCCImmune(false);
+        }
     }
 }
