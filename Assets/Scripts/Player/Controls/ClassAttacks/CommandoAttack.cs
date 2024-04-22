@@ -30,40 +30,37 @@ public class CommandoAttack : AttackManager
         StartCoroutine(WeaponSwell(Weapon.transform.GetChild(0).gameObject, statManager.GetStat(NumericalStats.AttackSpeed)));
         StartCoroutine(WeaponSwell(Weapon.transform.GetChild(1).gameObject, statManager.GetStat(NumericalStats.AttackSpeed)));
 
-        if (isServer) //Server Side Only
-        {
-            Vector3 start1 = Camera.transform.position;
-            Vector3 start2 = start1;
+        Vector3 start1 = Camera.transform.position;
+        Vector3 start2 = start1;
 
-            Vector3 dir = Camera.transform.forward;
-            dir.Normalize();
+        Vector3 dir = Camera.transform.forward;
+        dir.Normalize();
 
-            RaycastHit hit1;
-            RaycastHit hit2;
+        RaycastHit hit1;
+        RaycastHit hit2;
 
-            Vector3 Gun1MuzzleLoc = Weapon.transform.GetChild(0).position + (dir * 0.5f);
-            Vector3 Gun2MuzzleLoc = Weapon.transform.GetChild(1).position + (dir * 0.5f);
+        Vector3 Gun1MuzzleLoc = Weapon.transform.GetChild(0).position + (dir * 0.5f);
+        Vector3 Gun2MuzzleLoc = Weapon.transform.GetChild(1).position + (dir * 0.5f);
 
-            GameObject MF1 = Instantiate(PrimaryAttackParticleEffect, Gun1MuzzleLoc, Quaternion.LookRotation(dir));
-            GameObject MF2 = Instantiate(PrimaryAttackParticleEffect, Gun2MuzzleLoc, Quaternion.LookRotation(dir));
-            NetworkServer.Spawn(MF1);
-            NetworkServer.Spawn(MF2);
+        GameObject MF1 = Instantiate(PrimaryAttackParticleEffect, Gun1MuzzleLoc, Quaternion.LookRotation(dir));
+        GameObject MF2 = Instantiate(PrimaryAttackParticleEffect, Gun2MuzzleLoc, Quaternion.LookRotation(dir));
+        /*NetworkServer.Spawn(MF1);
+        NetworkServer.Spawn(MF2);*/
 
-            if (Physics.Raycast(start1, dir, out hit1, (float)statManager.GetStat(NumericalStats.Range))) { /*Debug.Log("GUN 1 HIT OBJECT");*/ }
-            if (Physics.Raycast(start2, dir, out hit2, (float)statManager.GetStat(NumericalStats.Range))) { /*Debug.Log("GUN 2 HIT OBJECT");*/ }
+        if (Physics.Raycast(start1, dir, out hit1, (float)statManager.GetStat(NumericalStats.Range))) { /*Debug.Log("GUN 1 HIT OBJECT");*/ }
+        if (Physics.Raycast(start2, dir, out hit2, (float)statManager.GetStat(NumericalStats.Range))) { /*Debug.Log("GUN 2 HIT OBJECT");*/ }
 
-            if (hit1.collider != null && hit1.collider.gameObject != null && hit1.collider.gameObject.GetComponent<HitManager>() != null && !hit1.collider.gameObject.GetComponent<PlayerStatManager>()) 
-            { 
-                hit1.collider.gameObject.GetComponent<HitManager>().Hit((float)statManager.GetStat(NumericalStats.PrimaryDamage));
-                GameObject HP1 = Instantiate(HitParticleEffect, hit1.transform.position, Quaternion.LookRotation(dir));
-                NetworkServer.Spawn(HP1);
-            }
-            if (hit2.collider != null && hit2.collider.gameObject != null && hit2.collider.gameObject.GetComponent<HitManager>() != null && !hit2.collider.gameObject.GetComponent<PlayerStatManager>()) 
-            { 
-                hit2.collider.gameObject.GetComponent<HitManager>().Hit((float)statManager.GetStat(NumericalStats.PrimaryDamage));
-                GameObject HP2 = Instantiate(HitParticleEffect, hit2.transform.position, Quaternion.LookRotation(dir));
-                NetworkServer.Spawn(HP2);
-            }
+        if (hit1.collider != null && hit1.collider.gameObject != null && hit1.collider.gameObject.GetComponent<HitManager>() != null && !hit1.collider.gameObject.GetComponent<PlayerStatManager>()) 
+        { 
+            hit1.collider.gameObject.GetComponent<HitManager>().Hit((float)statManager.GetStat(NumericalStats.PrimaryDamage));
+            GameObject HP1 = Instantiate(HitParticleEffect, hit1.transform.position, Quaternion.LookRotation(dir));
+            NetworkServer.Spawn(HP1);
+        }
+        if (hit2.collider != null && hit2.collider.gameObject != null && hit2.collider.gameObject.GetComponent<HitManager>() != null && !hit2.collider.gameObject.GetComponent<PlayerStatManager>()) 
+        { 
+            hit2.collider.gameObject.GetComponent<HitManager>().Hit((float)statManager.GetStat(NumericalStats.PrimaryDamage));
+            GameObject HP2 = Instantiate(HitParticleEffect, hit2.transform.position, Quaternion.LookRotation(dir));
+            NetworkServer.Spawn(HP2);
         }
     }
 
