@@ -182,11 +182,11 @@ public class CommandoAttack : AttackManager
         if (JetpackParticleEffect != null) JetpackParticleEffect.SetActive(true);
         GetComponent<PlayerMove>().SetFlying(true);
         if (isServer) ClientsToggleFlying(true);
-        while (count < 250)
+        while (count < 50)
         {
-            if (isClient && controller.enabled) controller.Move(Vector3.up * (float)manager.GetStat(NumericalStats.JumpHeight) * 0.004f);
+            if (isClient && controller.enabled) controller.Move(Vector3.up * (float)manager.GetStat(NumericalStats.JumpHeight) * 0.02f);
             count++;
-            yield return new WaitForSeconds(0.004f);
+            yield return new WaitForSeconds(0.02f);
         }
         count = 0;
         if (JetpackParticleEffect != null) JetpackParticleEffect.SetActive(false);
