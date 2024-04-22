@@ -93,12 +93,6 @@ public class LookAround : NetworkBehaviour
         playerBody.Rotate(Vector3.up * mouseX);
     }
 
-    [Command]
-    private void DEBUG_Print(Quaternion quat)
-    {
-        Debug.Log(quat);
-    } 
-
     void UpdateWeapon(float rot)
     {
         if (Weapon == null) return;
