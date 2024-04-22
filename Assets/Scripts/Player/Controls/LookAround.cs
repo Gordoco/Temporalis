@@ -133,9 +133,17 @@ public class LookAround : NetworkBehaviour
         transform.localPosition = pos;
         transform.localRotation = rot;
 
+        if (isClient) DEBUG_Print(transform.localRotation);
+
         //X Rotation
         playerBody.Rotate(Vector3.up * mouseX);
     }
+
+    [Command]
+    private void DEBUG_Print(Quaternion quat)
+    {
+        Debug.Log(quat);
+    } 
 
     void UpdateWeapon(float rot)
     {
