@@ -11,12 +11,14 @@ public class GrenadeTimedExplosion : NetworkBehaviour
     private GameObject owner;
     private float radius;
     private float damage;
+    private bool bFromServer = false;
 
-    public void Init(GameObject owner, float radius, float damage)
+    public void Init(GameObject owner, float radius, float damage, bool inServer)
     {
         this.owner = owner;
         this.radius = radius;
         this.damage = damage;
+        this.bFromServer = inServer;
         GetComponent<ProjectileCreator>().OnHitEnemy += EarlyTrigger;
         StartCoroutine(Explode_Delay(owner, radius, damage, time));
     }
@@ -35,7 +37,7 @@ public class GrenadeTimedExplosion : NetworkBehaviour
 
     private void Explode(GameObject owner, float radius, float damage)
     {
-        if (isServer)
+        if (bFromServer)
         {
             GameObject explosion = Instantiate(ExplosionPrefab);
             explosion.GetComponent<ExplosionCreator>().InitializeExplosion(owner, gameObject.transform.position, radius, damage, true);
