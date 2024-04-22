@@ -184,7 +184,7 @@ public class CommandoAttack : AttackManager
         if (isServer) ClientsToggleFlying(true);
         while (count < 250)
         {
-            if (controller.enabled) controller.Move(Vector3.up * (float)manager.GetStat(NumericalStats.JumpHeight) * 0.004f);
+            if (isClient && controller.enabled) controller.Move(Vector3.up * (float)manager.GetStat(NumericalStats.JumpHeight) * 0.004f);
             count++;
             yield return new WaitForSeconds(0.004f);
         }
