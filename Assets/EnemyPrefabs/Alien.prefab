@@ -20,7 +20,7 @@ GameObject:
   - component: {fileID: 5446213910471768719}
   m_Layer: 0
   m_Name: Alien
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -262,6 +262,7 @@ MonoBehaviour:
   syncInterval: 0
   EnemyProjPrefab: {fileID: 4154122368009565914, guid: 8326341b88a6b9d4bb3e06b992aa5854, type: 3}
   gravity: 20
+  ProjectileOffset: {x: 0, y: 0, z: 0}
 --- !u!1 &7472871802506170848
 GameObject:
   m_ObjectHideFlags: 0

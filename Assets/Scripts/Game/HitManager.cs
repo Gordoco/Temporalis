@@ -8,6 +8,9 @@ public class HitManager : NetworkBehaviour
 {
     private StatManager manager;
 
+    public event System.EventHandler OnUnStunned;
+    public event System.EventHandler OnStunned;
+
     private void Start()
     {
         if (isServer)
@@ -34,8 +37,10 @@ public class HitManager : NetworkBehaviour
     [Server]
     public virtual void Stun(float time)
     {
+        if (manager.GetCCImmune()) return;
         GetComponent<CharacterController>().enabled = false; //Stop Movement
         Client_ToggleController(false);
+        OnStunned.Invoke(this, null);
         if (GetComponent<PlayerStatManager>())
         {
             //If Player, Disable Attack Manager
@@ -55,6 +60,7 @@ public class HitManager : NetworkBehaviour
         yield return new WaitForSeconds(time);
         GetComponent<CharacterController>().enabled = true; //Start Movement
         Client_ToggleController(true);
+        OnUnStunned.Invoke(this, null);
         if (GetComponent<PlayerStatManager>())
         {
             //If Player, Enable Attack Manager

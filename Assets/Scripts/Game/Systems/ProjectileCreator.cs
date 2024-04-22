@@ -27,6 +27,8 @@ public class ProjectileCreator : NetworkBehaviour
 
     public event System.EventHandler<Collider> OnHitEnemy;
 
+    private bool bEnemy = false;
+
     /// <summary>
     /// Server-Only method to be called on Instantiated projectile prefab. Handles client spawning and awakens the projectile to start moving.
     /// </summary>
@@ -35,6 +37,7 @@ public class ProjectileCreator : NetworkBehaviour
     [Server]
     public void InitializeProjectile(GameObject owningObj, Vector3 startLocation, Vector3 direction, double damage)
     {
+        bEnemy = owningObj.tag == "Enemy";
         direction.Normalize();
         hitObjects.Add(owningObj);
         this.direction = direction;
@@ -52,7 +55,6 @@ public class ProjectileCreator : NetworkBehaviour
         if (isServer && bAlive)
         {
             counter += Time.deltaTime;
-            //transform.position += direction * projectileSpeed * Time.deltaTime;
             if (counter >= lifespan)
             {
                 NetworkServer.Destroy(gameObject);
@@ -62,16 +64,24 @@ public class ProjectileCreator : NetworkBehaviour
 
     public void OnTriggerEnter(Collider collision)
     {
-        Debug.Log("COLLIDED");
+        Debug.Log("COLLIDED WITH: " + collision.gameObject.name);
         if (isServer && bAlive)
         {
             if (!hitObjects.Contains(collision.gameObject) && collision.gameObject.GetComponent<HitManager>() != null)
             {
+                if (bEnemy && collision.gameObject.tag == "Enemy")
+                {
+                    hitObjects.Add(collision.gameObject);
+                    return;
+                }
                 if (OnHitEnemy != null) OnHitEnemy.Invoke(this, collision);
                 collision.gameObject.GetComponent<HitManager>().Hit(damage);
                 hitObjects.Add(collision.gameObject);
                 pierceLevel--;
-                if (pierceLevel <= 0) NetworkServer.Destroy(gameObject);
+                if (pierceLevel <= 0)
+                {
+                    NetworkServer.Destroy(gameObject);
+                }
             }
         }
     }

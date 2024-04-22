@@ -2,12 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
+using UnityEngine.UI;
 
 public class CommandoAttack : AttackManager
 {
     [SerializeField] private GameObject SecondaryAttackProjPrefab;
     [SerializeField] private GameObject PrimaryAttackParticleEffect;
+    [SerializeField] private GameObject DiveBombExplosionPrefab;
     [SerializeField] private GameObject JetpackParticleEffect;
+    [SerializeField] private GameObject RegenParticleEffect;
+    [SerializeField] private Image StimImage;
     [SerializeField] private GameObject HitParticleEffect;
     [SerializeField] private GameObject GrenadePrefab;
 
@@ -108,12 +112,63 @@ public class CommandoAttack : AttackManager
 
     protected override void OnAbility1()
     {
-        
+        if (StimImage) StimImage.enabled = true;
+
+        StatManager manager = GetComponent<StatManager>();
+        double[] vals = null;
+        if (isServer)
+        {
+            if (manager.GetHealth() - 25 <= 0) manager.DealDamage(manager.GetHealth() - 1);
+            else manager.DealDamage(25); //Deal Damage
+
+            vals = new double[3];
+            vals[0] = manager.GetStat(NumericalStats.AttackSpeed);
+            vals[1] = manager.GetStat(NumericalStats.MovementSpeed);
+            vals[2] = manager.GetStat(NumericalStats.JumpHeight);
+
+            manager.ModifyStat(NumericalStats.AttackSpeed, vals[0]);
+            manager.ModifyStat(NumericalStats.MovementSpeed, vals[1]);
+            manager.ModifyStat(NumericalStats.JumpHeight, vals[2]);
+        }
+        if (vals == null) vals = new double[3];
+        StartCoroutine(ResetStats(manager, 5f, vals));
+    }
+
+    private IEnumerator ResetStats(StatManager manager, float time, double[] vals)
+    {
+        yield return new WaitForSeconds(time);
+        if (isServer)
+        {
+            manager.ModifyStat(NumericalStats.AttackSpeed, -vals[0]);
+            manager.ModifyStat(NumericalStats.MovementSpeed, -vals[1]);
+            manager.ModifyStat(NumericalStats.JumpHeight, -vals[2]);
+        }
+
+        if (StimImage) StimImage.enabled = false;
     }
 
     protected override void OnAbility2()
     {
+        if (RegenParticleEffect) RegenParticleEffect.SetActive(true);
+        double val = 0;
+        StatManager manager = GetComponent<StatManager>();
 
+        if (isServer)
+        {
+            val = manager.GetStat(NumericalStats.HealthRegenSpeed) * (1 - (1/manager.GetStat(NumericalStats.Ability2Damage)));
+            manager.ModifyStat(NumericalStats.HealthRegenSpeed, -val);
+        }
+        StartCoroutine(ResetHealing(manager, 3, val));
+    }
+
+    private IEnumerator ResetHealing(StatManager manager, float time, double val)
+    {
+        yield return new WaitForSeconds(time);
+        if (isServer)
+        {
+            manager.ModifyStat(NumericalStats.HealthRegenSpeed, val);
+        }
+        if (RegenParticleEffect) RegenParticleEffect.SetActive(false);
     }
 
     protected override void OnAbility3()
@@ -152,6 +207,26 @@ public class CommandoAttack : AttackManager
 
     protected override void OnAbility4()
     {
+        float startLoc = transform.position.y;
+        PlayerStatManager manager = GetComponent<PlayerStatManager>();
+        if (isServer) manager.ToggleCCImmune(true);
+        GetComponent<PlayerMove>().SetTempGravity(200);
+        StartCoroutine(CheckForGrounded(startLoc));
+    }
 
+    private IEnumerator CheckForGrounded(float startLoc)
+    {
+        while (!GetComponent<CharacterController>().enabled || !GetComponent<CharacterController>().isGrounded)
+        {
+            yield return new WaitForSeconds(0.01f);
+        }
+        float endLoc = transform.position.y;
+        float magnitude = Mathf.Clamp(startLoc - endLoc, 0, 100f);
+        PlayerStatManager manager = GetComponent<PlayerStatManager>();
+        GameObject explosionObj = Instantiate(DiveBombExplosionPrefab);
+        ExplosionCreator explosion = explosionObj.GetComponent<ExplosionCreator>();
+        explosionObj.transform.localScale *= (float)manager.GetStat(NumericalStats.Range) / 2;
+        explosion.InitializeExplosion(gameObject, transform.position, (float)manager.GetStat(NumericalStats.Range)/2, (float)manager.GetStat(NumericalStats.Ability4Damage) * magnitude, true);
+        if (isServer) manager.ToggleCCImmune(false);
     }
 }

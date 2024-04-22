@@ -12,6 +12,7 @@ public class PlayerMove : NetworkBehaviour
     private bool bFlying = false;
     [SyncVar] private bool bDead = false;
     private bool bAwake = false;
+    private float tempGravity = 0;
 
     public void SetFlying(bool b)
     {
@@ -25,6 +26,8 @@ public class PlayerMove : NetworkBehaviour
             bFlying = false;
         }
     }
+
+    public void SetTempGravity(float val) { tempGravity = val; }
 
     private void Start()
     {
@@ -54,6 +57,7 @@ public class PlayerMove : NetworkBehaviour
         StatManager manager = GetComponent<StatManager>();
         if (controller.isGrounded)
         {
+            tempGravity = 0;
             moveDirection = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
             moveDirection.Normalize();
             moveDirection = transform.TransformDirection(moveDirection);
@@ -61,7 +65,7 @@ public class PlayerMove : NetworkBehaviour
             if (Input.GetButton("Jump"))
                 moveDirection.y = (float)manager.GetStat(NumericalStats.JumpHeight);
         }
-        if (!bFlying) moveDirection.y -= gravity * Time.deltaTime;
+        if (!bFlying) moveDirection.y -= (gravity + tempGravity) * Time.deltaTime;
         else Debug.Log("Flying");
         controller.Move(moveDirection * Time.deltaTime);
     }

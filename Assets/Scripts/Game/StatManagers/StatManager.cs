@@ -52,12 +52,21 @@ public abstract class StatManager : NetworkBehaviour
     private readonly SyncList<double> stats = new SyncList<double>();
     protected readonly SyncList<BaseItem> items = new SyncList<BaseItem>();
     [SerializeField] private InitStatsDisplay[] initStats = new InitStatsDisplay[(int)NumericalStats.NumberOfStats];
+    
+    [SyncVar] private bool CCImmune = false;
 
     /// <summary>
     /// double value representing current entity health
     /// </summary>
     [SyncVar] private double Health;
 
+    [Server]
+    public void ToggleCCImmune(bool b)
+    {
+        CCImmune = b;
+    }
+
+    public bool GetCCImmune() { return CCImmune; }
 
     public void Start()
     {

@@ -7,6 +7,7 @@ public abstract class AttackManager : NetworkBehaviour
 {
     [SerializeField] private GameObject PauseMenuPrefab;
     [SerializeField] protected StatManager statManager;
+    [SerializeField] private GameObject StunnedParticleEffect;
     [SerializeField] protected bool FullAuto = true;
     [SyncVar] private bool bCanAttack = true;
     [SyncVar] private bool bCanSecondary = true;
@@ -40,6 +41,21 @@ public abstract class AttackManager : NetworkBehaviour
     }
 
     public void SetEnabled(bool b) { bEnabled = b; }
+
+    private void Start()
+    {
+        GetComponent<HitManager>().OnStunned += ShowStunnedEffect;
+        GetComponent<HitManager>().OnUnStunned += HideStunnedEffect;
+    }
+
+    private void ShowStunnedEffect(object sender, System.EventArgs e)
+    {
+        if (StunnedParticleEffect) StunnedParticleEffect.SetActive(true);
+    }
+    private void HideStunnedEffect(object sender, System.EventArgs e)
+    {
+        if (StunnedParticleEffect) StunnedParticleEffect.SetActive(false);
+    }
 
     // Update is called once per frame
     void Update()

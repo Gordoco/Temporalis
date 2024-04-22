@@ -372,9 +372,14 @@ MonoBehaviour:
   syncInterval: 0
   PauseMenuPrefab: {fileID: 2476583610894637245, guid: 5edd00a6d4670c24f9827530d36ca9fb, type: 3}
   statManager: {fileID: 1250715329504170301}
+  StunnedParticleEffect: {fileID: 0}
   FullAuto: 1
   SecondaryAttackProjPrefab: {fileID: 4154122368009565914, guid: 493b3a1316111254b850d1d2c19d8175, type: 3}
   PrimaryAttackParticleEffect: {fileID: 945835148339455510, guid: 09c0f376280083f48be83864b2fcd95d, type: 3}
+  DiveBombExplosionPrefab: {fileID: 945835148339455510, guid: e6e6807596d016543bcc5713be6dc97d, type: 3}
+  JetpackParticleEffect: {fileID: 0}
+  RegenParticleEffect: {fileID: 0}
+  StimImage: {fileID: 0}
   HitParticleEffect: {fileID: 945835148339455510, guid: d9f062b5c10ab724792bb710c6379134, type: 3}
   GrenadePrefab: {fileID: 1367405910388641099, guid: 200ffc2267958b941a261bdf26e321db, type: 3}
 --- !u!114 &1250715329504170301
@@ -398,9 +403,9 @@ MonoBehaviour:
   - stat: 1
     val: 5
   - stat: 2
-    val: 5
+    val: 10
   - stat: 3
-    val: 5
+    val: 6
   - stat: 4
     val: 5
   - stat: 5
@@ -414,11 +419,11 @@ MonoBehaviour:
   - stat: 9
     val: 150
   - stat: 10
-    val: 1
+    val: 4
   - stat: 11
     val: 1
   - stat: 12
-    val: 1
+    val: 10
   - stat: 13
     val: 8
   - stat: 14
@@ -1688,7 +1693,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
+  m_SizeDelta: {x: 40, y: 40}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7958528207381637597
 CanvasRenderer:
