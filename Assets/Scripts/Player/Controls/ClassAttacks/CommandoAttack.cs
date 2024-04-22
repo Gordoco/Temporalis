@@ -187,11 +187,11 @@ public class CommandoAttack : AttackManager
         if (JetpackParticleEffect != null) JetpackParticleEffect.SetActive(true);
         GetComponent<PlayerMove>().SetFlying(true);
         if (isServer) ClientsToggleFlying(true);
-        while (count < 50)
+        while (count < 250)
         {
-            if (controller.enabled) controller.Move(Vector3.up * (float)manager.GetStat(NumericalStats.JumpHeight) * 0.02f);
+            if (controller.enabled) controller.Move(Vector3.up * (float)manager.GetStat(NumericalStats.JumpHeight) * 0.004f);
             count++;
-            yield return new WaitForSeconds(0.02f);
+            yield return new WaitForSeconds(0.004f);
         }
         count = 0;
         if (JetpackParticleEffect != null) JetpackParticleEffect.SetActive(false);
@@ -231,7 +231,7 @@ public class CommandoAttack : AttackManager
         PlayerStatManager manager = GetComponent<PlayerStatManager>();
         GameObject explosionObj = Instantiate(DiveBombExplosionPrefab);
         ExplosionCreator explosion = explosionObj.GetComponent<ExplosionCreator>();
-        explosionObj.transform.localScale *= (float)manager.GetStat(NumericalStats.Range) / 2;
+        explosionObj.transform.localScale *= (float)manager.GetStat(NumericalStats.Range) / 10;
         explosion.InitializeExplosion(gameObject, transform.position, (float)manager.GetStat(NumericalStats.Range) / 2, (float)manager.GetStat(NumericalStats.Ability4Damage) * magnitude, true);
         manager.ToggleCCImmune(false);
     }

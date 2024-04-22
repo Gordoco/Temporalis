@@ -72,13 +72,13 @@ public class EnemyController : NetworkBehaviour
         AttackFunctionality(Players, dir);
 
         transform.rotation = Quaternion.LookRotation(new Vector3(dir.x, 0, dir.z));
-
         if (Vector3.Distance(Players[playerTarget].transform.position, transform.position) <= Manager.GetStat(NumericalStats.Range)/2)
         {
             dir = new Vector3(0, dir.y, 0);
             dir.Normalize();
         }
         dir.Normalize();
+        
         if (controller.isGrounded)
         {
             dir.y = 0;
