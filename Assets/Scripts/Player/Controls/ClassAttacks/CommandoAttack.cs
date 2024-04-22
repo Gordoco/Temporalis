@@ -52,15 +52,15 @@ public class CommandoAttack : AttackManager
 
         if (hit1.collider != null && hit1.collider.gameObject != null && hit1.collider.gameObject.GetComponent<HitManager>() != null && !hit1.collider.gameObject.GetComponent<PlayerStatManager>()) 
         { 
-            hit1.collider.gameObject.GetComponent<HitManager>().Hit((float)statManager.GetStat(NumericalStats.PrimaryDamage));
+            if (isServer) hit1.collider.gameObject.GetComponent<HitManager>().Hit((float)statManager.GetStat(NumericalStats.PrimaryDamage));
             GameObject HP1 = Instantiate(HitParticleEffect, hit1.transform.position, Quaternion.LookRotation(dir));
-            NetworkServer.Spawn(HP1);
+            //NetworkServer.Spawn(HP1);
         }
         if (hit2.collider != null && hit2.collider.gameObject != null && hit2.collider.gameObject.GetComponent<HitManager>() != null && !hit2.collider.gameObject.GetComponent<PlayerStatManager>()) 
-        { 
-            hit2.collider.gameObject.GetComponent<HitManager>().Hit((float)statManager.GetStat(NumericalStats.PrimaryDamage));
+        {
+            if (isServer) hit2.collider.gameObject.GetComponent<HitManager>().Hit((float)statManager.GetStat(NumericalStats.PrimaryDamage));
             GameObject HP2 = Instantiate(HitParticleEffect, hit2.transform.position, Quaternion.LookRotation(dir));
-            NetworkServer.Spawn(HP2);
+            //NetworkServer.Spawn(HP2);
         }
     }
 
