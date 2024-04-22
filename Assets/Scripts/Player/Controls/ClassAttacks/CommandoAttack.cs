@@ -171,17 +171,16 @@ public class CommandoAttack : AttackManager
         CharacterController controller = GetComponent<CharacterController>();
         StatManager manager = GetComponent<StatManager>();
 
-        StartCoroutine(JetpackBoost(controller, manager));
+        if (isClient) StartCoroutine(JetpackBoost(controller, manager));
     }
 
     Vector3 start;
     int count = 0;
     IEnumerator JetpackBoost(CharacterController controller, StatManager manager)
     {
+        ServerStartJetpack();
         start = transform.position;
         if (JetpackParticleEffect != null) JetpackParticleEffect.SetActive(true);
-        GetComponent<PlayerMove>().SetFlying(true);
-        if (isServer) ClientsToggleFlying(true);
         while (count < 250)
         {
             if (controller.enabled) controller.Move(Vector3.up * (float)manager.GetStat(NumericalStats.JumpHeight) * 0.004f);
@@ -189,9 +188,25 @@ public class CommandoAttack : AttackManager
             yield return new WaitForSeconds(0.004f);
         }
         count = 0;
+        ServerFinishJetpack();
+        if (JetpackParticleEffect != null) JetpackParticleEffect.SetActive(false);
+    }
+
+    [Command]
+    void ServerFinishJetpack()
+    {
         if (JetpackParticleEffect != null) JetpackParticleEffect.SetActive(false);
         GetComponent<PlayerMove>().SetFlying(false);
         if (isServer) ClientsToggleFlying(false);
+    }
+
+    [Command]
+    void ServerStartJetpack()
+    {
+        start = transform.position;
+        if (JetpackParticleEffect != null) JetpackParticleEffect.SetActive(true);
+        GetComponent<PlayerMove>().SetFlying(true);
+        if (isServer) ClientsToggleFlying(true);
     }
 
     [ClientRpc]
