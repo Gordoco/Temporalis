@@ -101,6 +101,7 @@ public abstract class StatManager : NetworkBehaviour
     /// <returns></returns>
     private IEnumerator HealthRegen()
     {
+        yield return new WaitForSeconds(0.5f);
         while (true)
         {
             yield return new WaitForSeconds((float)GetStat(NumericalStats.HealthRegenSpeed));
