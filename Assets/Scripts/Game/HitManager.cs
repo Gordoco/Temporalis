@@ -53,6 +53,11 @@ public class HitManager : NetworkBehaviour
     private void Client_ToggleController(bool b)
     {
         GetComponent<CharacterController>().enabled = b ? true : false;
+        if (GetComponent<PlayerStatManager>())
+        {
+            //If Player, Disable Attack Manager
+            GetComponent<AttackManager>().SetEnabled(b);
+        }
     }
 
     private IEnumerator UnStun(float time)
