@@ -14,6 +14,7 @@ public class CommandoAttack : AttackManager
     [SerializeField] private Image StimImage;
     [SerializeField] private GameObject HitParticleEffect;
     [SerializeField] private GameObject GrenadePrefab;
+    [SerializeField] private GameObject PlayerCamera;
 
     /// <summary>
     /// Implements the primary attack for the Commando class. Based around the existence of twin pistols
@@ -26,6 +27,8 @@ public class CommandoAttack : AttackManager
         for (int i = 0; i < gameObject.transform.childCount; i++) if (gameObject.transform.GetChild(i).tag == "Weapon") { Weapon = gameObject.transform.GetChild(i).gameObject; break; }
         GameObject Camera = null;
         for (int i = 0; i < gameObject.transform.childCount; i++) if (gameObject.transform.GetChild(i).tag == "MainCamera") { Camera = gameObject.transform.GetChild(i).gameObject; break; }
+
+        if (PlayerCamera) Camera = PlayerCamera;
 
         StartCoroutine(WeaponSwell(Weapon.transform.GetChild(0).gameObject, statManager.GetStat(NumericalStats.AttackSpeed)));
         StartCoroutine(WeaponSwell(Weapon.transform.GetChild(1).gameObject, statManager.GetStat(NumericalStats.AttackSpeed)));
@@ -97,6 +100,8 @@ public class CommandoAttack : AttackManager
         {
             GameObject Camera = null;
             for (int i = 0; i < gameObject.transform.childCount; i++) if (gameObject.transform.GetChild(i).tag == "MainCamera") { Camera = gameObject.transform.GetChild(i).gameObject; break; }
+
+            if (PlayerCamera) Camera = PlayerCamera;
 
             GameObject proj = Instantiate(GrenadePrefab);
             if (proj.GetComponent<ProjectileCreator>() == null)
