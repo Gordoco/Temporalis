@@ -52,13 +52,13 @@ public class CommandoAttack : AttackManager
             if (Physics.Raycast(start1, dir, out hit1, (float)statManager.GetStat(NumericalStats.Range))) { /*Debug.Log("GUN 1 HIT OBJECT");*/ }
             if (Physics.Raycast(start2, dir, out hit2, (float)statManager.GetStat(NumericalStats.Range))) { /*Debug.Log("GUN 2 HIT OBJECT");*/ }
 
-            if (hit1.collider != null && hit1.collider.gameObject != null && hit1.collider.gameObject.GetComponent<HitManager>() != null) 
+            if (hit1.collider != null && hit1.collider.gameObject != null && hit1.collider.gameObject.GetComponent<HitManager>() != null && !hit1.collider.gameObject.GetComponent<PlayerStatManager>()) 
             { 
                 hit1.collider.gameObject.GetComponent<HitManager>().Hit((float)statManager.GetStat(NumericalStats.PrimaryDamage));
                 GameObject HP1 = Instantiate(HitParticleEffect, hit1.transform.position, Quaternion.LookRotation(dir));
                 NetworkServer.Spawn(HP1);
             }
-            if (hit2.collider != null && hit2.collider.gameObject != null && hit2.collider.gameObject.GetComponent<HitManager>() != null) 
+            if (hit2.collider != null && hit2.collider.gameObject != null && hit2.collider.gameObject.GetComponent<HitManager>() != null && !hit2.collider.gameObject.GetComponent<PlayerStatManager>()) 
             { 
                 hit2.collider.gameObject.GetComponent<HitManager>().Hit((float)statManager.GetStat(NumericalStats.PrimaryDamage));
                 GameObject HP2 = Instantiate(HitParticleEffect, hit2.transform.position, Quaternion.LookRotation(dir));
