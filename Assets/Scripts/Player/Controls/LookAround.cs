@@ -88,7 +88,6 @@ public class LookAround : NetworkBehaviour
         transform.localPosition = pos;
         transform.localRotation = rot;
 
-        Debug.Log(rot);
 
         //X Rotation
         playerBody.Rotate(Vector3.up * mouseX);
@@ -133,6 +132,8 @@ public class LookAround : NetworkBehaviour
 
         transform.localPosition = pos;
         transform.localRotation = rot;
+
+        Debug.Log(rot);
 
         //X Rotation
         playerBody.Rotate(Vector3.up * mouseX);
