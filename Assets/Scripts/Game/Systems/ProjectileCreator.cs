@@ -43,7 +43,7 @@ public class ProjectileCreator : NetworkBehaviour
         this.damage = (float)damage;
         gameObject.transform.position = startLocation;
         bAlive = true;
-        //NetworkServer.Spawn(gameObject);
+        if (isServer) NetworkServer.Spawn(gameObject);
 
         GetComponent<Rigidbody>().AddForce(direction * projectileSpeed, ForceMode.VelocityChange);
     }
