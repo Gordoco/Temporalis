@@ -68,5 +68,13 @@ public class PlayerMove : NetworkBehaviour
         if (!bFlying) moveDirection.y -= (gravity + tempGravity) * Time.deltaTime;
         else Debug.Log("Flying");
         controller.Move(moveDirection * Time.deltaTime);
+
+        if (isServer) UpdateTransform(transform.position);
+    }
+
+    [ClientRpc]
+    void UpdateTransform(Vector3 transform)
+    {
+        this.transform.position = transform;
     }
 }
