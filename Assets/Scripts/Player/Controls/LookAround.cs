@@ -42,7 +42,7 @@ public class LookAround : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!isOwned || !isClient) return;
+        if (!isOwned) return;
 
         UpdateFunctionality();
     }
