@@ -51,10 +51,18 @@ public abstract class AttackManager : NetworkBehaviour
     private void ShowStunnedEffect(object sender, System.EventArgs e)
     {
         if (StunnedParticleEffect) StunnedParticleEffect.SetActive(true);
+        ClientShowStunned(true);
     }
     private void HideStunnedEffect(object sender, System.EventArgs e)
     {
         if (StunnedParticleEffect) StunnedParticleEffect.SetActive(false);
+        ClientShowStunned(false);
+    }
+
+    [ClientRpc]
+    private void ClientShowStunned(bool b)
+    {
+        if (StunnedParticleEffect) StunnedParticleEffect.SetActive(b);
     }
 
     // Update is called once per frame

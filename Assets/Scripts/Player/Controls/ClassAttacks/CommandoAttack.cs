@@ -29,24 +29,23 @@ public class CommandoAttack : AttackManager
 
         StartCoroutine(WeaponSwell(Weapon.transform.GetChild(0).gameObject, statManager.GetStat(NumericalStats.AttackSpeed)));
         StartCoroutine(WeaponSwell(Weapon.transform.GetChild(1).gameObject, statManager.GetStat(NumericalStats.AttackSpeed)));
-        
-        Vector3 start1 = Camera.transform.position;
-        Vector3 start2 = start1;
-
-        Vector3 dir = Camera.transform.forward;
-        dir.Normalize();
-
-        RaycastHit hit1;
-        RaycastHit hit2;
-
-        Vector3 Gun1MuzzleLoc = Weapon.transform.GetChild(0).position + (dir * 0.5f);
-        Vector3 Gun2MuzzleLoc = Weapon.transform.GetChild(1).position + (dir * 0.5f);
-
-        GameObject MF1 = Instantiate(PrimaryAttackParticleEffect, Gun1MuzzleLoc, Quaternion.LookRotation(dir));
-        GameObject MF2 = Instantiate(PrimaryAttackParticleEffect, Gun2MuzzleLoc, Quaternion.LookRotation(dir));
 
         if (isServer) //Server Side Only
         {
+            Vector3 start1 = Camera.transform.position;
+            Vector3 start2 = start1;
+
+            Vector3 dir = Camera.transform.forward;
+            dir.Normalize();
+
+            RaycastHit hit1;
+            RaycastHit hit2;
+
+            Vector3 Gun1MuzzleLoc = Weapon.transform.GetChild(0).position + (dir * 0.5f);
+            Vector3 Gun2MuzzleLoc = Weapon.transform.GetChild(1).position + (dir * 0.5f);
+
+            GameObject MF1 = Instantiate(PrimaryAttackParticleEffect, Gun1MuzzleLoc, Quaternion.LookRotation(dir));
+            GameObject MF2 = Instantiate(PrimaryAttackParticleEffect, Gun2MuzzleLoc, Quaternion.LookRotation(dir));
             NetworkServer.Spawn(MF1);
             NetworkServer.Spawn(MF2);
 
