@@ -9,8 +9,27 @@ public class PlayerMove : NetworkBehaviour
     //public float jumpSpeed = 8.0f;
     public float gravity = 20.0f;
     private Vector3 moveDirection = Vector3.zero;
+    private bool bFlying = false;
     [SyncVar] private bool bDead = false;
     private bool bAwake = false;
+    private float tempGravity = 0;
+
+    public void SetFlying(bool b)
+    {
+        if (b)
+        {
+            moveDirection.y = 0;
+            bFlying = true;
+            tempGravity = -1 * (2 * gravity);
+        }
+        else if (bFlying)
+        {
+            bFlying = false;
+            tempGravity = 0;
+        }
+    }
+
+    public void SetTempGravity(float val) { tempGravity = val; bFlying = false; }
 
     private void Start()
     {
@@ -34,10 +53,13 @@ public class PlayerMove : NetworkBehaviour
     void Update()
     {
         if (!isOwned || bDead || !bAwake) return;
+
         CharacterController controller = GetComponent<CharacterController>();
+        if (!controller.enabled) return;
         StatManager manager = GetComponent<StatManager>();
         if (controller.isGrounded)
         {
+            tempGravity = 0;
             moveDirection = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
             moveDirection.Normalize();
             moveDirection = transform.TransformDirection(moveDirection);
@@ -45,7 +67,15 @@ public class PlayerMove : NetworkBehaviour
             if (Input.GetButton("Jump"))
                 moveDirection.y = (float)manager.GetStat(NumericalStats.JumpHeight);
         }
-        moveDirection.y -= gravity * Time.deltaTime;
+        moveDirection.y -= (gravity + tempGravity) * Time.deltaTime;
         controller.Move(moveDirection * Time.deltaTime);
+
+        if (isServer) UpdateTransform(transform.position);
+    }
+
+    [ClientRpc]
+    void UpdateTransform(Vector3 transform)
+    {
+        this.transform.position = transform;
     }
 }

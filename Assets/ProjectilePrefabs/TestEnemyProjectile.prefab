@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 347907090787072248}
   - component: {fileID: 8982462192441281401}
   - component: {fileID: -1943308156654171469}
+  - component: {fileID: -4943797840469272598}
   m_Layer: 0
   m_Name: TestEnemyProjectile
   m_TagString: Untagged
@@ -114,7 +115,6 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   projectileSpeed: 50
-  damage: 15
   pierceLevel: 1
   lifespan: 5
 --- !u!23 &347907090787072248
@@ -188,3 +188,37 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 112
   m_CollisionDetection: 0
+--- !u!114 &-4943797840469272598
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4154122368009565914}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3b20dc110904e47f8a154cdcf6433eae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  target: {fileID: 7137595151809803707}
+  syncPosition: 1
+  syncRotation: 1
+  syncScale: 0
+  interpolatePosition: 1
+  interpolateRotation: 1
+  interpolateScale: 1
+  coordinateSpace: 0
+  sendIntervalMultiplier: 1
+  timelineOffset: 0
+  showGizmos: 0
+  showOverlay: 0
+  overlayColor: {r: 0, g: 0, b: 0, a: 0.5}
+  onlySyncOnChange: 1
+  compressRotation: 1
+  bufferResetMultiplier: 3
+  positionSensitivity: 0.01
+  rotationSensitivity: 0.01
+  scaleSensitivity: 0.01
