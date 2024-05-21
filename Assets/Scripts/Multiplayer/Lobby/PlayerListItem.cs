@@ -15,6 +15,8 @@ public class PlayerListItem : MonoBehaviour
     public TMP_Text PlayerNameText;
     public RawImage PlayerIcon;
     public TMP_Text PlayerReadyText;
+    public Image CharacterSelection;
+    [SerializeField] private Sprite[] Images;
     public bool bReady;
 
     protected Callback<AvatarImageLoaded_t> ImageLoaded;
@@ -23,6 +25,11 @@ public class PlayerListItem : MonoBehaviour
     {
         PlayerReadyText.text = bReady ? "Ready" : "Not Ready";
         PlayerReadyText.color = bReady ? Color.green : Color.red;
+    }
+
+    public void ChangePlayerCharacterSelection(int newVal)
+    {
+        CharacterSelection.sprite = Images[newVal];
     }
 
     private void Start()

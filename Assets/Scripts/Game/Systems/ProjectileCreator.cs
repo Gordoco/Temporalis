@@ -9,7 +9,7 @@ using Mirror;
 public class ProjectileCreator : NetworkBehaviour
 {
     [SerializeField] private float projectileSpeed;
-    [SerializeField] private float damage;
+    private float damage;
 
     /// <summary>
     /// Number of entities that can have damage applied from this projectile.
@@ -25,20 +25,29 @@ public class ProjectileCreator : NetworkBehaviour
     private bool bAlive = false;
     private List<GameObject> hitObjects = new List<GameObject>();
 
+    public event System.EventHandler<Collider> OnHitEnemy;
+
+    private bool bEnemy = false;
+    private bool bFromServer = false;
+
     /// <summary>
-    /// Server-Only method to be called on Instantiated projectile prefab. Handles client spawning and awakens the projectile to start moving.
+    /// Universal method to be called on Instantiated projectile prefab. Handles client spawning and awakens the projectile to start moving.
     /// </summary>
     /// <param name="startLocation">World space position for the projectile to start, overwrites instantiation transform position</param>
     /// <param name="direction">Direction of travel for the projectile, will be normalized</param>
-    [Server]
-    public void InitializeProjectile(GameObject owningObj, Vector3 startLocation, Vector3 direction)
+    public void InitializeProjectile(GameObject owningObj, Vector3 startLocation, Vector3 direction, double damage, bool inServer = false)
     {
+        bEnemy = owningObj.tag == "Enemy";
         direction.Normalize();
         hitObjects.Add(owningObj);
         this.direction = direction;
+        this.damage = (float)damage;
+        this.bFromServer = inServer;
         gameObject.transform.position = startLocation;
         bAlive = true;
-        NetworkServer.Spawn(gameObject);
+        if (bFromServer) NetworkServer.Spawn(gameObject);
+
+        GetComponent<Rigidbody>().AddForce(direction * projectileSpeed, ForceMode.VelocityChange);
     }
 
     float counter = 0;
@@ -47,25 +56,33 @@ public class ProjectileCreator : NetworkBehaviour
         if (isServer && bAlive)
         {
             counter += Time.deltaTime;
-            transform.position += direction * projectileSpeed * Time.deltaTime;
             if (counter >= lifespan)
             {
-                NetworkServer.Destroy(gameObject);
+                /*NetworkServer.*/Destroy(gameObject);
             }
         }
     }
 
     public void OnTriggerEnter(Collider collision)
     {
-        Debug.Log("COLLIDED");
-        if (isServer && bAlive)
+        Debug.Log("COLLIDED WITH: " + collision.gameObject.name);
+        if (bAlive)
         {
             if (!hitObjects.Contains(collision.gameObject) && collision.gameObject.GetComponent<HitManager>() != null)
             {
+                if (bEnemy && collision.gameObject.tag == "Enemy")
+                {
+                    hitObjects.Add(collision.gameObject);
+                    return;
+                }
+                if (OnHitEnemy != null) OnHitEnemy.Invoke(this, collision);
                 collision.gameObject.GetComponent<HitManager>().Hit(damage);
                 hitObjects.Add(collision.gameObject);
                 pierceLevel--;
-                if (pierceLevel <= 0) NetworkServer.Destroy(gameObject);
+                if (pierceLevel <= 0)
+                {
+                    /*NetworkServer.*/Destroy(gameObject);
+                }
             }
         }
     }
