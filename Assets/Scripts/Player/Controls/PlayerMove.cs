@@ -78,7 +78,7 @@ public class PlayerMove : NetworkBehaviour
         moveDirection.y -= (gravity + tempGravity) * Time.deltaTime;
         controller.Move(moveDirection * Time.deltaTime);
         Vector3 tempDir = new Vector3(moveDirection.x, 0, moveDirection.z);
-        if (tempDir != Vector3.zero) { childAnimator.SetBool(AnimMovingHash, true); }
+        if (tempDir != Vector3.zero && controller.isGrounded) { childAnimator.SetBool(AnimMovingHash, true); }
         else { childAnimator.SetBool("Moving", false); }
         if (isServer) UpdateTransform(transform.position);
     }
