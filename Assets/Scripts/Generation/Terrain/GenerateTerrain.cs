@@ -42,6 +42,11 @@ public class GenerateTerrain : MonoBehaviour
         
     }
 
+    public Vector3[] getVerticies() { return vertices; }
+    public int[] getTriangles() { return triangles; }
+    public Vector2[] getUVs() { return uvs; }
+
+
     public void initialize(ObjectPool[] foliagePools) {
         InitializeComp();
         foliageGenerators = GetComponents<GenerateFoliage>();
@@ -151,7 +156,8 @@ public class GenerateTerrain : MonoBehaviour
 
                 float[] Params = GetParams(i, j);
 
-                float y = Mathf.PerlinNoise(Params[0], Params[1]) * severity;
+
+                float y = Mathf.PerlinNoise(Params[0] + SEED, Params[1] + SEED) * severity;
                 y = Y_Operator(y);
 
                 /*

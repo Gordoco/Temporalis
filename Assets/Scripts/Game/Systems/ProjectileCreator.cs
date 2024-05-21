@@ -50,7 +50,8 @@ public class ProjectileCreator : NetworkBehaviour
             transform.position += direction * projectileSpeed * Time.deltaTime;
             if (counter >= lifespan)
             {
-                NetworkServer.Destroy(gameObject);
+                if(bFromServer) NetworkServer.Destroy(gameObject);
+                else Destroy(gameObject);
             }
         }
     }
@@ -65,7 +66,11 @@ public class ProjectileCreator : NetworkBehaviour
                 collision.gameObject.GetComponent<HitManager>().Hit(damage);
                 hitObjects.Add(collision.gameObject);
                 pierceLevel--;
-                if (pierceLevel <= 0) NetworkServer.Destroy(gameObject);
+                if (pierceLevel <= 0)
+                {
+                    if (bFromServer) NetworkServer.Destroy(gameObject);
+                    else Destroy(gameObject);
+                }
             }
         }
     }

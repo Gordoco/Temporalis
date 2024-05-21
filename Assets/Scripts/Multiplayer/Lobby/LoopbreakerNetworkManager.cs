@@ -90,7 +90,49 @@ public class LoopbreakerNetworkManager : NetworkManager
     public void PlayerDied()
     {
         playersLoaded--;
-        if (playersLoaded == 0) NetworkServer.DisconnectAll();
+        if (playersLoaded <= 0)
+        {
+            Debug.Log("EVERYONE DEAD");
+            for (int i = 0; i < GamePlayers.Count; i++)
+            {
+                GamePlayers[i].DisableCameraMove();
+                GamePlayers[i].Disconnect();
+            }
+            StartCoroutine(CheckForAllClientsDisconnected());
+            //SceneManager.LoadScene("MainMenu");
+        }
+    }
+
+    private IEnumerator CheckForAllClientsDisconnected()
+    {
+        while (GamePlayers.Count > 0)
+        {
+            yield return new WaitForSeconds(0.02f);
+        }
+        Disconnect(true);
+    }
+
+    /// <summary>
+    /// Way for clients or host to leave the game
+    /// </summary>
+    public void Disconnect(bool isServer)
+    {
+        if (isServer)
+        {
+            Debug.Log("STOPPING SERVER");
+            StopHost();
+        }
+        else
+        {
+            Debug.Log("STOPPING CLIENT");
+            StopClient();
+        }
+    }
+
+    public override void OnStopHost()
+    {
+        base.OnStopHost();
+        Debug.Log("STOPPED");
     }
 
     IEnumerator SpawnPlayersDelay()

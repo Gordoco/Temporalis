@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 //using UnityEditor.SceneManagement;
 
@@ -32,6 +33,7 @@ public class GenerateChunks : MonoBehaviour
     public bool debugVertices = false;
 
     [SerializeField] private bool RESET = false;
+    [SerializeField] private bool SaveAsMesh = false;
     /***********************/
 
     /*Terrain-specific values*/
@@ -65,20 +67,20 @@ public class GenerateChunks : MonoBehaviour
     int[] getChunkCoords() {
         if (Player == null) return new int[] { 0, 0 };
         //Error on negative numbers
-        int oneI = (int)(Player.transform.position.x/chunkSize);
-        int twoI = (int)(Player.transform.position.z/chunkSize);
+        int oneI = (int)(Player.transform.position.x / chunkSize);
+        int twoI = (int)(Player.transform.position.z / chunkSize);
 
         //Fix for 0.5==(-0.5) due to truncation
         oneI = fixNegativeZero(Player.transform.position.x, oneI);
         twoI = fixNegativeZero(Player.transform.position.z, twoI);
 
-        return new int[] {oneI, twoI};
+        return new int[] { oneI, twoI };
     }
 
     //Pre-truncation comparison for player position
     int fixNegativeZero(float pos, int oneI) {
-        float oneF = pos/chunkSize;
-        if (oneF < oneI) return oneI-1;
+        float oneF = pos / chunkSize;
+        if (oneF < oneI) return oneI - 1;
         else return oneI;
     }
 
@@ -90,7 +92,7 @@ public class GenerateChunks : MonoBehaviour
         GameObject newPool = Instantiate(poolObject, Vector3.zero, Quaternion.identity) as GameObject;
         newPool.transform.parent = gameObject.transform;
         chunkPool = newPool.GetComponent<ObjectPool>();
-        chunkPool.initializePool(((2*viewDist) + 1) * ((2 * viewDist) + 1), terrainPrefab);
+        chunkPool.initializePool(((2 * viewDist) + 1) * ((2 * viewDist) + 1), terrainPrefab);
 
         //Create Pools for foliage
         GenerateFoliage[] foliageGenerators = terrainPrefab.GetComponents<GenerateFoliage>();
@@ -147,7 +149,7 @@ public class GenerateChunks : MonoBehaviour
         }
 
         terrainLogic.initialize(foliagePools[x]);
-        
+
         //VERTEX COPYING FOR ADJACENT CELLS
         terrainLogic.AddSection();
         terrain.Insert(x, newSection);
@@ -170,6 +172,45 @@ public class GenerateChunks : MonoBehaviour
 
     void OnValidate()
     {
+        if (SaveAsMesh)
+        {
+            SaveAsMesh = false;
+            Mesh combinedMesh = new Mesh();
+
+            List<Vector3> vertices = new List<Vector3>();
+            List<int> triangles = new List<int>();
+            List<Vector2> uvs = new List<Vector2>();
+            int currTrisLength = 0;
+            for (int i = 0; i < terrain.Count; i++)
+            {
+                if (terrain[i] == null) continue;
+                GenerateTerrain terrainObj = terrain[i].GetComponent<GenerateTerrain>();
+
+                for (int j = 0; j < terrainObj.getVerticies().Length; j++)
+                {
+                    vertices.Add(terrainObj.getVerticies()[j] + terrain[i].transform.localPosition);
+                }
+
+                int trisLength = terrainObj.getTriangles().Length;
+                for (int j = 0; j < trisLength; j++)
+                {
+                    triangles.Add(terrainObj.getTriangles()[j] + (currTrisLength));
+                }
+                currTrisLength += terrainObj.getVerticies().Length;
+
+                uvs.AddRange(terrainObj.getUVs());
+            }
+
+            combinedMesh.vertices = vertices.ToArray();
+            combinedMesh.triangles = triangles.ToArray();
+            combinedMesh.uv = uvs.ToArray();
+            combinedMesh.RecalculateBounds();
+            combinedMesh.RecalculateNormals();
+            combinedMesh.RecalculateTangents();
+            AssetDatabase.CreateAsset(combinedMesh, "Assets/Meshes/Maps/Map" + (int)Mathf.Abs(SEED) + (int)Mathf.Abs(viewDist) + (int)Mathf.Abs(chunkSize) + (int)Mathf.Abs(terrainSeverity) + (int)Mathf.Abs(terrainScale) + ".asset");
+            AssetDatabase.SaveAssets();
+        }
+
         if (RESET)
         {
             RESET = false;
