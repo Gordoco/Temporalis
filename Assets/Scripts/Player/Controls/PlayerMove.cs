@@ -13,6 +13,14 @@ public class PlayerMove : NetworkBehaviour
     [SyncVar] private bool bDead = false;
     private bool bAwake = false;
     private float tempGravity = 0;
+    private int AnimMovingHash;
+    Animator childAnimator;
+
+    private void Awake()
+    {
+        AnimMovingHash = Animator.StringToHash("Moving");
+        childAnimator = GetComponentInChildren<Animator>();
+    }
 
     public void SetFlying(bool b)
     {
@@ -69,7 +77,9 @@ public class PlayerMove : NetworkBehaviour
         }
         moveDirection.y -= (gravity + tempGravity) * Time.deltaTime;
         controller.Move(moveDirection * Time.deltaTime);
-
+        Vector3 tempDir = new Vector3(moveDirection.x, 0, moveDirection.z);
+        if (tempDir != Vector3.zero) { childAnimator.SetBool(AnimMovingHash, true); }
+        else { childAnimator.SetBool("Moving", false); }
         if (isServer) UpdateTransform(transform.position);
     }
 
