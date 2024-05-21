@@ -77,21 +77,6 @@ public class PlayerObjectController : NetworkBehaviour
         Manager.Disconnect(false);
     }
 
-    [ClientRpc]
-    public void DisableCameraMove()
-    {
-        GetComponent<LookAround>().enabled = false;
-        Cursor.lockState = CursorLockMode.None;
-    }
-
-    [ClientRpc]
-    public void Disconnect()
-    {
-        if (!isOwned) return;
-        Cursor.lockState = CursorLockMode.None;
-        Manager.StopClient();
-    }
-
     private void PlayerReadyUpdate(bool OldValue, bool NewValue)
     {
         if (isServer)

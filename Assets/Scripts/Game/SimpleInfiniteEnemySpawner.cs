@@ -11,6 +11,8 @@ public class SimpleInfiniteEnemySpawner : NetworkBehaviour
     [SerializeField] private float EnemySpawnInterval = 120;
     [SerializeField] private int BaseNumEnemies = 3;
     [SerializeField] private GameObject[] EnemyTypes;
+    [SerializeField] private GameObject DropShipPrefab;
+    [SerializeField] private GameObject[] DropShipSpawns;
 
     private double difficulty;
 
@@ -25,13 +27,30 @@ public class SimpleInfiniteEnemySpawner : NetworkBehaviour
     {
         while (SceneManager.GetActiveScene().name == "SampleScene")
         {
-            yield return new WaitForSeconds(Random.Range(EnemySpawnInterval - 5, EnemySpawnInterval + 5));
-            int i = 0;
-            while(i < (BaseNumEnemies + (int)(difficulty/30)))
+            yield return new WaitForSeconds(Random.Range(EnemySpawnInterval - 5, EnemySpawnInterval + 2));
+            StartCoroutine(HandleDropshipSpawner());
+        }
+    }
+
+    private IEnumerator HandleDropshipSpawner()
+    {
+        GameObject DropShip = Instantiate(DropShipPrefab);
+        NetworkServer.Spawn(DropShip);
+        int i = 0;
+        int randSpawn = Random.Range(0, SpawnPoints.Length);
+        SetupDropship(DropShip, DropShipSpawns[Random.Range(0, DropShipSpawns.Length)].transform.position, SpawnPoints[randSpawn]);
+        bool bStartedSpawning = false;
+        while (i < (BaseNumEnemies + (int)(difficulty / 30)))
+        {
+            if (!bStartedSpawning && DropShip && Vector3.Distance(DropShip.transform.position, SpawnPoints[randSpawn]) > 50)
             {
+                yield return new WaitForSeconds(0.1f);
+            }
+            else
+            {
+                bStartedSpawning = true;
                 GameObject randEnemy = GetRandomEnemyPrefab();
-                int randSpawn = Random.Range(0, SpawnPoints.Length);
-                GameObject newEnemy = Instantiate(randEnemy, SpawnPoints[randSpawn], Quaternion.identity);
+                GameObject newEnemy = Instantiate(randEnemy, DropShip.transform.position, Quaternion.identity);
                 EnemyStatManager statManager = newEnemy.GetComponent<EnemyStatManager>();
                 if (statManager == null)
                 {
@@ -40,8 +59,39 @@ public class SimpleInfiniteEnemySpawner : NetworkBehaviour
                 }
                 i++;
                 NetworkServer.Spawn(newEnemy);
+                yield return new WaitForSeconds(Random.Range(0.3f/ (BaseNumEnemies + (int)(difficulty / 30)), 0.75f / (BaseNumEnemies + (int)(difficulty / 30))));
             }
         }
+        yield return 0;
+    }
+
+    private void SetupDropship(GameObject DropShip, Vector3 Location, Vector3 Goal)
+    {
+        if (DropShip == null) return;
+        DropShip.transform.position = Location;
+        Quaternion Rot = Quaternion.LookRotation(Goal - Location, Vector3.up);
+        DropShip.transform.rotation = Rot;
+        StartCoroutine(DropshipLocomotion(DropShip, 0.8f));
+    }
+
+    private IEnumerator DropshipLocomotion(GameObject DropShip, float speed)
+    {
+        while (DropShip)
+        {
+            yield return new WaitForSeconds(0.01f);
+            if (DropShip != null) DropShip.transform.position += DropShip.transform.forward * speed;
+            if (DropShip != null && CheckOutOfBoundsDropShip(DropShip))
+            {
+                NetworkServer.Destroy(DropShip);
+                if (DropShip) Destroy(DropShip);
+            }
+        }
+    }
+
+    private bool CheckOutOfBoundsDropShip(GameObject DropShip)
+    {
+        if (DropShip.transform.position.x > 1000 || DropShip.transform.position.x < -1000 || DropShip.transform.position.z > 1000 || DropShip.transform.position.z < -1000) return true;
+        return false;
     }
 
     public GameObject GetRandomEnemyPrefab()

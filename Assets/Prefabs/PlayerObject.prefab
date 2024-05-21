@@ -76,7 +76,7 @@ MonoBehaviour:
   bReady: 0
   PlayerCharacterChoice: 0
   GamePrefabs:
-  - {fileID: 2654573300976310538, guid: 570bb2126f3fb0a4d9ac456f01d60c02, type: 3}
+  - {fileID: 2654573300976310538, guid: 7b0dabf509fd692449f978d0293d8174, type: 3}
   - {fileID: 2654573300976310538, guid: aa5e4acd00de9e440b5ed6f76db83ec7, type: 3}
   SpectatorPrefab: {fileID: 7943624836992320822, guid: 708982f1210b58a478ee4340ecd9207e, type: 3}
 --- !u!114 &-6684785954337720041
