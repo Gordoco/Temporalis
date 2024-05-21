@@ -8,6 +8,7 @@ public class ExplosionCreator : NetworkBehaviour
     private float damage;
     private float radius;
     private GameObject owner;
+    private List<GameObject> oldHits = new List<GameObject>();
 
     /// <summary>
     /// Server-Only method to spawn in an explosion
@@ -28,13 +29,15 @@ public class ExplosionCreator : NetworkBehaviour
         //Debug.Log(hits.Length);
         for (int i = 0; i < hits.Length; i++)
         {
-            if (hits[i].collider.gameObject != owningObject)
+            GameObject rootObj = hits[i].collider.gameObject.transform.root.gameObject;
+            if (rootObj != owningObject && !oldHits.Contains(rootObj))
             {
-                if (bPlayer && hits[i].collider.gameObject.GetComponent<PlayerMove>()) continue;
-                if (hits[i].collider.gameObject.GetComponent<HitManager>())
+                if (bPlayer && hits[i].collider.gameObject.GetComponentInParent<PlayerMove>()) continue;
+                if (hits[i].collider.gameObject.GetComponentInParent<HitManager>())
                 {
-                    hits[i].collider.gameObject.GetComponent<HitManager>().Hit(damage);
-                    Debug.Log("HIT SOMONE: " + hits[i].collider.gameObject.name);
+                    hits[i].collider.gameObject.GetComponentInParent<HitManager>().Hit(damage);
+                    Debug.Log("HIT SOMONE: " + hits[i].collider.gameObject.transform.root.gameObject.name);
+                    oldHits.Add(hits[i].collider.gameObject.transform.root.gameObject);
                 }
             }
         }

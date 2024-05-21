@@ -13,17 +13,17 @@ public class EnemyStatManager : StatManager
     [SerializeField] private float ItemWeightMult = 1;
 
     /// <summary>
-    /// Weight of the enemy type when its spawned, allows fewer, stronger enemies to be spawned.
+    /// Cost of spawning specified enemy, allows fewer, stronger enemies to be spawned.
     /// </summary>
-    [SerializeField] private int EnemySpawnWeight = 1;
+    [SerializeField] private int EnemySpawnCost = 1;
 
     public static EnemyStatManager operator >(EnemyStatManager a, EnemyStatManager b)
     {
-        return a.GetEnemySpawnWeight() > b.GetEnemySpawnWeight() ? a : b;
+        return a.GetEnemySpawnCost() > b.GetEnemySpawnCost() ? a : b;
     }
     public static EnemyStatManager operator <(EnemyStatManager a, EnemyStatManager b)
     {
-        return a.GetEnemySpawnWeight() < b.GetEnemySpawnWeight() ? a : b;
+        return a.GetEnemySpawnCost() < b.GetEnemySpawnCost() ? a : b;
     }
 
     private static string ITEM_PATH = "ConcreteItems";
@@ -60,5 +60,5 @@ public class EnemyStatManager : StatManager
     }
 
     [Server]
-    public int GetEnemySpawnWeight() { return EnemySpawnWeight; }
+    public int GetEnemySpawnCost() { return EnemySpawnCost; }
 }

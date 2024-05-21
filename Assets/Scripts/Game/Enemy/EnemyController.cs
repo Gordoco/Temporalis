@@ -9,7 +9,7 @@ public class EnemyController : NetworkBehaviour
 {
     [SerializeField] protected GameObject EnemyProjPrefab;
     [SerializeField] private float gravity = 20;
-    [SerializeField] protected Vector3 ProjectileOffset = Vector3.zero;
+    [SerializeField] protected GameObject ProjectileOffset = null;
 
     private GameObject[] Players;
 
@@ -61,7 +61,7 @@ public class EnemyController : NetworkBehaviour
         }
 
         Vector3 dir;
-        if (Players[playerTarget] != null) dir = Players[playerTarget].transform.position - (transform.position + ProjectileOffset);
+        if (Players[playerTarget] != null) dir = ProjectileOffset != null ? Players[playerTarget].transform.position - ProjectileOffset.transform.position : Players[playerTarget].transform.position - transform.position;
         else
         {
             Players = GameObject.FindGameObjectsWithTag("Player");
@@ -71,10 +71,11 @@ public class EnemyController : NetworkBehaviour
 
         AttackFunctionality(Players, dir);
 
-        transform.rotation = Quaternion.LookRotation(new Vector3(dir.x, 0, dir.z));
-        if (Vector3.Distance(Players[playerTarget].transform.position, transform.position) <= Manager.GetStat(NumericalStats.Range)/2)
+        Vector3 LookDir = Players[playerTarget].transform.position - transform.position;
+        transform.rotation = Quaternion.LookRotation(new Vector3(LookDir.x, 0, LookDir.z));
+        if (Vector3.Distance(Players[playerTarget].transform.position, transform.position) <= Manager.GetStat(NumericalStats.Range)/1.25)
         {
-            dir = new Vector3(0, dir.y, 0);
+            dir = new Vector3(0, LookDir.y, 0);
             dir.Normalize();
         }
         dir.Normalize();
@@ -103,7 +104,8 @@ public class EnemyController : NetworkBehaviour
             bCanAttack = false;
             StartCoroutine(AttackCooldown());
             GameObject proj = Instantiate(EnemyProjPrefab);
-            proj.GetComponent<ProjectileCreator>().InitializeProjectile(gameObject, transform.position + ProjectileOffset, dir, Manager.GetStat(NumericalStats.PrimaryDamage), true);
+            Vector3 ProjLocation = ProjectileOffset != null ? ProjectileOffset.transform.position : transform.position;
+            proj.GetComponent<ProjectileCreator>().InitializeProjectile(gameObject, ProjLocation, dir, Manager.GetStat(NumericalStats.PrimaryDamage), true);
         }
     }
 }

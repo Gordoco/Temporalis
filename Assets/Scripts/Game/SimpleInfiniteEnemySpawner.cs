@@ -40,7 +40,7 @@ public class SimpleInfiniteEnemySpawner : NetworkBehaviour
         int randSpawn = Random.Range(0, SpawnPoints.Length);
         SetupDropship(DropShip, DropShipSpawns[Random.Range(0, DropShipSpawns.Length)].transform.position, SpawnPoints[randSpawn]);
         bool bStartedSpawning = false;
-        while (i < (BaseNumEnemies + (int)(difficulty / 30)))
+        while (i < (BaseNumEnemies + (int)(difficulty/20)))
         {
             if (!bStartedSpawning && DropShip && Vector3.Distance(DropShip.transform.position, SpawnPoints[randSpawn]) > 50)
             {
@@ -49,7 +49,7 @@ public class SimpleInfiniteEnemySpawner : NetworkBehaviour
             else
             {
                 bStartedSpawning = true;
-                GameObject randEnemy = GetRandomEnemyPrefab();
+                GameObject randEnemy = GetRandomEnemyPrefab((BaseNumEnemies + (int)(difficulty / 10)) - i);
                 GameObject newEnemy = Instantiate(randEnemy, DropShip.transform.position, Quaternion.identity);
                 EnemyStatManager statManager = newEnemy.GetComponent<EnemyStatManager>();
                 if (statManager == null)
@@ -57,7 +57,7 @@ public class SimpleInfiniteEnemySpawner : NetworkBehaviour
                     Destroy(newEnemy);
                     break;
                 }
-                i++;
+                i+=randEnemy.GetComponent<EnemyStatManager>().GetEnemySpawnCost();
                 NetworkServer.Spawn(newEnemy);
                 yield return new WaitForSeconds(Random.Range(0.3f/ (BaseNumEnemies + (int)(difficulty / 30)), 0.75f / (BaseNumEnemies + (int)(difficulty / 30))));
             }
@@ -94,16 +94,19 @@ public class SimpleInfiniteEnemySpawner : NetworkBehaviour
         return false;
     }
 
-    public GameObject GetRandomEnemyPrefab()
+    public GameObject GetRandomEnemyPrefab(int weight)
     {
-        if (EnemyTypes == null || EnemyTypes.Length == 0) return null;
-        int sum = 0;
-        for (int i = 0; i < EnemyTypes.Length; i++) sum += EnemyTypes[i].GetComponent<EnemyStatManager>().GetEnemySpawnWeight();
+        if (EnemyTypes == null || EnemyTypes.Length == 0 || weight <= 0) return null;
+        int randIndex = Random.Range(0, EnemyTypes.Length);
+        while (EnemyTypes[randIndex].GetComponent<EnemyStatManager>().GetEnemySpawnCost() > weight) randIndex = Random.Range(0, EnemyTypes.Length);
+        return EnemyTypes[randIndex];
+        /*int sum = 0;
+        for (int i = 0; i < EnemyTypes.Length; i++) sum += EnemyTypes[i].GetComponent<EnemyStatManager>().GetEnemySpawnCost();
         int rand = Random.Range(0, sum);
         int index = -1;
         sum = 0;
-        for (int i = 0; i < EnemyTypes.Length; i++) { sum += EnemyTypes[i].GetComponent<EnemyStatManager>().GetEnemySpawnWeight(); if (sum > rand) { index = i; break; } }
-        return EnemyTypes[index];
+        for (int i = 0; i < EnemyTypes.Length; i++) { sum += EnemyTypes[i].GetComponent<EnemyStatManager>().GetEnemySpawnCost(); if (sum > rand) { index = i; break; } }
+        return EnemyTypes[index];*/
     }
 
     private void Update()

@@ -178,7 +178,7 @@ MonoBehaviour:
   - stat: 17
     val: 1
   ItemWeightMult: 1
-  EnemySpawnWeight: 2
+  EnemySpawnCost: 5
 --- !u!114 &-9095591412428583769
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -263,7 +263,7 @@ MonoBehaviour:
   syncInterval: 0
   EnemyProjPrefab: {fileID: 4154122368009565914, guid: 8326341b88a6b9d4bb3e06b992aa5854, type: 3}
   gravity: 20
-  ProjectileOffset: {x: 0, y: 0, z: 0}
+  ProjectileOffset: {fileID: 0}
 --- !u!1 &7472871802506170848
 GameObject:
   m_ObjectHideFlags: 0

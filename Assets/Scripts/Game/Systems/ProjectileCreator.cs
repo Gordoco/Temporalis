@@ -44,6 +44,7 @@ public class ProjectileCreator : NetworkBehaviour
         this.damage = (float)damage;
         this.bFromServer = inServer;
         gameObject.transform.position = startLocation;
+        gameObject.transform.rotation = Quaternion.LookRotation(direction, Vector3.up);
         bAlive = true;
         if (bFromServer) NetworkServer.Spawn(gameObject);
 
@@ -66,19 +67,19 @@ public class ProjectileCreator : NetworkBehaviour
 
     public void OnTriggerEnter(Collider collision)
     {
-        Debug.Log("COLLIDED WITH: " + collision.gameObject.name);
+        Debug.Log("COLLIDED WITH: " + collision.gameObject.transform.root.gameObject.name);
         if (bAlive)
         {
-            if (!hitObjects.Contains(collision.gameObject) && collision.gameObject.GetComponent<HitManager>() != null)
+            if (!(hitObjects.Contains(collision.gameObject.transform.root.gameObject)) && collision.gameObject.GetComponentInParent<HitManager>() != null)
             {
-                if (bEnemy && collision.gameObject.tag == "Enemy")
+                if (bEnemy && collision.gameObject.transform.root.CompareTag("Enemy"))
                 {
-                    hitObjects.Add(collision.gameObject);
+                    hitObjects.Add(collision.gameObject.transform.root.gameObject);
                     return;
                 }
                 if (OnHitEnemy != null) OnHitEnemy.Invoke(this, collision);
-                collision.gameObject.GetComponent<HitManager>().Hit(damage);
-                hitObjects.Add(collision.gameObject);
+                collision.gameObject.GetComponentInParent<HitManager>().Hit(damage);
+                hitObjects.Add(collision.gameObject.transform.root.gameObject);
                 pierceLevel--;
                 if (pierceLevel <= 0)
                 {
