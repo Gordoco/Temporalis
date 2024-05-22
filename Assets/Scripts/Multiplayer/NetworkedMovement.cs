@@ -32,7 +32,7 @@ public class NetworkedMovement : NetworkBehaviour
     public void Move(Vector3 Position)
     {
         //if (!isOwned) return;
-        if (isClient && !isServer) ClientMoveHandler(Position);
+        if (isClient) ClientMoveHandler(Position);
         if (isServer) ServerMoveHandler(Position);
     }
 
@@ -74,7 +74,7 @@ public class NetworkedMovement : NetworkBehaviour
         Debug.Log("[Server Movement] - Moved to " + Position);
         CC.Move(Position);
         ServerPosition = Position;
-        ServerMoveRPC(Position);
+        //ServerMoveRPC(Position);
     }
 
     [ClientRpc]
