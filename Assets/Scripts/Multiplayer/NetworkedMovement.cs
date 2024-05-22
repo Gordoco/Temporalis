@@ -52,7 +52,7 @@ public class NetworkedMovement : NetworkBehaviour
         if (!isClient) return;
         if (transform.position != ServerPosition)
         {
-            Debug.Log("[Client] - OUT OF SYNC");
+            CC.Move(ServerPosition);
         }
     }
 
@@ -75,13 +75,5 @@ public class NetworkedMovement : NetworkBehaviour
         CC.Move(Position);
         ServerPosition = Position;
         //ServerMoveRPC(Position);
-    }
-
-    [ClientRpc]
-    private void ServerMoveRPC(Vector3 Position)
-    {
-        Assert.IsTrue(isClient);
-        Debug.Log("[Server Replicated] - Moved to " + Position);
-        CC.Move(Position);
     }
 }
