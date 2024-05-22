@@ -49,7 +49,7 @@ public class NetworkedMovement : NetworkBehaviour
 
     private void ClientPositionLerp(Vector3 oldValue, Vector3 newValue)
     {
-        if (!isClient) return;
+        if (!isClient || isServer) return;
         if (transform.position != ServerPosition)
         {
             CC.Move(ServerPosition);
