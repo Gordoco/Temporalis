@@ -74,5 +74,14 @@ public class NetworkedMovement : NetworkBehaviour
         Debug.Log("[Server Movement] - Moved to " + Position);
         CC.Move(Position);
         ServerPosition = Position;
+        ServerMoveRPC(Position);
+    }
+
+    [ClientRpc]
+    private void ServerMoveRPC(Vector3 Position)
+    {
+        Assert.IsTrue(isClient);
+        Debug.Log("[Server Replicated] - Moved to " + Position);
+        CC.Move(Position);
     }
 }
