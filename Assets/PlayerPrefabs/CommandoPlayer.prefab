@@ -676,7 +676,6 @@ GameObject:
   - component: {fileID: 1250715329504170301}
   - component: {fileID: 6548516037796861554}
   - component: {fileID: 208383235259059019}
-  - component: {fileID: 396618063669036064}
   m_Layer: 0
   m_Name: CommandoPlayer
   m_TagString: Player
@@ -899,21 +898,6 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &396618063669036064
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2654573300976310538}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4ac5618ff8038d04d89f39742f071fd9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
 --- !u!1 &2654573301701016692
 GameObject:
   m_ObjectHideFlags: 0
