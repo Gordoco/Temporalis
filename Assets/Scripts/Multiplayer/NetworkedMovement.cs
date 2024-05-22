@@ -32,7 +32,7 @@ public class NetworkedMovement : NetworkBehaviour
     public void Move(Vector3 Position)
     {
         if (!isOwned) return;
-        if (isClient) ClientMoveHandler(Position);
+        if (isClient && !isServer) ClientMoveHandler(Position);
         if (isServer) ServerMoveHandler(Position);
     }
 
