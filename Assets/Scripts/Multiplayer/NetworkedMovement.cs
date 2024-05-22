@@ -31,6 +31,7 @@ public class NetworkedMovement : NetworkBehaviour
     /// <param name="Position"></param>
     public void Move(Vector3 Position)
     {
+        if (!isOwned) return;
         if (isClient) ClientMoveHandler(Position);
         if (isServer) ServerMoveHandler(Position);
     }
