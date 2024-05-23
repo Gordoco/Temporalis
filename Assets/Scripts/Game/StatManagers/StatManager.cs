@@ -143,7 +143,7 @@ public abstract class StatManager : NetworkBehaviour
     [Server]
     public void DealDamage(double Damage)
     {
-        Debug.Log("DAMAGED");
+        //Debug.Log("DAMAGED");
         Health -= Damage;
     }
 
@@ -199,7 +199,7 @@ public abstract class StatManager : NetworkBehaviour
     private double GetCombinedValueFromItems(NumericalStats stat)
     {
         if ((int)stat < 0 || (int)stat >= (int)NumericalStats.NumberOfStats) return 0;
-        Debug.Log("STAT: " + (int)stat);
+        //Debug.Log("STAT: " + (int)stat);
         double val = stats[(int)stat];
         foreach (BaseItem item in items)
         {
