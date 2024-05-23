@@ -52,7 +52,22 @@ public class NetworkedMovement : NetworkBehaviour
         if (!isClient || isServer) return;
         if (transform.position != ServerPosition)
         {
-            CC.Move(ServerPosition);
+            //CC.Move(ServerPosition);
+            StartCoroutine(ClientPositionLerpCoroutine(oldValue, newValue));
+        }
+    }
+
+    private IEnumerator ClientPositionLerpCoroutine(Vector3 oldPosition, Vector3 Position)
+    {
+        const float INTERVAL = 0.1f;
+        double percent = 0;
+        while (Position == ServerPosition && transform.position != Position)
+        {
+            yield return new WaitForSeconds(INTERVAL);
+            transform.position = new Vector3(Mathf.Lerp(oldPosition.x, Position.x, (float)percent),
+                Mathf.Lerp(oldPosition.y, Position.y, (float)percent),
+                Mathf.Lerp(oldPosition.z, Position.z, (float)percent));
+            percent += INTERVAL*2;
         }
     }
 
