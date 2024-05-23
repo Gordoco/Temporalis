@@ -76,4 +76,12 @@ public class NetworkedMovement : NetworkBehaviour
         ServerPosition = Position;
         //ServerMoveRPC(Position);
     }
+
+    [ClientRpc]
+    private void ServerMoveRPC(Vector3 Position)
+    {
+        if (isOwned) return;
+        Debug.Log("[Replicated Movement] - Moved to " + Position);
+        CC.Move(Position);
+    }
 }
