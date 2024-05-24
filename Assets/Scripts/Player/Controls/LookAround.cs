@@ -2,7 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
+using System;
 
+[Serializable]
 public struct View 
 {
     public Vector3 loc;
@@ -21,9 +23,9 @@ public class LookAround : NetworkBehaviour
     [SerializeField] GameObject UI;
     public bool bIsServer = false;
 
-    private View TopDownView = new View(new Vector3(0, 3, -2), new Vector3(52, 0, 0));
-    private View StraightView = new View(new Vector3(0, 2.23f, -4.18f), new Vector3(10, 0, 0));
-    private View DownTopView = new View(new Vector3(0, -0.27f, -1), new Vector3(-70, 0, 0));
+    [SerializeField] private View TopDownView = new View(new Vector3(0, 3, -2), new Vector3(52, 0, 0));
+    [SerializeField] private View StraightView = new View(new Vector3(0, 2.23f, -4.18f), new Vector3(10, 0, 0));
+    [SerializeField] private View DownTopView = new View(new Vector3(0, -0.27f, -1), new Vector3(-70, 0, 0));
     private float yRotation = 0.3f;
     private Vector3 weaponMiddle;
 

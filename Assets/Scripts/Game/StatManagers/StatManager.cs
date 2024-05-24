@@ -60,6 +60,8 @@ public abstract class StatManager : NetworkBehaviour
     /// </summary>
     [SyncVar] private double Health;
 
+    [SyncVar] public bool Initialized = false;
+
     [Server]
     public void ToggleCCImmune(bool b)
     {
@@ -68,12 +70,14 @@ public abstract class StatManager : NetworkBehaviour
 
     public bool GetCCImmune() { return CCImmune; }
 
-    public void Start()
+    private void Start()
     {
         if (isServer)
         {
             for (int i = 0; i < (int)NumericalStats.NumberOfStats; i++) stats.Add(initStats[i].val);
             Health = GetStat(NumericalStats.Health);
+            Debug.Log(gameObject.name + " IS INITIALIZED");
+            Initialized = true;
             StartCoroutine(HealthRegen());
         }
         else if (gameObject.tag == "Player" && isClient)

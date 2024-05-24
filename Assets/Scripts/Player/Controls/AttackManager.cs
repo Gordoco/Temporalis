@@ -8,7 +8,8 @@ public abstract class AttackManager : NetworkBehaviour
     [SerializeField] private GameObject PauseMenuPrefab;
     [SerializeField] protected StatManager statManager;
     [SerializeField] private GameObject StunnedParticleEffect;
-    [SerializeField] protected bool FullAuto = true;
+    [SerializeField, SyncVar] protected bool PrimaryFullAuto = true;
+    [SerializeField, SyncVar] protected bool SecondaryFullAuto = false;
     [SyncVar] private bool bCanAttack = true;
     [SyncVar] private bool bCanSecondary = true;
     [SyncVar] private bool bCanAbility1 = true;
@@ -71,7 +72,7 @@ public abstract class AttackManager : NetworkBehaviour
         if (!bEnabled) return;
         if (!isOwned) { this.enabled = false; return; }
 
-        bool primaryInput = FullAuto ? Input.GetButton("PrimaryAttack") : Input.GetButtonDown("PrimaryAttack");
+        bool primaryInput = PrimaryFullAuto ? Input.GetButton("PrimaryAttack") : Input.GetButtonDown("PrimaryAttack");
         if (primaryInput && bCanAttack)
         {
             bCanAttack = false;
@@ -81,7 +82,9 @@ public abstract class AttackManager : NetworkBehaviour
             ServerStartPrimaryAttackCooldown();
         }
 
-        if (Input.GetButtonDown("SecondaryAttack") && bCanSecondary)
+
+        bool secondaryInput = SecondaryFullAuto ? Input.GetButton("SecondaryAttack") : Input.GetButtonDown("SecondaryAttack");
+        if (secondaryInput && bCanSecondary)
         {
             bCanSecondary = false;
             Debug.Log("Shot Gat Extra Good");

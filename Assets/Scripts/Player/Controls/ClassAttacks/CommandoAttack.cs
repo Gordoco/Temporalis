@@ -96,10 +96,14 @@ public class CommandoAttack : AttackManager
                 Destroy(proj);
                 return;
             }
-            float forwardOffset = 5;
+            float forwardOffset = 8;
             proj.GetComponent<ProjectileCreator>().InitializeProjectile(gameObject, Camera.transform.position + (Camera.transform.forward * forwardOffset), Camera.transform.forward, 0);
             bool server;
-            if (isServer) server = true;
+            if (isServer)
+            {
+                server = true;
+                if (statManager.GetStat(NumericalStats.SecondaryCooldown) < 0.25) SecondaryFullAuto = true;
+            }
             else server = false;
             proj.GetComponent<GrenadeTimedExplosion>().Init(gameObject, 20, (float)statManager.GetStat(NumericalStats.SecondaryDamage), server);
         }

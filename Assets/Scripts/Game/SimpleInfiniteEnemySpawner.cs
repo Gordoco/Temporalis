@@ -57,8 +57,13 @@ public class SimpleInfiniteEnemySpawner : NetworkBehaviour
                     Destroy(newEnemy);
                     break;
                 }
-                i+=randEnemy.GetComponent<EnemyStatManager>().GetEnemySpawnCost();
+
+                EnemyStatManager newEnemyManager = newEnemy.GetComponent<EnemyStatManager>();
+                i += randEnemy.GetComponent<EnemyStatManager>().GetEnemySpawnCost();
                 NetworkServer.Spawn(newEnemy);
+                while (newEnemyManager.Initialized == false) yield return new WaitForSeconds(0.01f);
+                newEnemyManager.SetStat(NumericalStats.Health, newEnemyManager.GetStat(NumericalStats.Health) * (1 + (difficulty / 75)));
+                newEnemyManager.ModifyCurrentHealth(newEnemyManager.GetStat(NumericalStats.Health));
                 yield return new WaitForSeconds(Random.Range(0.3f/ (BaseNumEnemies + (int)(difficulty / 30)), 0.75f / (BaseNumEnemies + (int)(difficulty / 30))));
             }
         }
