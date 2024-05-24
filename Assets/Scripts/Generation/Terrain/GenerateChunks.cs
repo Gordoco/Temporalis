@@ -170,6 +170,7 @@ public class GenerateChunks : MonoBehaviour
         if (Player != null) verifyChunkState();
     }
 
+#if UNITY_EDITOR
     void OnValidate()
     {
         if (SaveAsMesh)
@@ -218,7 +219,7 @@ public class GenerateChunks : MonoBehaviour
             StartCoroutine(init(true));
         }
     }
-
+#endif
     void verifyChunkState() {
         /*
         Checks each direction, loops through each chunk movement (BAD for teleportation implementations:
