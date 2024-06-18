@@ -14,8 +14,9 @@ public class PlayerObjectController : NetworkBehaviour
     [SyncVar] public ulong PlayerSteamID;
     [SyncVar(hook = nameof(PlayerNameUpdate))] public string PlayerName;
     [SyncVar(hook = nameof(PlayerReadyUpdate))] public bool bReady;
-    public GameObject GamePrefab;
-
+    [SyncVar(hook = nameof(PlayerCharacterUpdate))] public int PlayerCharacterChoice = 0;
+    public GameObject[] GamePrefabs;
+    [SerializeField] private GameObject SpectatorPrefab;
 
     private LoopbreakerNetworkManager manager;
 
@@ -39,27 +40,41 @@ public class PlayerObjectController : NetworkBehaviour
         obj.transform.SetParent(parent.transform, b);
     }
 
-    /*[ClientRpc]
-    public void RpcSetPosition(Vector3 pos)
-    {
-        transform.position = pos;
-    }*/
-
     [Server]
     public void Die()
     {
-        if (GetComponent<Camera>() == null) gameObject.AddComponent<Camera>();
-        Manager.PlayerDied();
-        lookComp.enabled = true;
-        DieRpc();
+        //if (GetComponent<Camera>() == null) gameObject.AddComponent<Camera>();
+        DieRpc(isServer);
+        Manager.PlayerDied(this);
+        //lookComp.enabled = true;
     }
 
     [ClientRpc]
-    public void DieRpc()
+    public void DieRpc(bool server)
     {
         if (!isOwned) return;
-        if (GetComponent<Camera>() == null) gameObject.AddComponent<Camera>();
-        lookComp.enabled = true;
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = false;
+        GameObject spectator = Instantiate(SpectatorPrefab, transform.position, Quaternion.identity);
+        spectator.GetComponent<SpectatorMove>().isServer = server;
+        //if (GetComponent<Camera>() == null) gameObject.AddComponent<Camera>();
+        //lookComp.enabled = true;
+    }
+
+    [ClientRpc]
+    public void DisableCameraMove()
+    {
+        GetComponent<LookAround>().enabled = false;
+        Cursor.lockState = CursorLockMode.None;
+    }
+
+    [ClientRpc]
+    public void Disconnect()
+    {
+        if (!isOwned) return;
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+        Manager.Disconnect(false);
     }
 
     private void PlayerReadyUpdate(bool OldValue, bool NewValue)
@@ -92,6 +107,32 @@ public class PlayerObjectController : NetworkBehaviour
         if (isOwned)
         {
             CmdSetPlayerReady();
+        }
+    }
+
+    public void SelectCharacter(int character)
+    {
+        if (isOwned)
+        {
+            CmdSetPlayerCharacter(character);
+        }
+    }
+
+    [Command]
+    private void CmdSetPlayerCharacter(int character)
+    {
+        this.PlayerCharacterUpdate(this.PlayerCharacterChoice, character);
+    }
+
+    public void PlayerCharacterUpdate(int OldValue, int NewValue)
+    {
+        if (isServer)
+        {
+            this.PlayerCharacterChoice = NewValue;
+        }
+        if (isClient)
+        {
+            LobbyController.Instance.UpdatePlayerList();
         }
     }
 

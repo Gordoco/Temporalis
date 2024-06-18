@@ -17,7 +17,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1558283593618410858
 Transform:
   m_ObjectHideFlags: 0
@@ -50,25 +50,34 @@ MonoBehaviour:
   syncInterval: 0
   DifficultyScale: 0
   SpawnPoints:
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  EnemySpawnInterval: 5
+  - {x: -25, y: 75, z: -120}
+  - {x: -200, y: 75, z: -65}
+  - {x: -134, y: 75, z: -11}
+  - {x: -67, y: 75, z: -46}
+  - {x: -83, y: 75, z: -98}
+  - {x: -184, y: 75, z: -187}
+  - {x: -232, y: 75, z: -12}
+  - {x: -11, y: 75, z: -220}
+  - {x: -95, y: 75, z: -137}
+  - {x: -46, y: 75, z: -25}
+  - {x: -81, y: 75, z: -65}
+  - {x: -100, y: 75, z: -82}
+  - {x: -111, y: 75, z: -43}
+  - {x: -222, y: 75, z: -69}
+  - {x: -13, y: 75, z: -224}
+  EnemySpawnInterval: 12
   BaseNumEnemies: 3
   EnemyTypes:
   - {fileID: 5377742575258131845, guid: 36ba6b31cdb352c4797a46eecd57067f, type: 3}
+  - {fileID: 5377742575258131845, guid: 1e54f550bec05d849974df16e0160d1f, type: 3}
+  - {fileID: 5377742575258131845, guid: c544f1754fec91b4a87c4ebeb976705d, type: 3}
+  - {fileID: 5377742575258131845, guid: 89c683e701e815547862fed969e0c295, type: 3}
+  DropShipPrefab: {fileID: 983086580059639543, guid: f23e51baf90ad654f9a93c84923f00ae, type: 3}
+  DropShipSpawns:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!114 &-1177985677736977396
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -20,7 +20,7 @@ public class SteamLobby : MonoBehaviour
     private const string HostAddressKey = "HostAddress";
     private LoopbreakerNetworkManager manager;
 
-    private void Start()
+    private void Awake()
     {
         if (!SteamManager.Initialized) { return; }
 

@@ -65,7 +65,7 @@ public class LoopbreakerNetworkManager : NetworkManager
         foreach (PlayerObjectController GamePlayer in GamePlayers)
         {
             GamePlayer.gameObject.transform.position = StartLocation;
-            GameObject gamePrefab = Instantiate(GamePlayer.GamePrefab, StartLocation, Quaternion.identity);
+            GameObject gamePrefab = Instantiate(GamePlayer.GamePrefabs[GamePlayer.PlayerCharacterChoice], StartLocation, Quaternion.identity);
             gamePrefab.transform.SetParent(GamePlayer.transform, false);
             NetworkServer.Spawn(gamePrefab, GetConnectionFromID(GamePlayer.ConnectionID));
             GamePlayer.RpcSetParent(gamePrefab, GamePlayer.gameObject, false);
@@ -87,10 +87,52 @@ public class LoopbreakerNetworkManager : NetworkManager
     }
 
     [Server]
-    public void PlayerDied()
+    public void PlayerDied(PlayerObjectController player)
     {
         playersLoaded--;
-        if (playersLoaded == 0) NetworkServer.DisconnectAll();
+        if (playersLoaded <= 0)
+        {
+            Debug.Log("EVERYONE DEAD");
+            for (int i = 0; i < GamePlayers.Count; i++)
+            {
+                GamePlayers[i].DisableCameraMove();
+                GamePlayers[i].Disconnect();
+            }
+            StartCoroutine(CheckForAllClientsDisconnected());
+            //SceneManager.LoadScene("MainMenu");
+        }
+    }
+
+    private IEnumerator CheckForAllClientsDisconnected()
+    {
+        while (GamePlayers.Count > 0)
+        {
+            yield return new WaitForSeconds(0.02f);
+        }
+        Disconnect(true);
+    }
+
+    /// <summary>
+    /// Way for clients or host to leave the game
+    /// </summary>
+    public void Disconnect(bool isServer)
+    {
+        if (isServer)
+        {
+            Debug.Log("STOPPING SERVER");
+            StopHost();
+        }
+        else
+        {
+            Debug.Log("STOPPING CLIENT");
+            StopClient();
+        }
+    }
+
+    public override void OnStopHost()
+    {
+        base.OnStopHost();
+        Debug.Log("STOPPED");
     }
 
     IEnumerator SpawnPlayersDelay()
