@@ -44,7 +44,7 @@ public class LookAround : NetworkBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void LateUpdate()
     {
         if (!isOwned) return;
 
@@ -53,8 +53,8 @@ public class LookAround : NetworkBehaviour
 
     void UpdateFunctionality()
     {
-        float mouseX = Input.GetAxis("Mouse X") * mouseXSensitivity * Time.deltaTime;
-        float mouseY = -1 * Input.GetAxis("Mouse Y") * mouseYSensitivity * Time.deltaTime;
+        float mouseX = Input.GetAxis("Mouse X") * mouseXSensitivity * Time.smoothDeltaTime;
+        float mouseY = -1 * Input.GetAxis("Mouse Y") * mouseYSensitivity * Time.smoothDeltaTime;
 
         yRotation = Mathf.Clamp(yRotation + mouseY, 0, 1);
 
@@ -92,7 +92,9 @@ public class LookAround : NetworkBehaviour
         transform.localRotation = rot;
 
         //X Rotation
-        playerBody.Rotate(Vector3.up * mouseX);
+        //playerBody.Rotate(Vector3.up * mouseX);
+
+        playerBody.transform.rotation = Quaternion.Euler(playerBody.transform.rotation.eulerAngles + Vector3.up * mouseX);
     }
 
     void UpdateWeapon(float rot)
