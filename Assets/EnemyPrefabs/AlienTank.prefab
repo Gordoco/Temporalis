@@ -117,7 +117,7 @@ MonoBehaviour:
   - stat: 5
     val: 1
   - stat: 6
-    val: 2000
+    val: 1500
   - stat: 7
     val: 50
   - stat: 8
@@ -140,6 +140,7 @@ MonoBehaviour:
     val: 1
   - stat: 17
     val: 1
+  Initialized: 0
   ItemWeightMult: 15
   EnemySpawnCost: 10
 --- !u!114 &-9095591412428583769

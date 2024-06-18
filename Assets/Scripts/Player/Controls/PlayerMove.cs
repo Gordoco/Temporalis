@@ -14,11 +14,15 @@ public class PlayerMove : NetworkBehaviour
     private bool bAwake = false;
     private float tempGravity = 0;
     private int AnimMovingHash;
+    private int AnimStrafingHash;
+    private int AnimJumpingHash;
     Animator childAnimator;
 
     private void Awake()
     {
-        AnimMovingHash = Animator.StringToHash("Moving");
+        AnimMovingHash = Animator.StringToHash("Running");
+        AnimStrafingHash = Animator.StringToHash("Strafing");
+        AnimJumpingHash = Animator.StringToHash("Jumping");
         childAnimator = GetComponentInChildren<Animator>();
     }
 
@@ -67,20 +71,48 @@ public class PlayerMove : NetworkBehaviour
         StatManager manager = GetComponent<StatManager>();
         if (controller.isGrounded)
         {
+            childAnimator.SetBool(AnimJumpingHash, false);
             tempGravity = 0;
             moveDirection = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
             moveDirection.Normalize();
             moveDirection = transform.TransformDirection(moveDirection);
             moveDirection *= (float)manager.GetStat(NumericalStats.MovementSpeed);
             if (Input.GetButton("Jump"))
+            {
                 moveDirection.y = (float)manager.GetStat(NumericalStats.JumpHeight);
+                childAnimator.SetBool(AnimJumpingHash, true);
+            }
         }
         moveDirection.y -= (gravity + tempGravity) * Time.deltaTime;
         controller.Move(moveDirection * Time.deltaTime);
         Vector3 tempDir = new Vector3(moveDirection.x, 0, moveDirection.z);
-        if (tempDir != Vector3.zero && controller.isGrounded) { childAnimator.SetBool(AnimMovingHash, true); }
-        else { childAnimator.SetBool("Moving", false); }
+        AnimationHandler(tempDir, controller);
         if (isServer) UpdateTransform(transform.position);
+    }
+
+    void AnimationHandler(Vector3 tempDir, CharacterController controller)
+    {
+        if (tempDir != Vector3.zero && controller.isGrounded) 
+        {
+            float relativeDir = Vector3.Dot(tempDir, transform.forward);
+            if (relativeDir > 0.5) childAnimator.SetInteger(AnimMovingHash, 1);
+            else if (relativeDir < -0.5) childAnimator.SetInteger(AnimMovingHash, -1);
+            else childAnimator.SetInteger(AnimMovingHash, 0);
+
+            if (relativeDir > -0.6 && relativeDir < 0.6)
+            {
+                float relativeRightDir = Vector3.Dot(tempDir, transform.right);
+                if (relativeRightDir > 0.5) childAnimator.SetInteger(AnimStrafingHash, 1);
+                else if (relativeRightDir < -0.5) childAnimator.SetInteger(AnimStrafingHash, -1);
+                else childAnimator.SetInteger(AnimStrafingHash, 0);
+            }
+            else childAnimator.SetInteger(AnimStrafingHash, 0);
+        }
+        else 
+        {
+            childAnimator.SetInteger(AnimStrafingHash, 0);
+            childAnimator.SetInteger(AnimMovingHash, 0);
+        }
     }
 
     [ClientRpc]
