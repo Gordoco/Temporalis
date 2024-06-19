@@ -137,7 +137,7 @@ public class LoopbreakerNetworkManager : NetworkManager
 
     IEnumerator SpawnPlayersDelay()
     {
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(5);
         ServerSpawnAllPlayers();
     }
 }

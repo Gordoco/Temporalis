@@ -28,6 +28,7 @@ public class LookAround : NetworkBehaviour
     [SerializeField] private View DownTopView = new View(new Vector3(0, -0.27f, -1), new Vector3(-70, 0, 0));
     private float yRotation = 0.3f;
     private Vector3 weaponMiddle;
+    private Vector3 shakeOffset = Vector3.zero;
 
     // Start is called before the first frame update
     void Start()
@@ -49,6 +50,11 @@ public class LookAround : NetworkBehaviour
         if (!isOwned) return;
 
         UpdateFunctionality();
+    }
+
+    public void SetShakeOffset(Vector3 inShake)
+    {
+        shakeOffset = inShake;
     }
 
     void UpdateFunctionality()
@@ -88,12 +94,10 @@ public class LookAround : NetworkBehaviour
                 Mathf.Lerp(StraightView.rot.z, TopDownView.rot.z, (yRotation - 0.5f) * 2)
             ));
 
-        transform.localPosition = pos;
+        transform.localPosition = pos + shakeOffset;
         transform.localRotation = rot;
 
         //X Rotation
-        //playerBody.Rotate(Vector3.up * mouseX);
-
         playerBody.transform.rotation = Quaternion.Euler(playerBody.transform.rotation.eulerAngles + Vector3.up * mouseX);
     }
 

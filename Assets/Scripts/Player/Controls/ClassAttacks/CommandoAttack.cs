@@ -14,6 +14,9 @@ public class CommandoAttack : AttackManager
     [SerializeField] private Image StimImage;
     [SerializeField] private GameObject HitParticleEffect;
     [SerializeField] private GameObject GrenadePrefab;
+    [SerializeField] private GameObject LShotStart;
+    [SerializeField] private GameObject RShotStart;
+    [SerializeField] private CameraShake CameraShakeRef;
 
     /// <summary>
     /// Implements the primary attack for the Commando class. Based around the existence of twin pistols
@@ -39,11 +42,22 @@ public class CommandoAttack : AttackManager
         RaycastHit hit1;
         RaycastHit hit2;
 
-        Vector3 Gun1MuzzleLoc = Weapon.transform.GetChild(0).position + (dir * 0.5f);
-        Vector3 Gun2MuzzleLoc = Weapon.transform.GetChild(1).position + (dir * 0.5f);
+        Vector3 Gun1MuzzleLoc = LShotStart.transform.position;
+        Vector3 Gun2MuzzleLoc = RShotStart.transform.position;
 
         GameObject MF1 = Instantiate(PrimaryAttackParticleEffect, Gun1MuzzleLoc, Quaternion.LookRotation(dir));
         GameObject MF2 = Instantiate(PrimaryAttackParticleEffect, Gun2MuzzleLoc, Quaternion.LookRotation(dir));
+
+        CameraShakeRef.enabled = true;
+
+        if (isServer)
+        {
+            NetworkServer.Spawn(MF1);
+            NetworkServer.Spawn(MF2);
+        }
+
+        LShotStart.GetComponent<ParticleSystem>().Play();
+        RShotStart.GetComponent<ParticleSystem>().Play();
 
         if (Physics.Raycast(start1, dir, out hit1, (float)statManager.GetStat(NumericalStats.Range))) { /*Debug.Log("GUN 1 HIT OBJECT");*/ }
         if (Physics.Raycast(start2, dir, out hit2, (float)statManager.GetStat(NumericalStats.Range))) { /*Debug.Log("GUN 2 HIT OBJECT");*/ }

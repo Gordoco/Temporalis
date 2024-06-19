@@ -13,6 +13,7 @@ public class AutoDestroyParticleNetwork : NetworkBehaviour
     }
 
     // Update is called once per frame
+    float count = 0;
     void Update()
     {
         if (!isServer) return;
@@ -21,5 +22,11 @@ public class AutoDestroyParticleNetwork : NetworkBehaviour
             Destroy(gameObject);
             NetworkServer.Destroy(gameObject);
         }
+        if (count > 1)
+        {
+            Destroy(gameObject);
+            NetworkServer.Destroy(gameObject);
+        }
+        count += Time.deltaTime;
     }
 }
