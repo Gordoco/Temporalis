@@ -5,78 +5,94 @@ using Mirror;
 
 [RequireComponent(typeof(StatManager))]
 [RequireComponent(typeof(CharacterController))]
-public class EnemyController : NetworkBehaviour
+public abstract class EnemyController : NetworkBehaviour
 {
     [SerializeField] protected GameObject EnemyProjPrefab;
     [SerializeField] private float gravity = 20;
     [SerializeField] protected GameObject ProjectileOffset = null;
 
-    private GameObject[] Players;
+    private GameObject Player;
 
     protected StatManager Manager;
     protected CharacterController controller;
 
     protected bool bCanAttack = true;
-    protected int playerTarget = -1;
+
+    protected int AnimMovingHash;
+    protected Animator animator;
+
+    protected const float OVER_RANGE_APPROX = 1.25f;
+
+    private bool bInRange = false;
 
     // Start is called before the first frame update
-    void Start()
+    protected virtual void Start()
     {
         if (!isServer) return;
-        Players = GameObject.FindGameObjectsWithTag("Player");
-        playerTarget = Random.Range(0, Players.Length);
         Manager = GetComponent<StatManager>();
         controller = GetComponent<CharacterController>();
+        AnimMovingHash = Animator.StringToHash("Moving");
+        animator = GetComponentInChildren<Animator>();
     }
 
-    // Update is called once per frame
+    /// <summary>
+    /// Returns a random player currently connected from the level
+    /// </summary>
+    /// <returns></returns>
+    [Server]
+    protected GameObject GetRandomPlayer()
+    {
+        GameObject[] Players = GameObject.FindGameObjectsWithTag("Player");
+        int playerTarget = Random.Range(0, Players.Length);
+        return Players[playerTarget];
+    }
+
+    /// <summary>
+    /// Validates the supplied GameObject as an alive and valid player
+    /// </summary>
+    /// <param name="player"></param>
+    /// <returns></returns>
+    [Server]
+    protected bool ValidatePlayer(GameObject player)
+    {
+        if (player == null) return false;
+        if (player.tag != "Player") return false;
+        if (!player.GetComponent<PlayerStatManager>()) return false;
+        if (player.GetComponent<PlayerStatManager>().GetStat(NumericalStats.Health) <= 0) return false;
+        return true;
+    }
+
+    /// <summary>
+    /// Core Logic loop for NPC Agents
+    /// </summary>
     void Update()
     {
         if (!isServer) return;
         if (!controller.enabled) return;
 
-        if (Players == null)
-        {
-            Players = GameObject.FindGameObjectsWithTag("Player");
-            playerTarget = Random.Range(0, Players.Length);
-            return;
-        }
-        else if (Players.Length <= 0)
-        {
-            Players = GameObject.FindGameObjectsWithTag("Player");
-            playerTarget = Random.Range(0, Players.Length);
-            return;
-        }
+        Player = GetRandomPlayer();
+        if (!ValidatePlayer(Player)) return;
 
-        if (GameObject.FindGameObjectsWithTag("Player").Length != Players.Length)
-        {
-            Players = GameObject.FindGameObjectsWithTag("Player");
-            playerTarget = Random.Range(0, Players.Length);
-            return;
-        }
+        Vector3 dir = ProjectileOffset != null ? Player.transform.position - ProjectileOffset.transform.position : Player.transform.position - transform.position;
 
-        if (playerTarget < 0 || playerTarget >= Players.Length)
+        float dist = Vector3.Distance(Player.transform.position, transform.position);
+        
+        if (dist > Manager.GetStat(NumericalStats.Range))
         {
-            playerTarget = Random.Range(0, Players.Length);
+            bInRange = false;
+        }
+        else if (dist <= Manager.GetStat(NumericalStats.Range) / OVER_RANGE_APPROX || bInRange)
+        {
+            VisualAttackCue();
+            AudioAttackCue();
+            AttackFunctionality(Player, ref dir);
+            InRangeBehavior(Player, ref dir);
+            bInRange = true;
         }
 
-        Vector3 dir;
-        if (Players[playerTarget] != null) dir = ProjectileOffset != null ? Players[playerTarget].transform.position - ProjectileOffset.transform.position : Players[playerTarget].transform.position - transform.position;
-        else
+        if (!bInRange)
         {
-            Players = GameObject.FindGameObjectsWithTag("Player");
-            playerTarget = Random.Range(0, Players.Length);
-            return;
-        }
-
-        AttackFunctionality(Players, dir);
-
-        Vector3 LookDir = Players[playerTarget].transform.position - transform.position;
-        transform.rotation = Quaternion.LookRotation(new Vector3(LookDir.x, 0, LookDir.z));
-        if (Vector3.Distance(Players[playerTarget].transform.position, transform.position) <= Manager.GetStat(NumericalStats.Range)/1.25)
-        {
-            dir = new Vector3(0, LookDir.y, 0);
-            dir.Normalize();
+            OutOfRangeBehavior(Player, ref dir);
         }
         dir.Normalize();
         
@@ -88,24 +104,63 @@ public class EnemyController : NetworkBehaviour
         {
             dir.y -= gravity;
         }
-        controller.Move(dir * Time.deltaTime * (float)Manager.GetStat(NumericalStats.MovementSpeed));
+        controller.Move((float)Manager.GetStat(NumericalStats.MovementSpeed) * Time.deltaTime * dir);
+
+        if (!animator) return;
+        if (Mathf.Abs(dir.x) > 0 || Mathf.Abs(dir.z) > 0)
+        {
+            animator.SetBool(AnimMovingHash, true);
+        }
+        else
+        {
+            animator.SetBool(AnimMovingHash, false);
+        }
     }
 
+    /// <summary>
+    /// Simple IEnumerator that utilizes the Stat Manager to enforce attack speed cooldown
+    /// </summary>
+    /// <returns></returns>
+    [Server]
     protected IEnumerator AttackCooldown()
     {
         yield return new WaitForSeconds(1/(float)Manager.GetStat(NumericalStats.AttackSpeed));
         bCanAttack = true;
     }
 
-    protected virtual void AttackFunctionality(GameObject[] Players, Vector3 dir)
+    /// <summary>
+    /// Functional Implementation of attack logic. Must check bCanAttack and validate Player parameter
+    /// </summary>
+    /// <param name="Player"></param>
+    /// <param name="dir"></param>
+    [Server]
+    protected virtual void AttackFunctionality(GameObject Player, ref Vector3 dir)
     {
-        if (dir.magnitude <= Manager.GetStat(NumericalStats.Range) && bCanAttack)
-        {
-            bCanAttack = false;
-            StartCoroutine(AttackCooldown());
-            GameObject proj = Instantiate(EnemyProjPrefab);
-            Vector3 ProjLocation = ProjectileOffset != null ? ProjectileOffset.transform.position : transform.position;
-            proj.GetComponent<ProjectileCreator>().InitializeProjectile(gameObject, ProjLocation, dir, Manager.GetStat(NumericalStats.PrimaryDamage), true);
-        }
+        bCanAttack = false;
+        StartCoroutine(AttackCooldown());
     }
+
+    /// <summary>
+    /// Implementation of the visual cue for the enemy's attack
+    /// </summary>
+    protected abstract void VisualAttackCue();
+
+    /// <summary>
+    /// Implementation of the audio cue for the enemy's attack
+    /// </summary>
+    protected abstract void AudioAttackCue();
+
+    /// <summary>
+    /// Behavior agent utilizes when in range of the targeted player
+    /// </summary>
+    /// <param name="Player"></param>
+    /// <param name="dir"></param>
+    protected abstract void InRangeBehavior(GameObject Player, ref Vector3 dir);
+
+    /// <summary>
+    /// Behavior agent utilizes when not in range of the targeted player
+    /// </summary>
+    /// <param name="Player"></param>
+    /// <param name="dir"></param>
+    protected abstract void OutOfRangeBehavior(GameObject Player, ref Vector3 dir);
 }

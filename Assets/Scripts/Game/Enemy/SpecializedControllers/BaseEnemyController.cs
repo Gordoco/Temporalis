@@ -2,31 +2,27 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class StunEnemyController : EnemyController
+public class BaseEnemyController : EnemyController
 {
     protected override void AttackFunctionality(GameObject Player, ref Vector3 dir)
     {
         if (bCanAttack && ValidatePlayer(Player))
         {
             base.AttackFunctionality(Player, ref dir);
-            Player.GetComponent<HitManager>().Stun((float)Manager.GetStat(NumericalStats.PrimaryDamage));
+            GameObject proj = Instantiate(EnemyProjPrefab);
+            Vector3 ProjLocation = ProjectileOffset != null ? ProjectileOffset.transform.position : transform.position;
+            proj.GetComponent<ProjectileCreator>().InitializeProjectile(gameObject, ProjLocation, dir, Manager.GetStat(NumericalStats.PrimaryDamage), true);
         }
     }
 
     protected override void VisualAttackCue()
     {
-        if (bCanAttack)
-        {
 
-        }
     }
 
     protected override void AudioAttackCue()
     {
-        if (bCanAttack)
-        {
 
-        }
     }
 
     protected override void InRangeBehavior(GameObject Player, ref Vector3 dir)
