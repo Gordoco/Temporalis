@@ -23,12 +23,12 @@ public class StrafeEnemyController : EnemyController
             base.AttackFunctionality(Player, ref dir);
             GameObject proj = Instantiate(EnemyProjPrefab);
             Vector3 ProjLocation = ProjectileOffset != null ? ProjectileOffset.transform.position : transform.position;
-            proj.GetComponent<ProjectileCreator>().InitializeProjectile(gameObject, ProjLocation, dir, Manager.GetStat(NumericalStats.PrimaryDamage), true);
+            proj.GetComponent<ProjectileCreator>().InitializeProjectile(gameObject, ProjLocation, (Player.transform.position - ProjLocation).normalized, Manager.GetStat(NumericalStats.PrimaryDamage), true);
             //Seperates "Turret" from "Body"
             if (RotatingComponent != null)
             {
-                Quaternion lookAtRotation = Quaternion.LookRotation(dir);
-                RotatingComponent.transform.localRotation = lookAtRotation;
+                Quaternion lookAtRotation = Quaternion.LookRotation(Player.transform.position - RotatingComponent.transform.position);
+                RotatingComponent.transform.rotation = lookAtRotation;
             }
         }
     }
