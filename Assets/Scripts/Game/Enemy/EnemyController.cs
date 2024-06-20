@@ -85,8 +85,8 @@ public abstract class EnemyController : NetworkBehaviour
         {
             VisualAttackCue();
             AudioAttackCue();
-            AttackFunctionality(Player, ref dir);
             InRangeBehavior(Player, ref dir);
+            AttackFunctionality(Player, ref dir);
             bInRange = true;
         }
 
