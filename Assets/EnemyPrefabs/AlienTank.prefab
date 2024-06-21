@@ -229,11 +229,11 @@ MonoBehaviour:
   syncInterval: 0
   EnemyProjPrefab: {fileID: 4154122368009565914, guid: c8701b2ca5e59de449c74a7ab8b049c4, type: 3}
   gravity: 20
-  BaseRotationSpeed: 2
+  BaseRotationSpeed: 200
   ProjectileOffset: {fileID: 4224429970456877796}
   RotatingComponent: {fileID: 7501076429111387835}
   DirectionSwapTimer: 3
-  RotationSpeed: 0.5
+  RotationSpeed: 50
 --- !u!195 &3177327149899558280
 NavMeshAgent:
   m_ObjectHideFlags: 0

@@ -6,7 +6,7 @@ public class StrafeEnemyController : EnemyController
 {
     [SerializeField] private GameObject RotatingComponent;
     [SerializeField] private float DirectionSwapTimer = 6f;
-    [SerializeField] private float RotationSpeed = 1f;
+    [SerializeField] private float RotationSpeed = 10f;
 
     private float travelDirection = 1;
     private float count = 0;
@@ -56,7 +56,7 @@ public class StrafeEnemyController : EnemyController
         dir.Normalize();
         destination += transform.position;
         Quaternion targetRotation = Quaternion.LookRotation(agent.velocity.normalized);
-        transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, BaseRotationSpeed);
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, BaseRotationSpeed * Time.deltaTime);
         
         count+=Time.deltaTime;
 
@@ -73,7 +73,7 @@ public class StrafeEnemyController : EnemyController
         if (RotatingComponent != null)
         {
             Quaternion lookAtRotation = Quaternion.LookRotation(Player.transform.position - RotatingComponent.transform.position);
-            RotatingComponent.transform.rotation = Quaternion.RotateTowards(RotatingComponent.transform.rotation, lookAtRotation, RotationSpeed);
+            RotatingComponent.transform.rotation = Quaternion.RotateTowards(RotatingComponent.transform.rotation, lookAtRotation, RotationSpeed * Time.deltaTime);
         }
     }
 
@@ -87,13 +87,13 @@ public class StrafeEnemyController : EnemyController
     {
         Vector3 LookDir = Player.transform.position - transform.position;
         Quaternion targetRotation = Quaternion.LookRotation(agent.velocity.normalized);
-        transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, BaseRotationSpeed);
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, BaseRotationSpeed * Time.deltaTime);
 
         //Seperates "Turret" from "Body"
         if (RotatingComponent != null)
         {
             Quaternion turretTargetRotation = Quaternion.LookRotation(agent.velocity.normalized);
-            RotatingComponent.transform.rotation = Quaternion.RotateTowards(RotatingComponent.transform.rotation, turretTargetRotation, RotationSpeed);
+            RotatingComponent.transform.rotation = Quaternion.RotateTowards(RotatingComponent.transform.rotation, turretTargetRotation, RotationSpeed * Time.deltaTime);
         }
     }
 

@@ -213,7 +213,7 @@ MonoBehaviour:
   syncInterval: 0
   EnemyProjPrefab: {fileID: 4154122368009565914, guid: 8326341b88a6b9d4bb3e06b992aa5854, type: 3}
   gravity: 20
-  BaseRotationSpeed: 2
+  BaseRotationSpeed: 200
   ProjectileOffset: {fileID: 0}
 --- !u!195 &3177327149899558280
 NavMeshAgent:

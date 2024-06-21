@@ -11,7 +11,7 @@ public abstract class EnemyController : NetworkBehaviour
 {
     [SerializeField] protected GameObject EnemyProjPrefab;
     [SerializeField] private float gravity = 20;
-    [SerializeField] protected float BaseRotationSpeed = 2f;
+    [SerializeField] protected float BaseRotationSpeed = 20f;
     [SerializeField] protected GameObject ProjectileOffset = null;
 
     private GameObject Player;
