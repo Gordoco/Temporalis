@@ -2,19 +2,23 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
+using UnityEngine.AI;
 
 [RequireComponent(typeof(StatManager))]
 [RequireComponent(typeof(CharacterController))]
+[RequireComponent(typeof(NavMeshAgent))]
 public abstract class EnemyController : NetworkBehaviour
 {
     [SerializeField] protected GameObject EnemyProjPrefab;
     [SerializeField] private float gravity = 20;
+    [SerializeField] protected float BaseRotationSpeed = 2f;
     [SerializeField] protected GameObject ProjectileOffset = null;
 
     private GameObject Player;
 
     protected StatManager Manager;
     protected CharacterController controller;
+    protected NavMeshAgent agent;
 
     protected bool bCanAttack = true;
 
@@ -31,6 +35,10 @@ public abstract class EnemyController : NetworkBehaviour
         if (!isServer) return;
         Manager = GetComponent<StatManager>();
         controller = GetComponent<CharacterController>();
+        agent = GetComponent<NavMeshAgent>();
+        agent.speed = (float)Manager.GetStat(NumericalStats.MovementSpeed);
+        agent.stoppingDistance = 0.5f;
+        agent.updateRotation = false;
         AnimMovingHash = Animator.StringToHash("Moving");
         animator = GetComponentInChildren<Animator>();
     }
@@ -74,6 +82,7 @@ public abstract class EnemyController : NetworkBehaviour
         if (!ValidatePlayer(Player)) return;
 
         Vector3 dir = ProjectileOffset != null ? Player.transform.position - ProjectileOffset.transform.position : Player.transform.position - transform.position;
+        Vector3 destination = Player.transform.position;
 
         float dist = Vector3.Distance(Player.transform.position, transform.position);
         
@@ -85,14 +94,14 @@ public abstract class EnemyController : NetworkBehaviour
         {
             VisualAttackCue();
             AudioAttackCue();
-            InRangeBehavior(Player, ref dir);
-            AttackFunctionality(Player, ref dir);
+            InRangeBehavior(Player, ref destination);
+            AttackFunctionality(Player, dir);
             bInRange = true;
         }
 
         if (!bInRange)
         {
-            OutOfRangeBehavior(Player, ref dir);
+            OutOfRangeBehavior(Player, ref destination);
         }
         dir.Normalize();
         
@@ -104,10 +113,11 @@ public abstract class EnemyController : NetworkBehaviour
         {
             dir.y -= gravity;
         }
-        controller.Move((float)Manager.GetStat(NumericalStats.MovementSpeed) * Time.deltaTime * dir);
+        //Move((float)Manager.GetStat(NumericalStats.MovementSpeed) * Time.deltaTime * dir);
+        Move(destination);
 
         if (!animator) return;
-        if (Mathf.Abs(dir.x) > 0 || Mathf.Abs(dir.z) > 0)
+        if (agent.velocity.magnitude != 0)
         {
             animator.SetBool(AnimMovingHash, true);
         }
@@ -115,6 +125,13 @@ public abstract class EnemyController : NetworkBehaviour
         {
             animator.SetBool(AnimMovingHash, false);
         }
+    }
+
+    [Server]
+    protected void Move(Vector3 location)
+    {
+        agent.destination = location;
+        agent.velocity = agent.desiredVelocity; //Instant movement changing
     }
 
     /// <summary>
@@ -134,7 +151,7 @@ public abstract class EnemyController : NetworkBehaviour
     /// <param name="Player"></param>
     /// <param name="dir"></param>
     [Server]
-    protected virtual void AttackFunctionality(GameObject Player, ref Vector3 dir)
+    protected virtual void AttackFunctionality(GameObject Player, Vector3 dir)
     {
         bCanAttack = false;
         StartCoroutine(AttackCooldown());
@@ -155,12 +172,12 @@ public abstract class EnemyController : NetworkBehaviour
     /// </summary>
     /// <param name="Player"></param>
     /// <param name="dir"></param>
-    protected abstract void InRangeBehavior(GameObject Player, ref Vector3 dir);
+    protected abstract void InRangeBehavior(GameObject Player, ref Vector3 destination);
 
     /// <summary>
     /// Behavior agent utilizes when not in range of the targeted player
     /// </summary>
     /// <param name="Player"></param>
     /// <param name="dir"></param>
-    protected abstract void OutOfRangeBehavior(GameObject Player, ref Vector3 dir);
+    protected abstract void OutOfRangeBehavior(GameObject Player, ref Vector3 destination);
 }

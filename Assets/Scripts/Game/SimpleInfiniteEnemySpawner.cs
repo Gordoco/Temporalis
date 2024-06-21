@@ -50,7 +50,9 @@ public class SimpleInfiniteEnemySpawner : NetworkBehaviour
             {
                 bStartedSpawning = true;
                 GameObject randEnemy = GetRandomEnemyPrefab((BaseNumEnemies + (int)(difficulty / 10)) - i);
-                GameObject newEnemy = Instantiate(randEnemy, DropShip.transform.position, Quaternion.identity);
+                RaycastHit hit;
+                Physics.Raycast(DropShip.transform.position, Vector3.down, out hit, int.MaxValue);
+                GameObject newEnemy = Instantiate(randEnemy, hit.point, Quaternion.identity);
                 EnemyStatManager statManager = newEnemy.GetComponent<EnemyStatManager>();
                 if (statManager == null)
                 {
@@ -105,13 +107,6 @@ public class SimpleInfiniteEnemySpawner : NetworkBehaviour
         int randIndex = Random.Range(0, EnemyTypes.Length);
         while (EnemyTypes[randIndex].GetComponent<EnemyStatManager>().GetEnemySpawnCost() > weight) randIndex = Random.Range(0, EnemyTypes.Length);
         return EnemyTypes[randIndex];
-        /*int sum = 0;
-        for (int i = 0; i < EnemyTypes.Length; i++) sum += EnemyTypes[i].GetComponent<EnemyStatManager>().GetEnemySpawnCost();
-        int rand = Random.Range(0, sum);
-        int index = -1;
-        sum = 0;
-        for (int i = 0; i < EnemyTypes.Length; i++) { sum += EnemyTypes[i].GetComponent<EnemyStatManager>().GetEnemySpawnCost(); if (sum > rand) { index = i; break; } }
-        return EnemyTypes[index];*/
     }
 
     private void Update()

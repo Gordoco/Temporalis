@@ -17,7 +17,7 @@ public class StrafeEnemyController : EnemyController
         travelDirection = Random.Range(0, 1) == 0 ? 1 : -1;
     }
 
-    protected override void AttackFunctionality(GameObject Player, ref Vector3 dir)
+    protected override void AttackFunctionality(GameObject Player, Vector3 dir)
     {
         //If has RotatingComponent only allow firing if within acceptable range (0.5 degrees)
         if (RotatingComponent != null)
@@ -29,7 +29,7 @@ public class StrafeEnemyController : EnemyController
 
         if (bCanAttack && ValidatePlayer(Player))
         {
-            base.AttackFunctionality(Player, ref dir);
+            base.AttackFunctionality(Player, dir);
             GameObject proj = Instantiate(EnemyProjPrefab);
             Vector3 ProjLocation = ProjectileOffset != null ? ProjectileOffset.transform.position : transform.position;
             proj.GetComponent<ProjectileCreator>().InitializeProjectile(gameObject, ProjLocation, (Player.transform.position - ProjLocation).normalized, Manager.GetStat(NumericalStats.PrimaryDamage), true);
@@ -47,12 +47,16 @@ public class StrafeEnemyController : EnemyController
     /// <param name="Player"></param>
     /// <param name="dir"></param>
     /// <exception cref="System.NotImplementedException"></exception>
-    protected override void InRangeBehavior(GameObject Player, ref Vector3 dir)
+    protected override void InRangeBehavior(GameObject Player, ref Vector3 destination)
     {
         Vector3 LookDir = Player.transform.position - transform.position;
 
-        dir = Vector3.Cross(LookDir, Vector3.up) * travelDirection;
-        transform.rotation = Quaternion.LookRotation(new Vector3(dir.x, 0, dir.z));
+        Vector3 dir = Vector3.Cross(LookDir, Vector3.up) * travelDirection;
+        destination = dir;
+        dir.Normalize();
+        destination += transform.position;
+        Quaternion targetRotation = Quaternion.LookRotation(agent.velocity.normalized);
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, BaseRotationSpeed);
         
         count+=Time.deltaTime;
 
@@ -79,16 +83,17 @@ public class StrafeEnemyController : EnemyController
     /// <param name="Player"></param>
     /// <param name="dir"></param>
     /// <exception cref="System.NotImplementedException"></exception>
-    protected override void OutOfRangeBehavior(GameObject Player, ref Vector3 dir)
+    protected override void OutOfRangeBehavior(GameObject Player, ref Vector3 destination)
     {
         Vector3 LookDir = Player.transform.position - transform.position;
-        transform.rotation = Quaternion.LookRotation(new Vector3(LookDir.x, 0, LookDir.z));
+        Quaternion targetRotation = Quaternion.LookRotation(agent.velocity.normalized);
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, BaseRotationSpeed);
 
         //Seperates "Turret" from "Body"
         if (RotatingComponent != null)
         {
-            Quaternion targetRotation = Quaternion.LookRotation(new Vector3(LookDir.x, 0, LookDir.z));
-            RotatingComponent.transform.rotation = Quaternion.RotateTowards(RotatingComponent.transform.rotation, targetRotation, RotationSpeed);
+            Quaternion turretTargetRotation = Quaternion.LookRotation(agent.velocity.normalized);
+            RotatingComponent.transform.rotation = Quaternion.RotateTowards(RotatingComponent.transform.rotation, turretTargetRotation, RotationSpeed);
         }
     }
 
