@@ -4,16 +4,43 @@ using UnityEngine;
 
 public class StunEnemyController : EnemyController
 {
-    protected override void AttackFunctionality(GameObject[] Players, Vector3 dir)
+    protected override void AttackFunctionality(GameObject Player, Vector3 dir)
     {
-        if (dir.magnitude <= Manager.GetStat(NumericalStats.Range) && bCanAttack)
+        if (bCanAttack && ValidatePlayer(Player))
         {
-            if (playerTarget >= 0 && playerTarget < Players.Length)
-            {
-                bCanAttack = false;
-                StartCoroutine(AttackCooldown());
-                Players[playerTarget].GetComponent<HitManager>().Stun((float)Manager.GetStat(NumericalStats.PrimaryDamage));
-            }
+            base.AttackFunctionality(Player, dir);
+            Player.GetComponent<HitManager>().Stun((float)Manager.GetStat(NumericalStats.PrimaryDamage));
         }
+    }
+
+    protected override void VisualAttackCue()
+    {
+        if (bCanAttack)
+        {
+
+        }
+    }
+
+    protected override void AudioAttackCue()
+    {
+        if (bCanAttack)
+        {
+
+        }
+    }
+
+    protected override void InRangeBehavior(GameObject Player, ref Vector3 destination)
+    {
+        Vector3 LookDir = Player.transform.position - transform.position;
+        destination = transform.position;
+        Quaternion targetRotation = Quaternion.LookRotation(new Vector3(LookDir.x, 0, LookDir.z));
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, BaseRotationSpeed);
+    }
+
+    protected override void OutOfRangeBehavior(GameObject Player, ref Vector3 destination)
+    {
+        Vector3 LookDir = Player.transform.position - transform.position;
+        Quaternion targetRotation = Quaternion.LookRotation(agent.velocity.normalized);
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, BaseRotationSpeed);
     }
 }

@@ -16,16 +16,15 @@ public class AutoDestroyParticleNetwork : NetworkBehaviour
     float count = 0;
     void Update()
     {
-        if (!isServer) return;
         if (!GetComponent<ParticleSystem>().IsAlive())
         {
             Destroy(gameObject);
-            NetworkServer.Destroy(gameObject);
+            if (isServer) NetworkServer.Destroy(gameObject);
         }
         if (count > 1)
         {
             Destroy(gameObject);
-            NetworkServer.Destroy(gameObject);
+            if (isServer) NetworkServer.Destroy(gameObject);
         }
         count += Time.deltaTime;
     }

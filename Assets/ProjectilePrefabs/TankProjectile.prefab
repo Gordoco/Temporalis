@@ -117,7 +117,7 @@ MonoBehaviour:
   syncInterval: 0
   projectileSpeed: 75
   pierceLevel: 1
-  lifespan: 5
+  lifespan: 2
 --- !u!23 &347907090787072248
 MeshRenderer:
   m_ObjectHideFlags: 0
