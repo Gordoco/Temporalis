@@ -94,6 +94,7 @@ public class SimpleInfiniteEnemySpawner : NetworkBehaviour
         DropShipEffect.transform.position = Location + (dir);
         Quaternion Rot = Quaternion.LookRotation(dir, Vector3.up);
         DropShipEffect.transform.rotation = Rot;
+        StartCoroutine(DestroyDropshipSpawnEffect(DropShipEffect));
     }
 
     private IEnumerator DestroyDropshipSpawnEffect(GameObject Effect)

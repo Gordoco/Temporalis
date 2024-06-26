@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(AudioSource))]
-public class SoundManager : NetworkBehaviour
+public class SoundManager : MonoBehaviour
 {
     [SerializeField] private const float DEFAULT_FADE_TIME = 10f;
     [SerializeField] private int DefaultBackground = -1;

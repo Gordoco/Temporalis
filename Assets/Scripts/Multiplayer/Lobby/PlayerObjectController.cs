@@ -43,7 +43,10 @@ public class PlayerObjectController : NetworkBehaviour
     [ClientRpc]
     public void StartGameMap()
     {
-        GameObject.FindGameObjectWithTag("AudioManager").GetComponent<SoundManager>().ChangeBackgroundSound(1);
+        if (GameObject.FindGameObjectWithTag("AudioManager"))
+        {
+            GameObject.FindGameObjectWithTag("AudioManager").GetComponent<SoundManager>().ChangeBackgroundSound(1);
+        }
     } 
 
     [Server]
