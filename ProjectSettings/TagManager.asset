@@ -10,6 +10,7 @@ TagManager:
   - Item
   - GameManager
   - Enemy
+  - AudioManager
   layers:
   - Default
   - TransparentFX

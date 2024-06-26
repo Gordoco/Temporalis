@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
+using Unity.VisualScripting;
 
 [RequireComponent(typeof(MeshFilter))]
 [RequireComponent(typeof(Collider))]
@@ -30,12 +31,14 @@ public class ProjectileCreator : NetworkBehaviour
     private bool bEnemy = false;
     private bool bFromServer = false;
 
+    private AudioClip ProjSound = null;
+
     /// <summary>
     /// Universal method to be called on Instantiated projectile prefab. Handles client spawning and awakens the projectile to start moving.
     /// </summary>
     /// <param name="startLocation">World space position for the projectile to start, overwrites instantiation transform position</param>
     /// <param name="direction">Direction of travel for the projectile, will be normalized</param>
-    public void InitializeProjectile(GameObject owningObj, Vector3 startLocation, Vector3 direction, double damage, bool inServer = false)
+    public void InitializeProjectile(GameObject owningObj, Vector3 startLocation, Vector3 direction, double damage, bool inServer = false, AudioClip sound = null)
     {
         bEnemy = owningObj.tag == "Enemy";
         direction.Normalize();
@@ -46,7 +49,13 @@ public class ProjectileCreator : NetworkBehaviour
         gameObject.transform.position = startLocation;
         gameObject.transform.rotation = Quaternion.LookRotation(direction, Vector3.up);
         bAlive = true;
-        if (bFromServer) NetworkServer.Spawn(gameObject);
+        if (sound != null) ProjSound = sound;
+        PlaySound();
+        if (bFromServer)
+        {
+            NetworkServer.Spawn(gameObject);
+            Client_PlaySound();
+        }
 
         GetComponent<Rigidbody>().AddForce(direction * projectileSpeed, ForceMode.VelocityChange);
     }
@@ -88,5 +97,17 @@ public class ProjectileCreator : NetworkBehaviour
                 }
             }
         }
+    }
+
+    [ClientRpc]
+    private void Client_PlaySound()
+    {
+        PlaySound();
+    }
+
+    private void PlaySound()
+    {
+        if (!ProjSound) return;
+        GameObject.FindGameObjectWithTag("AudioManager").GetComponent<SoundManager>().PlaySoundEffect(ProjSound);
     }
 }

@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 6039204910684358694}
   - component: {fileID: -6684785954337720041}
   - component: {fileID: 284660354331858200}
+  - component: {fileID: 8968807443019909611}
   m_Layer: 0
   m_Name: PlayerObject
   m_TagString: Untagged
@@ -134,3 +135,20 @@ MonoBehaviour:
   Weapon: {fileID: 0}
   UI: {fileID: 0}
   bIsServer: 1
+  TopDownView:
+    loc: {x: 0, y: 3, z: -2}
+    rot: {x: 52, y: 0, z: 0}
+  StraightView:
+    loc: {x: 0, y: 2.23, z: -4.18}
+    rot: {x: 10, y: 0, z: 0}
+  DownTopView:
+    loc: {x: 0, y: -0.27, z: -1}
+    rot: {x: -70, y: 0, z: 0}
+--- !u!81 &8968807443019909611
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2864109583541918006}
+  m_Enabled: 1

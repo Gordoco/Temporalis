@@ -7,6 +7,7 @@ public class GrenadeTimedExplosion : NetworkBehaviour
 {
     [SerializeField] private GameObject ExplosionPrefab;
     [SerializeField] private float time = 5;
+    [SerializeField] private AudioClip ExplosionSound;
 
     private GameObject owner;
     private float radius;
@@ -48,7 +49,7 @@ public class GrenadeTimedExplosion : NetworkBehaviour
         if (bFromServer)
         {
             GameObject explosion = Instantiate(ExplosionPrefab);
-            explosion.GetComponent<ExplosionCreator>().InitializeExplosion(owner, gameObject.transform.position, radius, damage, true);
+            explosion.GetComponent<ExplosionCreator>().InitializeExplosion(owner, gameObject.transform.position, radius, damage, true, ExplosionSound);
         }
         Destroy(gameObject);
     }

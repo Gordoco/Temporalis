@@ -40,7 +40,11 @@ public class SteamLobby : MonoBehaviour
 
     private void OnLobbyCreated(LobbyCreated_t callback)
     {
-        if (callback.m_eResult != EResult.k_EResultOK) { return; /*TODO: Add Errors*/ }
+        if (callback.m_eResult != EResult.k_EResultOK) 
+        {
+            Debug.Log("ERROR - [SteamLobby.cs - Lobby Creation Failed! - " + callback.m_eResult.ToString() + " ]");
+            return;
+        }
 
         Debug.Log("Lobby Started Succesfully");
 

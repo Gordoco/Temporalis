@@ -20,8 +20,8 @@ public class PlayerMove : NetworkBehaviour
 
     private void Awake()
     {
-        AnimMovingHash = Animator.StringToHash("Running");
-        AnimStrafingHash = Animator.StringToHash("Strafing");
+        AnimMovingHash = Animator.StringToHash("Vertical");
+        AnimStrafingHash = Animator.StringToHash("Horizontal");
         AnimJumpingHash = Animator.StringToHash("Jumping");
         childAnimator = GetComponentInChildren<Animator>();
     }
@@ -92,27 +92,8 @@ public class PlayerMove : NetworkBehaviour
 
     void AnimationHandler(Vector3 tempDir, CharacterController controller)
     {
-        if (tempDir != Vector3.zero && controller.isGrounded) 
-        {
-            float relativeDir = Vector3.Dot(tempDir, transform.forward);
-            if (relativeDir > 0.5) childAnimator.SetInteger(AnimMovingHash, 1);
-            else if (relativeDir < -0.5) childAnimator.SetInteger(AnimMovingHash, -1);
-            else childAnimator.SetInteger(AnimMovingHash, 0);
-
-            if (relativeDir > -0.6 && relativeDir < 0.6)
-            {
-                float relativeRightDir = Vector3.Dot(tempDir, transform.right);
-                if (relativeRightDir > 0.5) childAnimator.SetInteger(AnimStrafingHash, 1);
-                else if (relativeRightDir < -0.5) childAnimator.SetInteger(AnimStrafingHash, -1);
-                else childAnimator.SetInteger(AnimStrafingHash, 0);
-            }
-            else childAnimator.SetInteger(AnimStrafingHash, 0);
-        }
-        else 
-        {
-            childAnimator.SetInteger(AnimStrafingHash, 0);
-            childAnimator.SetInteger(AnimMovingHash, 0);
-        }
+        childAnimator.SetFloat(AnimMovingHash, Input.GetAxis("Vertical"));
+        childAnimator.SetFloat(AnimStrafingHash, Input.GetAxis("Horizontal"));
     }
 
     [ClientRpc]

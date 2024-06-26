@@ -9,6 +9,7 @@ public class ExplosionCreator : NetworkBehaviour
     private float radius;
     private GameObject owner;
     private List<GameObject> oldHits = new List<GameObject>();
+    private AudioClip ExplosionSound;
 
     /// <summary>
     /// Server-Only method to spawn in an explosion
@@ -17,14 +18,17 @@ public class ExplosionCreator : NetworkBehaviour
     /// <param name="radius"></param>
     /// <param name="damage"></param>
     [Server]
-    public void InitializeExplosion(GameObject owningObject, Vector3 startLocation, float radius, float damage, bool bPlayer)
+    public void InitializeExplosion(GameObject owningObject, Vector3 startLocation, float radius, float damage, bool bPlayer, AudioClip sound = null)
     {
         if (isServer) Debug.Log("SHOULD EXPLODE SERVER");
         owner = owningObject;
         this.radius = radius;
         this.damage = damage;
         gameObject.transform.position = startLocation;
+        ExplosionSound = sound;
         NetworkServer.Spawn(gameObject);
+        PlaySound();
+        Client_ExplosionSound();
         RaycastHit[] hits = Physics.SphereCastAll(startLocation, radius, Vector3.up, 0);
         //Debug.Log(hits.Length);
         for (int i = 0; i < hits.Length; i++)
@@ -41,5 +45,17 @@ public class ExplosionCreator : NetworkBehaviour
                 }
             }
         }
+    }
+
+    [ClientRpc]
+    private void Client_ExplosionSound()
+    {
+        PlaySound();
+    }
+
+    private void PlaySound()
+    {
+        if (!ExplosionSound) return;
+        GetComponent<SoundManager>().PlaySoundEffect(ExplosionSound);
     }
 }

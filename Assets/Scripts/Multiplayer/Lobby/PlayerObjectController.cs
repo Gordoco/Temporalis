@@ -40,6 +40,12 @@ public class PlayerObjectController : NetworkBehaviour
         obj.transform.SetParent(parent.transform, b);
     }
 
+    [ClientRpc]
+    public void StartGameMap()
+    {
+        GameObject.FindGameObjectWithTag("AudioManager").GetComponent<SoundManager>().ChangeBackgroundSound(1);
+    } 
+
     [Server]
     public void Die()
     {
@@ -57,6 +63,7 @@ public class PlayerObjectController : NetworkBehaviour
         Cursor.visible = false;
         GameObject spectator = Instantiate(SpectatorPrefab, transform.position, Quaternion.identity);
         spectator.GetComponent<SpectatorMove>().isServer = server;
+        if (gameObject.name == "LocalGamePlayer") GetComponent<AudioListener>().enabled = true;
         //if (GetComponent<Camera>() == null) gameObject.AddComponent<Camera>();
         //lookComp.enabled = true;
     }
@@ -65,6 +72,7 @@ public class PlayerObjectController : NetworkBehaviour
     public void DisableCameraMove()
     {
         GetComponent<LookAround>().enabled = false;
+        if (gameObject.name == "LocalGamePlayer") GetComponent<AudioListener>().enabled = false;
         Cursor.lockState = CursorLockMode.None;
     }
 
@@ -74,6 +82,7 @@ public class PlayerObjectController : NetworkBehaviour
         if (!isOwned) return;
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
+        if (gameObject.name == "LocalGamePlayer") GetComponent<AudioListener>().enabled = true;
         Manager.Disconnect(false);
     }
 

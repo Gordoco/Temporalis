@@ -12,6 +12,7 @@ public class SimpleInfiniteEnemySpawner : NetworkBehaviour
     [SerializeField] private int BaseNumEnemies = 3;
     [SerializeField] private GameObject[] EnemyTypes;
     [SerializeField] private GameObject DropShipPrefab;
+    [SerializeField] private GameObject DropShipEffectPrefab;
     [SerializeField] private GameObject[] DropShipSpawns;
 
     private double difficulty;
@@ -34,11 +35,16 @@ public class SimpleInfiniteEnemySpawner : NetworkBehaviour
 
     private IEnumerator HandleDropshipSpawner()
     {
-        GameObject DropShip = Instantiate(DropShipPrefab);
-        NetworkServer.Spawn(DropShip);
         int i = 0;
         int randSpawn = Random.Range(0, SpawnPoints.Length);
-        SetupDropship(DropShip, DropShipSpawns[Random.Range(0, DropShipSpawns.Length)].transform.position, SpawnPoints[randSpawn]);
+        int dropShipLocationIndex = Random.Range(0, DropShipSpawns.Length);
+        GameObject DropShipEffect = Instantiate(DropShipEffectPrefab);
+        NetworkServer.Spawn(DropShipEffect);
+        SetupDropShipSpawnEffect(DropShipEffect, DropShipSpawns[dropShipLocationIndex].transform.position, SpawnPoints[randSpawn]);
+        yield return new WaitForSeconds(0.25f);
+        GameObject DropShip = Instantiate(DropShipPrefab);
+        NetworkServer.Spawn(DropShip);
+        SetupDropship(DropShip, DropShipSpawns[dropShipLocationIndex].transform.position, SpawnPoints[randSpawn]);
         bool bStartedSpawning = false;
         while (i < (BaseNumEnemies + (int)(difficulty/20)))
         {
@@ -79,6 +85,22 @@ public class SimpleInfiniteEnemySpawner : NetworkBehaviour
         Quaternion Rot = Quaternion.LookRotation(Goal - Location, Vector3.up);
         DropShip.transform.rotation = Rot;
         StartCoroutine(DropshipLocomotion(DropShip, 0.8f));
+    }
+
+    private void SetupDropShipSpawnEffect(GameObject DropShipEffect, Vector3 Location, Vector3 Goal)
+    {
+        if (DropShipEffect == null) return;
+        Vector3 dir = (Goal - Location).normalized;
+        DropShipEffect.transform.position = Location + (dir);
+        Quaternion Rot = Quaternion.LookRotation(dir, Vector3.up);
+        DropShipEffect.transform.rotation = Rot;
+    }
+
+    private IEnumerator DestroyDropshipSpawnEffect(GameObject Effect)
+    {
+        yield return new WaitForSeconds(2);
+        Destroy(Effect);
+        NetworkServer.Destroy(Effect);
     }
 
     private IEnumerator DropshipLocomotion(GameObject DropShip, float speed)

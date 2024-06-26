@@ -4,18 +4,25 @@ using UnityEngine;
 using Mirror;
 using UnityEngine.UI;
 
+[RequireComponent(typeof(SoundManager))]
 public class CommandoAttack : AttackManager
 {
     [SerializeField] private GameObject SecondaryAttackProjPrefab;
+    [SerializeField] private GameObject GrenadePrefab;
+    [SerializeField] private GameObject LShotStart;
+    [SerializeField] private GameObject RShotStart;
+
     [SerializeField] private GameObject PrimaryAttackParticleEffect;
     [SerializeField] private GameObject DiveBombExplosionPrefab;
     [SerializeField] private GameObject JetpackParticleEffect;
     [SerializeField] private GameObject RegenParticleEffect;
-    [SerializeField] private Image StimImage;
     [SerializeField] private GameObject HitParticleEffect;
-    [SerializeField] private GameObject GrenadePrefab;
-    [SerializeField] private GameObject LShotStart;
-    [SerializeField] private GameObject RShotStart;
+
+    [SerializeField] private AudioClip ShootSound;
+    [SerializeField] private AudioClip JetpackLandSound;
+
+    [SerializeField] private Image StimImage;
+
     [SerializeField] private CameraShake CameraShakeRef;
 
     /// <summary>
@@ -48,6 +55,8 @@ public class CommandoAttack : AttackManager
         GameObject MF1 = Instantiate(PrimaryAttackParticleEffect, Gun1MuzzleLoc, Quaternion.LookRotation(dir));
         GameObject MF2 = Instantiate(PrimaryAttackParticleEffect, Gun2MuzzleLoc, Quaternion.LookRotation(dir));
 
+        PlayShootSound(); //Need to adjust for fast attack speed
+
         CameraShakeRef.enabled = true;
 
         if (isServer)
@@ -72,6 +81,11 @@ public class CommandoAttack : AttackManager
             hit2.collider.gameObject.GetComponentInParent<HitManager>().Hit((float)statManager.GetStat(NumericalStats.PrimaryDamage));
             GameObject HP2 = Instantiate(HitParticleEffect, hit2.transform.position, Quaternion.LookRotation(dir));
         }
+    }
+    private void PlayShootSound()
+    {
+        if (!ShootSound) return;
+        GetComponent<SoundManager>().PlaySoundEffect(ShootSound);
     }
 
     /// <summary>
@@ -254,7 +268,7 @@ public class CommandoAttack : AttackManager
         GameObject explosionObj = Instantiate(DiveBombExplosionPrefab);
         ExplosionCreator explosion = explosionObj.GetComponent<ExplosionCreator>();
         explosionObj.transform.localScale *= (float)manager.GetStat(NumericalStats.Range) / 10;
-        explosion.InitializeExplosion(gameObject, transform.position, (float)manager.GetStat(NumericalStats.Range) / 2, (float)manager.GetStat(NumericalStats.Ability4Damage) * magnitude, true);
+        explosion.InitializeExplosion(gameObject, transform.position, (float)manager.GetStat(NumericalStats.Range) / 2, (float)manager.GetStat(NumericalStats.Ability4Damage) * magnitude, true, JetpackLandSound);
         manager.ToggleCCImmune(false);
     }
 }
