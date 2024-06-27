@@ -161,7 +161,7 @@ MonoBehaviour:
   syncInterval: 0
   ExplosionPrefab: {fileID: 945835148339455510, guid: e6e6807596d016543bcc5713be6dc97d, type: 3}
   time: 1.5
-  ExplosionSound: {fileID: 8300000, guid: 1fd31868d68903d4f9e2c4a3b7ef98f3, type: 3}
+  ExplosionSound: {fileID: 8300000, guid: f01c623f724825e44a923d1ae50256f2, type: 3}
 --- !u!65 &6438751516539485028
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -199,6 +199,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   projectileSpeed: 30
+  bInteractWithTerrain: 0
   pierceLevel: 99
   lifespan: 10
 --- !u!1 &4190914847633957705

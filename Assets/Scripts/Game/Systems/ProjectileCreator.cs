@@ -10,6 +10,7 @@ using Unity.VisualScripting;
 public class ProjectileCreator : NetworkBehaviour
 {
     [SerializeField] private float projectileSpeed;
+    [SerializeField] private bool bInteractWithTerrain = true;
     private float damage;
 
     /// <summary>
@@ -95,6 +96,11 @@ public class ProjectileCreator : NetworkBehaviour
                     if (bFromServer) NetworkServer.Destroy(gameObject);
                     else Destroy(gameObject);
                 }
+            }
+            else if (collision.gameObject.GetComponentInParent<HitManager>() == null && bInteractWithTerrain)
+            {
+                if (bFromServer) NetworkServer.Destroy(gameObject);
+                else Destroy(gameObject);
             }
         }
     }

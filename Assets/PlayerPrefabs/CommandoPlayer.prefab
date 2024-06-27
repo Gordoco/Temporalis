@@ -748,7 +748,7 @@ MonoBehaviour:
   RegenParticleEffect: {fileID: 1906637578465108152}
   HitParticleEffect: {fileID: 945835148339455510, guid: d9f062b5c10ab724792bb710c6379134, type: 3}
   ShootSound: {fileID: 8300000, guid: 6739c01659ad96d47987f4ddee226b36, type: 3}
-  JetpackLandSound: {fileID: 8300000, guid: 1fd31868d68903d4f9e2c4a3b7ef98f3, type: 3}
+  JetpackLandSound: {fileID: 8300000, guid: c1f8c36ebdb20024ea8a59ec457d582c, type: 3}
   StimImage: {fileID: 2143320022909794954}
   CameraShakeRef: {fileID: 891650362280540448}
 --- !u!114 &1250715329504170301
@@ -958,9 +958,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2de77b9a6a1385841ad07574513a291c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
   DefaultBackground: -1
   MusicVolume: 1
   SFXVolume: 0.11

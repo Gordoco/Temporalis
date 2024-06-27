@@ -30,6 +30,10 @@ public class SoundManager : MonoBehaviour
         {
             ChangeBackgroundSound(DefaultBackground);
         }
+        GameObject AudioManager = GameObject.FindGameObjectWithTag("AudioManager");
+        SoundManager masterManager = AudioManager.GetComponent<SoundManager>();
+        SFXVolume = masterManager.SFXVolume;
+        MusicVolume = masterManager.MusicVolume;
     }
 
     public void ChangeBackgroundSound(int newSong, float fadeTime = DEFAULT_FADE_TIME)

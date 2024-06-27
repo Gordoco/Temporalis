@@ -14,6 +14,7 @@ public class SimpleInfiniteEnemySpawner : NetworkBehaviour
     [SerializeField] private GameObject DropShipPrefab;
     [SerializeField] private GameObject DropShipEffectPrefab;
     [SerializeField] private GameObject[] DropShipSpawns;
+    [SerializeField] private AudioClip EnemySpawnSound;
 
     private double difficulty;
 
@@ -69,6 +70,8 @@ public class SimpleInfiniteEnemySpawner : NetworkBehaviour
                 EnemyStatManager newEnemyManager = newEnemy.GetComponent<EnemyStatManager>();
                 i += randEnemy.GetComponent<EnemyStatManager>().GetEnemySpawnCost();
                 NetworkServer.Spawn(newEnemy);
+                SoundManager enemySM = newEnemy.GetComponent<SoundManager>();
+                if (EnemySpawnSound) enemySM.PlaySoundEffect(EnemySpawnSound);
                 while (newEnemyManager.Initialized == false) yield return new WaitForSeconds(0.01f);
                 newEnemyManager.SetStat(NumericalStats.Health, newEnemyManager.GetStat(NumericalStats.Health) * (1 + (difficulty / 100)));
                 newEnemyManager.ModifyCurrentHealth(newEnemyManager.GetStat(NumericalStats.Health));

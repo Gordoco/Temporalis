@@ -7,12 +7,14 @@ using UnityEngine.AI;
 [RequireComponent(typeof(StatManager))]
 [RequireComponent(typeof(CharacterController))]
 [RequireComponent(typeof(NavMeshAgent))]
+[RequireComponent(typeof(SoundManager))]
 public abstract class EnemyController : NetworkBehaviour
 {
     [SerializeField] protected GameObject EnemyProjPrefab;
     [SerializeField] private float gravity = 20;
     [SerializeField] protected float BaseRotationSpeed = 20f;
     [SerializeField] protected GameObject ProjectileOffset = null;
+    [SerializeField] private AudioClip ShotSound;
 
     private GameObject Player;
 
@@ -167,7 +169,10 @@ public abstract class EnemyController : NetworkBehaviour
     /// <summary>
     /// Implementation of the audio cue for the enemy's attack
     /// </summary>
-    protected abstract void AudioAttackCue();
+    protected virtual void AudioAttackCue()
+    {
+        if (ShotSound) GetComponent<SoundManager>().PlaySoundEffect(ShotSound);
+    }
 
     /// <summary>
     /// Behavior agent utilizes when in range of the targeted player

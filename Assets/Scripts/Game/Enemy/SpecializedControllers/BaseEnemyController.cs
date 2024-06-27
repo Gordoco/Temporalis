@@ -35,7 +35,6 @@ public class BaseEnemyController : EnemyController
 
     protected override void OutOfRangeBehavior(GameObject Player, ref Vector3 destination)
     {
-        Vector3 LookDir = Player.transform.position - transform.position;
         Quaternion targetRotation = Quaternion.LookRotation(agent.velocity.normalized);
         transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, BaseRotationSpeed * Time.deltaTime);
     }

@@ -94,6 +94,11 @@ public class LoopbreakerNetworkManager : NetworkManager
         if (playersLoaded <= 0)
         {
             Debug.Log("EVERYONE DEAD");
+            GameObject AM = GameObject.FindGameObjectWithTag("AudioManager");
+            if (AM)
+            {
+                Destroy(AM);
+            }
             for (int i = 0; i < GamePlayers.Count; i++)
             {
                 GamePlayers[i].DisableCameraMove();
@@ -118,6 +123,11 @@ public class LoopbreakerNetworkManager : NetworkManager
     /// </summary>
     public void Disconnect(bool isServer)
     {
+        GameObject AM = GameObject.FindGameObjectWithTag("AudioManager");
+        if (AM)
+        {
+            Destroy(AM);
+        }
         if (isServer)
         {
             Debug.Log("STOPPING SERVER");
