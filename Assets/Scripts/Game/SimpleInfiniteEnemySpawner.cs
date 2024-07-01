@@ -27,7 +27,7 @@ public class SimpleInfiniteEnemySpawner : NetworkBehaviour
 
     private IEnumerator ConstantEnemySpawner()
     {
-        while (SceneManager.GetActiveScene().name == "SampleScene")
+        while (SceneManager.GetActiveScene().name == "PyramidLevel")
         {
             yield return new WaitForSeconds(Random.Range(EnemySpawnInterval - 5, EnemySpawnInterval + 2));
             StartCoroutine(HandleDropshipSpawner());

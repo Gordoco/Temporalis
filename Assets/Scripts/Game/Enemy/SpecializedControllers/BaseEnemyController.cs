@@ -6,23 +6,13 @@ public class BaseEnemyController : EnemyController
 {
     protected override void AttackFunctionality(GameObject Player, Vector3 dir)
     {
-        if (bCanAttack && ValidatePlayer(Player))
+        base.AttackFunctionality(Player, dir);
+        if (ValidatePlayer(Player))
         {
-            base.AttackFunctionality(Player, dir);
             GameObject proj = Instantiate(EnemyProjPrefab);
             Vector3 ProjLocation = ProjectileOffset != null ? ProjectileOffset.transform.position : transform.position;
             proj.GetComponent<ProjectileCreator>().InitializeProjectile(gameObject, ProjLocation, dir, Manager.GetStat(NumericalStats.PrimaryDamage), true);
         }
-    }
-
-    protected override void VisualAttackCue()
-    {
-
-    }
-
-    protected override void AudioAttackCue()
-    {
-
     }
 
     protected override void InRangeBehavior(GameObject Player, ref Vector3 destination)

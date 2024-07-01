@@ -41,6 +41,7 @@ public abstract class EnemyController : NetworkBehaviour
         agent.speed = (float)Manager.GetStat(NumericalStats.MovementSpeed);
         agent.stoppingDistance = 0.5f;
         agent.updateRotation = false;
+        agent.updateUpAxis = false;
         AnimMovingHash = Animator.StringToHash("Moving");
         animator = GetComponentInChildren<Animator>();
     }
@@ -87,17 +88,21 @@ public abstract class EnemyController : NetworkBehaviour
         Vector3 destination = Player.transform.position;
 
         float dist = Vector3.Distance(Player.transform.position, transform.position);
-        
+
         if (dist > Manager.GetStat(NumericalStats.Range))
         {
             bInRange = false;
         }
         else if (dist <= Manager.GetStat(NumericalStats.Range) / OVER_RANGE_APPROX || bInRange)
         {
-            VisualAttackCue();
-            AudioAttackCue();
             InRangeBehavior(Player, ref destination);
-            AttackFunctionality(Player, dir);
+            if (bCanAttack)
+            {
+                bCanAttack = false;
+                AttackFunctionality(Player, dir);
+                VisualAttackCue();
+                AudioAttackCue();
+            }
             bInRange = true;
         }
 
@@ -106,7 +111,7 @@ public abstract class EnemyController : NetworkBehaviour
             OutOfRangeBehavior(Player, ref destination);
         }
         dir.Normalize();
-        
+
         if (controller.isGrounded)
         {
             dir.y = 0;
@@ -145,7 +150,7 @@ public abstract class EnemyController : NetworkBehaviour
     [Server]
     protected IEnumerator AttackCooldown()
     {
-        yield return new WaitForSeconds(1/(float)Manager.GetStat(NumericalStats.AttackSpeed));
+        yield return new WaitForSeconds(1 / (float)Manager.GetStat(NumericalStats.AttackSpeed));
         bCanAttack = true;
     }
 
@@ -157,14 +162,13 @@ public abstract class EnemyController : NetworkBehaviour
     [Server]
     protected virtual void AttackFunctionality(GameObject Player, Vector3 dir)
     {
-        bCanAttack = false;
         StartCoroutine(AttackCooldown());
     }
 
     /// <summary>
     /// Implementation of the visual cue for the enemy's attack
     /// </summary>
-    protected abstract void VisualAttackCue();
+    protected virtual void VisualAttackCue() { }
 
     /// <summary>
     /// Implementation of the audio cue for the enemy's attack

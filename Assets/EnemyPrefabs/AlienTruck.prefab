@@ -267,7 +267,7 @@ MonoBehaviour:
   syncInterval: 0
   EnemyProjPrefab: {fileID: 4154122368009565914, guid: 8326341b88a6b9d4bb3e06b992aa5854, type: 3}
   gravity: 20
-  BaseRotationSpeed: 200
+  BaseRotationSpeed: 300
   ProjectileOffset: {fileID: 690765425206693541}
   ShotSound: {fileID: 8300000, guid: 34b439bf70b80a6409eadecc6be92d68, type: 3}
   RotatingComponent: {fileID: 5239389907785336185}

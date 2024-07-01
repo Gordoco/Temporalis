@@ -9,7 +9,7 @@ EditorBuildSettings:
     path: Assets/Scenes/Menus/MainMenu.unity
     guid: b80e7891403f8654a8a7cc8a3a927381
   - enabled: 1
-    path: Assets/Scenes/SampleScene.unity
+    path: Assets/Scenes/PyramidLevel.unity
     guid: 9fc0d4010bbf28b4594072e72b8655ab
   - enabled: 1
     path: Assets/Scenes/Menus/Lobby.unity

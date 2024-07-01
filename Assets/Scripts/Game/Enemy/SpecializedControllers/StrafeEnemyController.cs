@@ -19,6 +19,7 @@ public class StrafeEnemyController : EnemyController
 
     protected override void AttackFunctionality(GameObject Player, Vector3 dir)
     {
+        base.AttackFunctionality(Player, dir);
         //If has RotatingComponent only allow firing if within acceptable range (0.5 degrees)
         if (RotatingComponent != null)
         {
@@ -27,18 +28,12 @@ public class StrafeEnemyController : EnemyController
             if (angle > 0.00872665) return;
         }
 
-        if (bCanAttack && ValidatePlayer(Player))
+        if (ValidatePlayer(Player))
         {
-            base.AttackFunctionality(Player, dir);
             GameObject proj = Instantiate(EnemyProjPrefab);
             Vector3 ProjLocation = ProjectileOffset != null ? ProjectileOffset.transform.position : transform.position;
             proj.GetComponent<ProjectileCreator>().InitializeProjectile(gameObject, ProjLocation, (Player.transform.position - ProjLocation).normalized, Manager.GetStat(NumericalStats.PrimaryDamage), true);
         }
-    }
-
-    protected override void AudioAttackCue()
-    {
-        //throw new System.NotImplementedException();
     }
 
     /// <summary>
@@ -82,7 +77,6 @@ public class StrafeEnemyController : EnemyController
     /// </summary>
     /// <param name="Player"></param>
     /// <param name="dir"></param>
-    /// <exception cref="System.NotImplementedException"></exception>
     protected override void OutOfRangeBehavior(GameObject Player, ref Vector3 destination)
     {
         Quaternion targetRotation = Quaternion.LookRotation(agent.velocity.normalized);
@@ -94,10 +88,5 @@ public class StrafeEnemyController : EnemyController
             Quaternion turretTargetRotation = Quaternion.LookRotation(agent.velocity.normalized);
             RotatingComponent.transform.rotation = Quaternion.RotateTowards(RotatingComponent.transform.rotation, turretTargetRotation, RotationSpeed * Time.deltaTime);
         }
-    }
-
-    protected override void VisualAttackCue()
-    {
-        //throw new System.NotImplementedException();
     }
 }

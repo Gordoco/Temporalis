@@ -6,26 +6,10 @@ public class StunEnemyController : EnemyController
 {
     protected override void AttackFunctionality(GameObject Player, Vector3 dir)
     {
-        if (bCanAttack && ValidatePlayer(Player))
+        base.AttackFunctionality(Player, dir);
+        if (ValidatePlayer(Player))
         {
-            base.AttackFunctionality(Player, dir);
             Player.GetComponent<HitManager>().Stun((float)Manager.GetStat(NumericalStats.PrimaryDamage));
-        }
-    }
-
-    protected override void VisualAttackCue()
-    {
-        if (bCanAttack)
-        {
-
-        }
-    }
-
-    protected override void AudioAttackCue()
-    {
-        if (bCanAttack)
-        {
-
         }
     }
 

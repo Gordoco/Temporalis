@@ -12,6 +12,7 @@ public class SoundManager : MonoBehaviour
     [SerializeField] private float MusicVolume = 1f;
     [SerializeField] private float SFXVolume = 1f;
     [SerializeField] private AudioClip[] clips;
+    [SerializeField] private bool bCarryThroughLevels = false;
 
     private int currentBackgroundIndex = -1;
     private float currentVolume;
@@ -19,7 +20,7 @@ public class SoundManager : MonoBehaviour
 
     private void Awake()
     {
-        DontDestroyOnLoad(this);
+        if (bCarryThroughLevels) DontDestroyOnLoad(this);
         source = GetComponent<AudioSource>();
         source.loop = true;
     }
