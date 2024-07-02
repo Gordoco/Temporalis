@@ -43,7 +43,7 @@ public abstract class AttackManager : NetworkBehaviour
 
     public void SetEnabled(bool b) { bEnabled = b; }
 
-    private void Start()
+    protected virtual void Start()
     {
         GetComponent<HitManager>().OnStunned += ShowStunnedEffect;
         GetComponent<HitManager>().OnUnStunned += HideStunnedEffect;

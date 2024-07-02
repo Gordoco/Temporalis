@@ -20,6 +20,7 @@ public class SimpleInfiniteEnemySpawner : NetworkBehaviour
 
     private void Start()
     {
+        AudioCollection.RegisterAudioClip(EnemySpawnSound);
         if (!isServer) return;
         difficulty = DifficultyScale;
         StartCoroutine(ConstantEnemySpawner());

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(AudioSource))]
-public class SoundManager : MonoBehaviour
+public class SoundManager : NetworkBehaviour
 {
     [SerializeField] private const float DEFAULT_FADE_TIME = 10f;
     [SerializeField] private int DefaultBackground = -1;
@@ -37,10 +37,47 @@ public class SoundManager : MonoBehaviour
         MusicVolume = masterManager.MusicVolume;
     }
 
+    /// <summary>
+    /// Changes the background music to the specified "clips" index of the SoundManager
+    /// </summary>
+    /// <param name="newSong"></param>
+    /// <param name="fadeTime"></param>
     public void ChangeBackgroundSound(int newSong, float fadeTime = DEFAULT_FADE_TIME)
     {
+        if (isClient && !isServer)
+        {
+            //OnClient
+            Server_ChangeBackgroundForEveryone(newSong, fadeTime);
+        }
+        else if (isServer)
+        {
+            //OnServer
+            Client_ChangeBackground(newSong, fadeTime);
+        }
+        else
+        {
+            //Offline
+            ChangeBackground_Functionality(newSong, fadeTime);
+        }
+    }
+
+    [Command]
+    private void Server_ChangeBackgroundForEveryone(int newSong, float fadeTime)
+    {
+        Client_ChangeBackground(newSong, fadeTime);
+    }
+
+    [ClientRpc]
+    private void Client_ChangeBackground(int newSong, float fadeTime)
+    {
+        ChangeBackground_Functionality(newSong, fadeTime);
+    }
+
+    private void ChangeBackground_Functionality(int newSong, float fadeTime)
+    {
         StopAllCoroutines();
-        if (currentBackgroundIndex != -1) StartCoroutine(FadeOut(newSong, fadeTime/10));
+
+        if (currentBackgroundIndex != -1) StartCoroutine(FadeOut(newSong, fadeTime / 10));
         else
         {
             currentVolume = 0;
@@ -49,6 +86,12 @@ public class SoundManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Smoothly fades out main background music track
+    /// </summary>
+    /// <param name="newSong"></param>
+    /// <param name="time"></param>
+    /// <returns></returns>
     private IEnumerator FadeOut(int newSong, float time)
     {
         currentVolume = MusicVolume;
@@ -63,6 +106,11 @@ public class SoundManager : MonoBehaviour
         SwapTrack(newSong, time*10);
     }
 
+    /// <summary>
+    /// Swaps main music tracks using a FadeIn timer
+    /// </summary>
+    /// <param name="newSong"></param>
+    /// <param name="fadeTime"></param>
     private void SwapTrack(int newSong, float fadeTime)
     {
         source.Pause();
@@ -84,8 +132,47 @@ public class SoundManager : MonoBehaviour
         }
     }
 
+    [Server]
     public void PlaySoundEffect(AudioClip effect)
     {
+        int clipID = AudioCollection.GetClipID(effect);
+        if (clipID == -1)
+        {
+            Debug.LogError("ERROR: [SoundManager.cs - Attempting to play sound effect with unregistered clip number]");
+            return;
+        }
+        PlaySoundEffect(clipID);
+    }
+
+    [Server]
+    public void PlaySoundEffect(int effectID)
+    {
+        if (isClient && !isServer)
+        {
+            Server_PlaySoundForEveryone(effectID);
+        }
+        else if (isServer)
+        {
+            Client_PlaySoundEffect(effectID);
+        }
+    }
+
+    [Command]
+    private void Server_PlaySoundForEveryone(int effectID)
+    {
+        Client_PlaySoundEffect(effectID);
+    }
+
+    [ClientRpc]
+    private void Client_PlaySoundEffect(int effectID)
+    {
+        PlayEffect(effectID);
+    }
+
+    private void PlayEffect(int effectID)
+    {
+        AudioClip effect = AudioCollection.GetAudioClip(effectID);
+        if (!effect) return;
         source.PlayOneShot(effect, SFXVolume);
     }
 }

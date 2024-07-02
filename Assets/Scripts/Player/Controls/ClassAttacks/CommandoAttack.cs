@@ -25,6 +25,13 @@ public class CommandoAttack : AttackManager
 
     [SerializeField] private CameraShake CameraShakeRef;
 
+    protected override void Start()
+    {
+        base.Start();
+        AudioCollection.RegisterAudioClip(ShootSound);
+        AudioCollection.RegisterAudioClip(JetpackLandSound);
+    }
+
     /// <summary>
     /// Implements the primary attack for the Commando class. Based around the existence of twin pistols
     /// that fire in tandem. Triggers two hits per shot as an intended feature, interacting with On-Hit

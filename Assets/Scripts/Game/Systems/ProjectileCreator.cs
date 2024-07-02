@@ -50,7 +50,11 @@ public class ProjectileCreator : NetworkBehaviour
         gameObject.transform.position = startLocation;
         gameObject.transform.rotation = Quaternion.LookRotation(direction, Vector3.up);
         bAlive = true;
-        if (sound != null) ProjSound = sound;
+        if (sound != null)
+        {
+            ProjSound = sound;
+            AudioCollection.RegisterAudioClip(ProjSound);
+        }
         PlaySound();
         if (bFromServer)
         {

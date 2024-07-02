@@ -26,6 +26,7 @@ public class ExplosionCreator : NetworkBehaviour
         this.damage = damage;
         gameObject.transform.position = startLocation;
         ExplosionSound = sound;
+        AudioCollection.RegisterAudioClip(ExplosionSound);
         NetworkServer.Spawn(gameObject);
         PlaySound();
         Client_ExplosionSound();

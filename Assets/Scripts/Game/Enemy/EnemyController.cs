@@ -44,6 +44,7 @@ public abstract class EnemyController : NetworkBehaviour
         agent.updateUpAxis = false;
         AnimMovingHash = Animator.StringToHash("Moving");
         animator = GetComponentInChildren<Animator>();
+        AudioCollection.RegisterAudioClip(ShotSound);
     }
 
     /// <summary>
@@ -168,11 +169,13 @@ public abstract class EnemyController : NetworkBehaviour
     /// <summary>
     /// Implementation of the visual cue for the enemy's attack
     /// </summary>
+    [Server]
     protected virtual void VisualAttackCue() { }
 
     /// <summary>
     /// Implementation of the audio cue for the enemy's attack
     /// </summary>
+    [Server]
     protected virtual void AudioAttackCue()
     {
         if (ShotSound) GetComponent<SoundManager>().PlaySoundEffect(ShotSound);

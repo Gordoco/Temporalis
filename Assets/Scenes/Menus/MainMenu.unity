@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.6755119, g: 0.7589787, b: 0.41183716, a: 1}
+  m_IndirectSpecularColor: {r: 0.6755119, g: 0.75897866, b: 0.41183716, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1416,17 +1416,13 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2046700526, guid: 85f1828d39c74054ea75211b3f113516, type: 3}
+      propertyPath: sceneId
+      value: 2560092458
+      objectReference: {fileID: 0}
     - target: {fileID: 352189842908244632, guid: 85f1828d39c74054ea75211b3f113516, type: 3}
       propertyPath: m_Name
       value: AudioManager
-      objectReference: {fileID: 0}
-    - target: {fileID: 946454290277051621, guid: 85f1828d39c74054ea75211b3f113516, type: 3}
-      propertyPath: SFXVolume
-      value: 0.15
-      objectReference: {fileID: 0}
-    - target: {fileID: 946454290277051621, guid: 85f1828d39c74054ea75211b3f113516, type: 3}
-      propertyPath: MusicVolume
-      value: 0.35
       objectReference: {fileID: 0}
     - target: {fileID: 5014186189576132784, guid: 85f1828d39c74054ea75211b3f113516, type: 3}
       propertyPath: m_RootOrder
@@ -1470,6 +1466,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5014186189576132784, guid: 85f1828d39c74054ea75211b3f113516, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6174675088059538918, guid: 85f1828d39c74054ea75211b3f113516, type: 3}
+      propertyPath: m_PlayOnAwake
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
