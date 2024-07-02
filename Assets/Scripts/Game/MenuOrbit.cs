@@ -41,21 +41,21 @@ public class MenuOrbit : MonoBehaviour
         {
             Quaternion newRotation = Quaternion.LookRotation(OrbitPoint.position - transform.position);
 
-            transform.position = RotatePointAroundPivot(transform.position, OrbitPoint.transform.position, rotationSpeed * Time.deltaTime);
+            transform.position = RotatePointAroundPivot(transform.position, OrbitPoint.transform.position, rotationSpeed * Time.smoothDeltaTime);
             transform.rotation = newRotation;
         }
         else if (bHostHovered)
         {
             transform.position = Vector3.Lerp(PrevPanPoint, HostPanLocation.position, hostPositionProg);
             transform.rotation = Quaternion.Lerp(PrevPanRotation, HostPanLocation.rotation, hostPositionProg);
-            if (hostPositionProg != 1) hostPositionProg += Time.deltaTime * PositionChangeSpeed;
+            if (hostPositionProg != 1) hostPositionProg += Time.smoothDeltaTime * PositionChangeSpeed;
             if (hostPositionProg > 1) hostPositionProg = 1;
         }
         else if (bHostStopHovered)
         {
             transform.position = Vector3.Lerp(PrevPanPoint, HostPanLocation.position, hostPositionProg);
             transform.rotation = Quaternion.Lerp(PrevPanRotation, HostPanLocation.rotation, hostPositionProg);
-            if (hostPositionProg != 0) hostPositionProg -= Time.deltaTime * PositionChangeSpeed;
+            if (hostPositionProg != 0) hostPositionProg -= Time.smoothDeltaTime * PositionChangeSpeed;
             if (hostPositionProg <= 0)
             {
                 hostPositionProg = 0;

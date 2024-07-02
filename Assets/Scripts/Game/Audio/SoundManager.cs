@@ -132,6 +132,10 @@ public class SoundManager : NetworkBehaviour
         }
     }
 
+    /// <summary>
+    /// Plays a sound effect over the network
+    /// </summary>
+    /// <param name="effect"></param>
     [Server]
     public void PlaySoundEffect(AudioClip effect)
     {
