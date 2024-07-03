@@ -121,7 +121,7 @@ MonoBehaviour:
   - stat: 5
     val: 1
   - stat: 6
-    val: 1500
+    val: 1000
   - stat: 7
     val: 50
   - stat: 8
@@ -147,6 +147,7 @@ MonoBehaviour:
   Initialized: 0
   ItemWeightMult: 15
   EnemySpawnCost: 10
+  EnemySpawnChance: 1
 --- !u!114 &-9095591412428583769
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -367,10 +368,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2de77b9a6a1385841ad07574513a291c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   DefaultBackground: -1
   MusicVolume: 1
   SFXVolume: 1
   clips: []
+  bCarryThroughLevels: 0
 --- !u!1 &7501076429111387835
 GameObject:
   m_ObjectHideFlags: 0

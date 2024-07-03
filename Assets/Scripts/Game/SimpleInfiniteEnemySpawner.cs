@@ -128,12 +128,25 @@ public class SimpleInfiniteEnemySpawner : NetworkBehaviour
         return false;
     }
 
-    public GameObject GetRandomEnemyPrefab(int weight)
+    public GameObject GetRandomEnemyPrefab(int maxCost)
     {
-        if (EnemyTypes == null || EnemyTypes.Length == 0 || weight <= 0) return null;
-        int randIndex = Random.Range(0, EnemyTypes.Length);
-        while (EnemyTypes[randIndex].GetComponent<EnemyStatManager>().GetEnemySpawnCost() > weight) randIndex = Random.Range(0, EnemyTypes.Length);
-        return EnemyTypes[randIndex];
+        if (EnemyTypes == null || EnemyTypes.Length == 0 || maxCost <= 0) return null;
+        int sumChance = 0;
+        for (int i = 0; i < EnemyTypes.Length; i++)
+        {
+            if (EnemyTypes[i].GetComponent<EnemyStatManager>().GetEnemySpawnCost() > maxCost) continue; //Skip if too expensive
+            sumChance += EnemyTypes[i].GetComponent<EnemyStatManager>().GetEnemySpawnChance();
+        }
+        Debug.Log("SUM CHANCE: " + sumChance);
+        int randomNum = Random.Range(0, sumChance);
+        int count = 0;
+        for (int i = 0; i < EnemyTypes.Length; i++)
+        {
+            if (EnemyTypes[i].GetComponent<EnemyStatManager>().GetEnemySpawnCost() > maxCost) continue; //Skip if too expensive
+            count += EnemyTypes[i].GetComponent<EnemyStatManager>().GetEnemySpawnChance();
+            if (count > randomNum) return EnemyTypes[i];
+        }
+        return null;
     }
 
     private void Update()

@@ -194,8 +194,8 @@ MonoBehaviour:
   ItemName: Coffee
   stats: 00000000
   values:
-  - 1.75
-  percent: 0
+  - 1.2
+  percent: 1
 --- !u!114 &8595441419802087683
 MonoBehaviour:
   m_ObjectHideFlags: 0

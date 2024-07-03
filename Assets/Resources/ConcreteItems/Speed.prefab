@@ -307,7 +307,7 @@ MonoBehaviour:
   ItemName: Speed
   stats: 0d0000000e000000
   values:
-  - 2
+  - 0.5
   - 1
   percent: 0
 --- !u!114 &8595441419802087683

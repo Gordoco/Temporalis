@@ -16,6 +16,11 @@ public class EnemyStatManager : StatManager
     /// Cost of spawning specified enemy, allows fewer, stronger enemies to be spawned.
     /// </summary>
     [SerializeField] private int EnemySpawnCost = 1;
+    /// <summary>
+    /// Chance of spawning specified enemy, allows rarer or stronger enemies to be spawned less often.
+    /// </summary>
+    [SerializeField] private int EnemySpawnChance = 1;
+
 
     public static EnemyStatManager operator >(EnemyStatManager a, EnemyStatManager b)
     {
@@ -61,4 +66,6 @@ public class EnemyStatManager : StatManager
 
     [Server]
     public int GetEnemySpawnCost() { return EnemySpawnCost; }
+    [Server]
+    public int GetEnemySpawnChance() { return EnemySpawnChance; }
 }
