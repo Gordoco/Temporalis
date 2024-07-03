@@ -9,12 +9,15 @@ public class MenuOrbit : MonoBehaviour
     [SerializeField] private float rotationSpeed = 10f;
 
     [SerializeField] private Transform HostPanLocation;
+    [SerializeField] private Transform SettingsPanLocation;
 
     [SerializeField] private float PositionChangeSpeed = 1f;
 
     bool bPanning = true;
-    bool bHostHovered = false;
-    bool bHostStopHovered = false;
+    bool bFixed = false;
+
+    /*bool bHostHovered = false;
+    bool bHostStopHovered = false;*/
 
     private Vector3 RotatePointAroundPivot(Vector3 point, Vector3 pivot, float angle) 
     {
@@ -24,9 +27,13 @@ public class MenuOrbit : MonoBehaviour
         return point; // return it
     }
 
-    float hostPositionProg = 0;
+    bool bReset = true;
+    //float hostPositionProg = 0;
     Vector3 PrevPanPoint = Vector3.zero;
     Quaternion PrevPanRotation = Quaternion.identity;
+
+    Vector3 PrevPoint = Vector3.zero;
+    Quaternion PrevRotation = Quaternion.identity;
 
     private void Start()
     {
@@ -34,52 +41,107 @@ public class MenuOrbit : MonoBehaviour
         PrevPanRotation = transform.rotation;
     }
 
+    float transitionProgress = 0;
+    Transform fixedPoint;
+
     // Update is called once per frame
     void Update()
     {
         if (bPanning)
         {
-            Quaternion newRotation = Quaternion.LookRotation(OrbitPoint.position - transform.position);
-
-            transform.position = RotatePointAroundPivot(transform.position, OrbitPoint.transform.position, rotationSpeed * Time.smoothDeltaTime);
-            transform.rotation = newRotation;
-        }
-        else if (bHostHovered)
-        {
-            transform.position = Vector3.Lerp(PrevPanPoint, HostPanLocation.position, hostPositionProg);
-            transform.rotation = Quaternion.Lerp(PrevPanRotation, HostPanLocation.rotation, hostPositionProg);
-            if (hostPositionProg != 1) hostPositionProg += Time.smoothDeltaTime * PositionChangeSpeed;
-            if (hostPositionProg > 1) hostPositionProg = 1;
-        }
-        else if (bHostStopHovered)
-        {
-            transform.position = Vector3.Lerp(PrevPanPoint, HostPanLocation.position, hostPositionProg);
-            transform.rotation = Quaternion.Lerp(PrevPanRotation, HostPanLocation.rotation, hostPositionProg);
-            if (hostPositionProg != 0) hostPositionProg -= Time.smoothDeltaTime * PositionChangeSpeed;
-            if (hostPositionProg <= 0)
+            if (!bReset && (transform.position != PrevPoint || transform.rotation != PrevRotation))
             {
-                hostPositionProg = 0;
-                bHostStopHovered = false;
-                bPanning = true;
+                ResetToPan();
             }
+            else
+            {
+                //Continue Panning
+                PanLogic();
+            }
+        }
+        else if (bFixed)
+        {
+            bReset = false;
+            transform.position = Vector3.Lerp(PrevPoint, fixedPoint.position, transitionProgress);
+            transform.rotation = Quaternion.Lerp(PrevRotation, fixedPoint.rotation, transitionProgress);
+            if (transitionProgress != 1) transitionProgress += Time.smoothDeltaTime * PositionChangeSpeed;
+            if (transitionProgress > 1) transitionProgress = 1;
         }
     }
 
-    public void OnHostStartHover()
+    private void PanLogic()
     {
-        if (bPanning)
+        Quaternion newRotation = Quaternion.LookRotation(OrbitPoint.position - transform.position);
+
+        transform.position = RotatePointAroundPivot(transform.position, OrbitPoint.transform.position, rotationSpeed * Time.smoothDeltaTime);
+        transform.rotation = newRotation;
+    }
+
+    private void ResetToPan()
+    {
+        transform.position = Vector3.Lerp(PrevPoint, fixedPoint.position, transitionProgress);
+        transform.rotation = Quaternion.Lerp(PrevRotation, fixedPoint.rotation, transitionProgress);
+        if (transitionProgress != 0) transitionProgress -= Time.smoothDeltaTime * (PositionChangeSpeed/2);
+        if (transitionProgress < 0) transitionProgress = 0;
+        if (transitionProgress == 0) bReset = true;
+    }
+
+    bool bCooldown = false;
+
+    private void ChangeToFixCameraPos(Transform fixedPos)
+    {
+        if (bCooldown) return;
+        bCooldown = true;
+        StartCoroutine(Cooldown());
+
+        if (bReset)
         {
             PrevPanPoint = transform.position;
             PrevPanRotation = transform.rotation;
         }
+        PrevPoint = transform.position;
+        PrevRotation = transform.rotation;
+        //if (fixedPoint != fixedPos) transitionProgress = 0;
         bPanning = false;
-        bHostStopHovered = false;
-        bHostHovered = true;
+        bFixed = true;
+        fixedPoint = fixedPos;
+    }
+
+    private void ResetToCameraPanning()
+    {
+        bPanning = true;
+        bFixed = false;
+        PrevPoint = PrevPanPoint;
+        PrevRotation = PrevPanRotation;
+    }
+
+    private IEnumerator Cooldown()
+    {
+        yield return new WaitForSeconds(0.5f);
+        bCooldown = false;
+    }
+
+    public void OnHostStartHover()
+    {
+        ChangeToFixCameraPos(HostPanLocation);
     }
     public void OnHostStopHover()
     {
-        bPanning = false;
-        bHostHovered = false;
-        bHostStopHovered = true;
+        ResetToCameraPanning();
+    }
+
+    public void OnSettingsStartHover()
+    {
+        ChangeToFixCameraPos(SettingsPanLocation);
+    }
+
+    public void OnSettingsStopHover()
+    {
+        ResetToCameraPanning();
+    }
+
+    public void ExitGame()
+    {
+        Application.Quit();
     }
 }

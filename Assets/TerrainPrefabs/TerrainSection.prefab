@@ -13,8 +13,6 @@ GameObject:
   - component: {fileID: 5066108816899107698}
   - component: {fileID: 593663642372081486}
   - component: {fileID: 4960432308271201088}
-  - component: {fileID: 5270112142879889852}
-  - component: {fileID: -1119264062528745714}
   m_Layer: 0
   m_Name: TerrainSection
   m_TagString: Untagged
@@ -124,39 +122,3 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 0}
---- !u!114 &5270112142879889852
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 203426771623560441}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e7430321a069dc14fa60a2841117879b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  foliageClass: {fileID: 3557342547236900015, guid: 7538efbe27ac8a44fb9f666dc1219aea, type: 3}
-  foliageDensity: 20
-  yOffset: -2
-  radius: 0
-  foliageRenderDist: 75
-  b2D: 0
---- !u!114 &-1119264062528745714
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 203426771623560441}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e7430321a069dc14fa60a2841117879b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  foliageClass: {fileID: 3557342547236900015, guid: ac5e19cb7eee1b5458e2fd677fdb142f, type: 3}
-  foliageDensity: 1000
-  yOffset: -0.2
-  radius: 5
-  foliageRenderDist: 75
-  b2D: 0
