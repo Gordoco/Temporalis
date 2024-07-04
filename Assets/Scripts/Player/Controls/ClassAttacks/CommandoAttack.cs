@@ -19,6 +19,7 @@ public class CommandoAttack : AttackManager
     [SerializeField] private GameObject HitParticleEffect;
 
     [SerializeField] private AudioClip ShootSound;
+    [SerializeField] private AudioClip RapidShootSound;
     [SerializeField] private AudioClip JetpackLandSound;
 
     [SerializeField] private Image StimImage;
@@ -30,6 +31,7 @@ public class CommandoAttack : AttackManager
         base.Start();
         AudioCollection.RegisterAudioClip(ShootSound);
         AudioCollection.RegisterAudioClip(JetpackLandSound);
+        AudioCollection.RegisterAudioClip(RapidShootSound);
     }
 
     /// <summary>
@@ -92,7 +94,20 @@ public class CommandoAttack : AttackManager
     private void PlayShootSound()
     {
         if (!ShootSound) return;
-        GetComponent<SoundManager>().PlaySoundEffect(ShootSound);
+        if (statManager.GetStat(NumericalStats.AttackSpeed) < 10) GetComponent<SoundManager>().PlaySoundEffect(ShootSound);
+        else if (!bCooldown)
+        {
+            GetComponent<SoundManager>().PlaySoundEffect(RapidShootSound);
+            bCooldown = true;
+            StartCoroutine(RapidFireSoundCooldown(RapidShootSound.length));
+        }
+    }
+
+    bool bCooldown = false;
+    private IEnumerator RapidFireSoundCooldown(float time)
+    {
+        yield return new WaitForSeconds(time);
+        bCooldown = false;
     }
 
     /// <summary>

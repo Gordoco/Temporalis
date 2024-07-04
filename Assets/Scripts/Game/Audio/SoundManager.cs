@@ -133,11 +133,11 @@ public class SoundManager : NetworkBehaviour
     }
 
     /// <summary>
-    /// Plays a sound effect over the network
+    /// Plays a sound effect over the network. Requires AudioCollection registration on all clients and server
     /// </summary>
     /// <param name="effect"></param>
     [Server]
-    public void PlaySoundEffect(AudioClip effect)
+    public void PlaySoundEffect(AudioClip effect, float volumeMult = 1)
     {
         int clipID = AudioCollection.GetClipID(effect);
         if (clipID == -1)
@@ -145,38 +145,38 @@ public class SoundManager : NetworkBehaviour
             Debug.LogError("ERROR: [SoundManager.cs - Attempting to play sound effect with unregistered clip number]");
             return;
         }
-        PlaySoundEffect(clipID);
+        PlaySoundEffect(clipID, volumeMult);
     }
 
     [Server]
-    public void PlaySoundEffect(int effectID)
+    public void PlaySoundEffect(int effectID, float volumeMult = 1)
     {
         if (isClient && !isServer)
         {
-            Server_PlaySoundForEveryone(effectID);
+            Server_PlaySoundForEveryone(effectID, volumeMult);
         }
         else if (isServer)
         {
-            Client_PlaySoundEffect(effectID);
+            Client_PlaySoundEffect(effectID, volumeMult);
         }
     }
 
     [Command]
-    private void Server_PlaySoundForEveryone(int effectID)
+    private void Server_PlaySoundForEveryone(int effectID, float volumeMult)
     {
-        Client_PlaySoundEffect(effectID);
+        Client_PlaySoundEffect(effectID, volumeMult);
     }
 
     [ClientRpc]
-    private void Client_PlaySoundEffect(int effectID)
+    private void Client_PlaySoundEffect(int effectID, float volumeMult)
     {
-        PlayEffect(effectID);
+        PlayEffect(effectID, volumeMult);
     }
 
-    private void PlayEffect(int effectID)
+    private void PlayEffect(int effectID, float volumeMult)
     {
         AudioClip effect = AudioCollection.GetAudioClip(effectID);
         if (!effect) return;
-        source.PlayOneShot(effect, SFXVolume);
+        source.PlayOneShot(effect, SFXVolume * volumeMult);
     }
 }

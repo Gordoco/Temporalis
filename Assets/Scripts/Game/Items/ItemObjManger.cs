@@ -7,6 +7,7 @@ using Mirror;
 [RequireComponent(typeof(NetworkRigidbodyUnreliable))]
 [RequireComponent(typeof(BaseItemComponent))]
 [RequireComponent(typeof(Renderer))]
+[RequireComponent(typeof(SoundManager))]
 public class ItemObjManger : NetworkBehaviour
 {
     private void Start()

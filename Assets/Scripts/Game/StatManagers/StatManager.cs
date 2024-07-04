@@ -186,6 +186,13 @@ public abstract class StatManager : NetworkBehaviour
         {
             BaseItem newItem = item.CreateCopy();
             item.CustomItemEffect(this);
+            if (GetComponent<SoundManager>())
+            {
+                if (item.GetItemPickupSound())
+                {
+                    GetComponent<SoundManager>().PlaySoundEffect(item.GetItemPickupSound(), 2.5f);
+                }
+            }
             items.Add(newItem);
             AddItemChild(newItem);
         }

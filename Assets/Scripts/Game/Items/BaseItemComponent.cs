@@ -6,6 +6,7 @@ public class BaseItemComponent : MonoBehaviour
 {
     [SerializeField] private int ItemWeight;
     [SerializeField] private Texture2D ItemImage;
+    [SerializeField] private AudioClip ItemPickupSound;
 
     public int GetItemWeight() { return ItemWeight; }
     public Texture2D GetItemImage() { return ItemImage; }
@@ -14,6 +15,13 @@ public class BaseItemComponent : MonoBehaviour
     public NumericalStats[] stats;
     public double[] values;
     public bool percent;
+
+    private void Start()
+    {
+        if (ItemPickupSound) AudioCollection.RegisterAudioClip(ItemPickupSound);
+    }
+
+    public AudioClip GetItemPickupSound() { return ItemPickupSound; }
 
     public BaseItem CreateCopy()
     {
@@ -26,7 +34,7 @@ public class BaseItemComponent : MonoBehaviour
     }
 
     /// <summary>
-    /// Server-Only Event (Un-enforced) to add custom functionality to custom items
+    /// Server-Only Event (Un-enforced) to add custom functionality to custom items. Called once on Item addition to Stat Manager
     /// </summary>
     /// <param name="manager">Stat manager this item is added to</param>
     public virtual void CustomItemEffect(StatManager manager) { }
