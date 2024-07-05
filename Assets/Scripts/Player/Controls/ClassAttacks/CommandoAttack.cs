@@ -64,7 +64,7 @@ public class CommandoAttack : AttackManager
         GameObject MF1 = Instantiate(PrimaryAttackParticleEffect, Gun1MuzzleLoc, Quaternion.LookRotation(dir));
         GameObject MF2 = Instantiate(PrimaryAttackParticleEffect, Gun2MuzzleLoc, Quaternion.LookRotation(dir));
 
-        PlayShootSound(); //Need to adjust for fast attack speed
+        if (isClient) PlayShootSound(); //Need to adjust for fast attack speed
 
         CameraShakeRef.enabled = true;
 

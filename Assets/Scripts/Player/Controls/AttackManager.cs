@@ -45,11 +45,6 @@ public abstract class AttackManager : NetworkBehaviour
 
     protected virtual void Start()
     {
-        if (gameObject.transform.parent.name != "LocalGamePlayer")
-        {
-            this.enabled = false;
-            return;
-        }
         GetComponent<HitManager>().OnStunned += ShowStunnedEffect;
         GetComponent<HitManager>().OnUnStunned += HideStunnedEffect;
     }
