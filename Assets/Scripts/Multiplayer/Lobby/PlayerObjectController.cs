@@ -40,9 +40,9 @@ public class PlayerObjectController : NetworkBehaviour
         obj.transform.SetParent(parent.transform, b);
     }
 
-    [Server]
     public void StartGameMap()
     {
+        if (!isServer) return;
         if (GameObject.FindGameObjectWithTag("AudioManager"))
         {
             GameObject.FindGameObjectWithTag("AudioManager").GetComponent<SoundManager>().ChangeBackgroundSound(1);

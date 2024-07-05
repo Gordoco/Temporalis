@@ -20,6 +20,7 @@ public class GrenadeTimedExplosion : NetworkBehaviour
         this.radius = radius;
         this.damage = damage;
         this.bFromServer = inServer;
+        AudioCollection.RegisterAudioClip(ExplosionSound);
         GetComponent<ProjectileCreator>().OnHitEnemy += EarlyTrigger;
         StartCoroutine(Explode_Delay(owner, radius, damage, time));
     }

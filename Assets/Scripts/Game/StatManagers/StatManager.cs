@@ -70,7 +70,7 @@ public abstract class StatManager : NetworkBehaviour
 
     public bool GetCCImmune() { return CCImmune; }
 
-    private void Start()
+    private void Awake()
     {
         if (isServer)
         {
@@ -88,6 +88,15 @@ public abstract class StatManager : NetworkBehaviour
                 Debug.Log((NumericalStats)i + " = " + stats[i]);
             }
         }
+    }
+
+    /// <summary>
+    /// Ensures all stats have been initially loaded
+    /// </summary>
+    /// <returns></returns>
+    public bool CheckReady()
+    {
+        return stats.Count == (int)NumericalStats.NumberOfStats;
     }
 
     /// <summary>
@@ -210,7 +219,6 @@ public abstract class StatManager : NetworkBehaviour
     /// <returns></returns>
     private double GetCombinedValueFromItems(NumericalStats stat)
     {
-        if (stats.Count < (int)NumericalStats.NumberOfStats) return 0;
         if ((int)stat < 0 || (int)stat >= (int)NumericalStats.NumberOfStats) return 0;
         //Debug.Log("STAT: " + (int)stat);
         double val = stats[(int)stat];

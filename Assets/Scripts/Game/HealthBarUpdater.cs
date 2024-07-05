@@ -13,6 +13,7 @@ public class HealthBarUpdater : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (!manager.CheckReady()) return;
         slider.value = (float)(manager.GetHealth() / manager.GetStat(NumericalStats.Health));
         text.text = (int)manager.GetHealth() + "/" + (int)manager.GetStat(NumericalStats.Health);
     }
