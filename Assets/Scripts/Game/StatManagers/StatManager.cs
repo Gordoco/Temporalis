@@ -82,6 +82,7 @@ public abstract class StatManager : NetworkBehaviour
         }
         else if (gameObject.tag == "Player" && isClient)
         {
+            if (stats.Count < (int)NumericalStats.NumberOfStats) return;
             for (int i = 0; i < stats.Count; i++)
             {
                 Debug.Log((NumericalStats)i + " = " + stats[i]);
