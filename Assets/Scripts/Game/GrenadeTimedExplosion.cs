@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 
+[RequireComponent(typeof(SoundManager))]
 public class GrenadeTimedExplosion : NetworkBehaviour
 {
     [SerializeField] private GameObject ExplosionPrefab;
@@ -53,6 +54,10 @@ public class GrenadeTimedExplosion : NetworkBehaviour
             explosion.GetComponent<ExplosionCreator>().InitializeExplosion(owner, gameObject.transform.position, radius, damage, true, ExplosionSound);
         }
         GetComponent<SoundManager>().PlaySoundEffect(ExplosionSound);
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            transform.GetChild(i).gameObject.SetActive(false);
+        }
         StartCoroutine(ExplodeSoundDelay(ExplosionSound));
     }
 
