@@ -61,17 +61,15 @@ public class CommandoAttack : AttackManager
         Vector3 Gun1MuzzleLoc = LShotStart.transform.position;
         Vector3 Gun2MuzzleLoc = RShotStart.transform.position;
 
-        GameObject MF1 = Instantiate(PrimaryAttackParticleEffect, Gun1MuzzleLoc, Quaternion.LookRotation(dir));
-        GameObject MF2 = Instantiate(PrimaryAttackParticleEffect, Gun2MuzzleLoc, Quaternion.LookRotation(dir));
-
-        if (isClient) PlayShootSound(); //Need to adjust for fast attack speed
-
         CameraShakeRef.enabled = true;
 
         if (isServer)
         {
+            GameObject MF1 = Instantiate(PrimaryAttackParticleEffect, Gun1MuzzleLoc, Quaternion.LookRotation(dir));
+            GameObject MF2 = Instantiate(PrimaryAttackParticleEffect, Gun2MuzzleLoc, Quaternion.LookRotation(dir));
             NetworkServer.Spawn(MF1);
             NetworkServer.Spawn(MF2);
+            PlayShootSound();
         }
 
         LShotStart.GetComponent<ParticleSystem>().Play();
