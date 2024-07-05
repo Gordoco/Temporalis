@@ -148,7 +148,6 @@ public class SoundManager : NetworkBehaviour
         PlaySoundEffect(clipID, volumeMult);
     }
 
-    [Server]
     public void PlaySoundEffect(int effectID, float volumeMult = 1)
     {
         if (isClient && !isServer)
