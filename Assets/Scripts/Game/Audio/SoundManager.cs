@@ -136,7 +136,6 @@ public class SoundManager : NetworkBehaviour
     /// Plays a sound effect over the network. Requires AudioCollection registration on all clients and server
     /// </summary>
     /// <param name="effect"></param>
-    [Server]
     public void PlaySoundEffect(AudioClip effect, float volumeMult = 1)
     {
         int clipID = AudioCollection.GetClipID(effect);
