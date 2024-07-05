@@ -51,6 +51,13 @@ public class GrenadeTimedExplosion : NetworkBehaviour
             GameObject explosion = Instantiate(ExplosionPrefab);
             explosion.GetComponent<ExplosionCreator>().InitializeExplosion(owner, gameObject.transform.position, radius, damage, true, ExplosionSound);
         }
+        GetComponent<SoundManager>().PlaySoundEffect(ExplosionSound);
+        StartCoroutine(ExplodeSoundDelay(ExplosionSound));
+    }
+
+    private IEnumerator ExplodeSoundDelay(AudioClip sound)
+    {
+        yield return new WaitForSeconds(sound.length);
         Destroy(gameObject);
     }
 }
