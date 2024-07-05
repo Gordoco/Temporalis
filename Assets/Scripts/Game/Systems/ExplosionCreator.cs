@@ -29,7 +29,6 @@ public class ExplosionCreator : NetworkBehaviour
         AudioCollection.RegisterAudioClip(ExplosionSound);
         NetworkServer.Spawn(gameObject);
         PlaySound();
-        Client_ExplosionSound();
         RaycastHit[] hits = Physics.SphereCastAll(startLocation, radius, Vector3.up, 0);
         //Debug.Log(hits.Length);
         for (int i = 0; i < hits.Length; i++)
@@ -46,12 +45,6 @@ public class ExplosionCreator : NetworkBehaviour
                 }
             }
         }
-    }
-
-    [ClientRpc]
-    private void Client_ExplosionSound()
-    {
-        PlaySound();
     }
 
     private void PlaySound()

@@ -210,6 +210,7 @@ public abstract class StatManager : NetworkBehaviour
     /// <returns></returns>
     private double GetCombinedValueFromItems(NumericalStats stat)
     {
+        if (stats.Count < (int)NumericalStats.NumberOfStats) return 0;
         if ((int)stat < 0 || (int)stat >= (int)NumericalStats.NumberOfStats) return 0;
         //Debug.Log("STAT: " + (int)stat);
         double val = stats[(int)stat];
