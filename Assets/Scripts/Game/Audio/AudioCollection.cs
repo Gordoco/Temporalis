@@ -20,7 +20,7 @@ public static class AudioCollection
 
     public static AudioClip GetAudioClip(int index)
     {
-        if (index >= 0 || index <= clips.Count)
+        if (index >= 0 && index < clips.Count)
         {
             return clips[index];
         }

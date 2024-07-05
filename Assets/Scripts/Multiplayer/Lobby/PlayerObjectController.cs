@@ -40,7 +40,7 @@ public class PlayerObjectController : NetworkBehaviour
         obj.transform.SetParent(parent.transform, b);
     }
 
-    [ClientRpc]
+    [Server]
     public void StartGameMap()
     {
         if (GameObject.FindGameObjectWithTag("AudioManager"))
