@@ -70,7 +70,7 @@ public abstract class StatManager : NetworkBehaviour
 
     public bool GetCCImmune() { return CCImmune; }
 
-    private void Awake()
+    private void Start()
     {
         if (isServer)
         {
