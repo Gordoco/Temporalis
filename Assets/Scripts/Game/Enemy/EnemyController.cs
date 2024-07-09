@@ -82,7 +82,7 @@ public abstract class EnemyController : NetworkBehaviour
         if (!isServer) return;
         if (!controller.enabled) return;
 
-        Player = GetRandomPlayer();
+        if (!Player) Player = GetRandomPlayer();
         if (!ValidatePlayer(Player)) return;
 
         Vector3 dir = ProjectileOffset != null ? Player.transform.position - ProjectileOffset.transform.position : Player.transform.position - transform.position;
