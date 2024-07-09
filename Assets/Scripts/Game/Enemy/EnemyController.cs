@@ -34,7 +34,7 @@ public abstract class EnemyController : NetworkBehaviour
     // Start is called before the first frame update
     protected virtual void Start()
     {
-        AudioCollection.RegisterAudioClip(ShotSound);
+        if (ShotSound) AudioCollection.RegisterAudioClip(ShotSound);
         if (!isServer) return;
         Manager = GetComponent<StatManager>();
         controller = GetComponent<CharacterController>();
