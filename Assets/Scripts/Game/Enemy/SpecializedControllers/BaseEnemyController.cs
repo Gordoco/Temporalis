@@ -4,6 +4,11 @@ using UnityEngine;
 
 public class BaseEnemyController : EnemyController
 {
+    protected override void Start()
+    {
+        base.Start();
+    }
+
     protected override void AttackFunctionality(GameObject Player, Vector3 dir)
     {
         base.AttackFunctionality(Player, dir);
