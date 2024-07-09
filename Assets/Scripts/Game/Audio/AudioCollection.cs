@@ -8,11 +8,6 @@ public static class AudioCollection
 
     public static void RegisterAudioClip(AudioClip clip)
     {
-        if (clips.ContainsValue(clip) && !clips[clip.name])
-        {
-            Debug.LogError("ERROR - [AudioCollection.cs - Attempting to register the same AudioClip under different names]");
-            return;
-        }
         if (clips[clip.name]) return;
         clips.Add(clip.name, clip);
     }
