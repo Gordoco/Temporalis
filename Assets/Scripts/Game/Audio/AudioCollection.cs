@@ -4,26 +4,34 @@ using UnityEngine;
 
 public static class AudioCollection
 {
-    static List<AudioClip> clips = new List<AudioClip>();
+    static Dictionary<string, AudioClip> clips = new Dictionary<string, AudioClip>();
 
     public static void RegisterAudioClip(AudioClip clip)
     {
-        if (clips.Contains(clip)) return;
-        clips.Add(clip);
-    }
-
-    public static int GetClipID(AudioClip clip)
-    {
-        if (clips.Contains(clip)) return clips.IndexOf(clip);
-        return -1;
-    }
-
-    public static AudioClip GetAudioClip(int index)
-    {
-        if (index >= 0 && index < clips.Count)
+        if (clips.ContainsValue(clip) && !clips[clip.name])
         {
-            return clips[index];
+            Debug.LogError("ERROR - [AudioCollection.cs - Attempting to register the same AudioClip under different names]");
+            return;
         }
+        if (clips[clip.name]) return;
+        clips.Add(clip.name, clip);
+    }
+
+    public static string GetClipName(AudioClip clip)
+    {
+        if (clips.ContainsValue(clip))
+        {
+            foreach (KeyValuePair<string, AudioClip> pair in clips)
+            {
+                if (pair.Value == clip) return pair.Key;
+            }
+        }
+        return null;
+    }
+
+    public static AudioClip GetAudioClip(string name)
+    {
+        if (clips[name]) return clips[name];
         return null;
     }
 }

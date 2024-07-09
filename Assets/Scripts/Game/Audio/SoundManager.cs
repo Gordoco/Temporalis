@@ -138,42 +138,42 @@ public class SoundManager : NetworkBehaviour
     /// <param name="effect"></param>
     public void PlaySoundEffect(AudioClip effect, float volumeMult = 1)
     {
-        int clipID = AudioCollection.GetClipID(effect);
-        if (clipID == -1)
+        string clipName = AudioCollection.GetClipName(effect);
+        if (clipName == null)
         {
-            Debug.LogError("ERROR: [SoundManager.cs - Attempting to play sound effect with unregistered clip number]");
+            Debug.LogError("ERROR: [SoundManager.cs - Attempting to play sound effect with unregistered clip name]");
             return;
         }
-        PlaySoundEffect(clipID, volumeMult);
+        PlaySoundEffect(clipName, volumeMult);
     }
 
-    public void PlaySoundEffect(int effectID, float volumeMult = 1)
+    public void PlaySoundEffect(string effectName, float volumeMult = 1)
     {
         if (isClient && !isServer)
         {
-            Server_PlaySoundForEveryone(effectID, volumeMult);
+            Server_PlaySoundForEveryone(effectName, volumeMult);
         }
         else if (isServer)
         {
-            Client_PlaySoundEffect(effectID, volumeMult);
+            Client_PlaySoundEffect(effectName, volumeMult);
         }
     }
 
     [Command]
-    private void Server_PlaySoundForEveryone(int effectID, float volumeMult)
+    private void Server_PlaySoundForEveryone(string effectName, float volumeMult)
     {
-        Client_PlaySoundEffect(effectID, volumeMult);
+        Client_PlaySoundEffect(effectName, volumeMult);
     }
 
     [ClientRpc]
-    private void Client_PlaySoundEffect(int effectID, float volumeMult)
+    private void Client_PlaySoundEffect(string effectName, float volumeMult)
     {
-        PlayEffect(effectID, volumeMult);
+        PlayEffect(effectName, volumeMult);
     }
 
-    private void PlayEffect(int effectID, float volumeMult)
+    private void PlayEffect(string effectName, float volumeMult)
     {
-        AudioClip effect = AudioCollection.GetAudioClip(effectID);
+        AudioClip effect = AudioCollection.GetAudioClip(effectName);
         if (!effect) return;
         source.PlayOneShot(effect, SFXVolume * volumeMult);
     }
