@@ -8,7 +8,7 @@ public static class AudioCollection
 
     public static void RegisterAudioClip(AudioClip clip)
     {
-        if (clips[clip.name]) return;
+        if (clips.ContainsKey(clip.name)) return;
         clips.Add(clip.name, clip);
     }
 
