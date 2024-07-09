@@ -85,8 +85,9 @@ public class SimpleInfiniteEnemySpawner : NetworkBehaviour
     private void SetupDropship(GameObject DropShip, Vector3 Location, Vector3 Goal)
     {
         if (DropShip == null) return;
-        DropShip.transform.position = Location;
-        Quaternion Rot = Quaternion.LookRotation(Goal - Location, Vector3.up);
+        Vector3 dir = (Goal - Location).normalized;
+        DropShip.transform.position = Location + (dir);
+        Quaternion Rot = Quaternion.LookRotation(dir, Vector3.up);
         DropShip.transform.rotation = Rot;
         StartCoroutine(DropshipLocomotion(DropShip, 0.8f));
     }
