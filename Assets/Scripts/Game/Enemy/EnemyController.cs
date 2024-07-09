@@ -55,6 +55,7 @@ public abstract class EnemyController : NetworkBehaviour
     protected GameObject GetRandomPlayer()
     {
         GameObject[] Players = GameObject.FindGameObjectsWithTag("Player");
+        if (Players.Length == 0) return null;
         int playerTarget = Random.Range(0, Players.Length);
         return Players[playerTarget];
     }
