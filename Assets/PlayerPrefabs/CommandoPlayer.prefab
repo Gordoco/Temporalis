@@ -795,7 +795,7 @@ MonoBehaviour:
   - stat: 12
     val: 10
   - stat: 13
-    val: 12
+    val: 10
   - stat: 14
     val: 12
   - stat: 15

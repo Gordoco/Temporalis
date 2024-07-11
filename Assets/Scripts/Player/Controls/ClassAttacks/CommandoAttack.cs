@@ -225,7 +225,7 @@ public class CommandoAttack : AttackManager
         if (JetpackParticleEffect != null) JetpackParticleEffect.SetActive(true);
         GetComponent<PlayerMove>().SetFlying(true);
         //StartCoroutine(JetpackBoost(controller, manager));
-        StartCoroutine(EndJetpack(manager.GetStat(NumericalStats.JumpHeight)/8));
+        StartCoroutine(EndJetpack(0.5f + manager.GetStat(NumericalStats.JumpHeight)/64));
     }
 
     IEnumerator EndJetpack(double time)
@@ -243,9 +243,9 @@ public class CommandoAttack : AttackManager
         if (JetpackParticleEffect != null) JetpackParticleEffect.SetActive(true);
         GetComponent<PlayerMove>().SetFlying(true);
         if (isServer) ClientsToggleFlying(true);
-        while (count < 50)
+        while (count < 20)
         {
-            if (isClient && controller.enabled) controller.Move(Vector3.up * (float)manager.GetStat(NumericalStats.JumpHeight) * 0.02f);
+            if (isClient && controller.enabled) controller.Move(Vector3.up * (float)manager.GetStat(NumericalStats.JumpHeight) * 0.001f);
             count++;
             yield return new WaitForSeconds(0.02f);
         }

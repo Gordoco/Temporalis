@@ -1,25 +1,23 @@
+using Mirror;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ArmManager : MonoBehaviour
+public class ArmManager : NetworkBehaviour
 {
     private GameObject HomeLocation;
 
+    [Server]
     public void Init(GameObject HomeLocation)
     {
         this.HomeLocation = HomeLocation;
     }
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
     // Update is called once per frame
     void Update()
     {
-        
+        if (!isServer) return;
     }
+
+    
 }

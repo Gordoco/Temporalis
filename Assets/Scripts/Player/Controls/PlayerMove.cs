@@ -69,14 +69,20 @@ public class PlayerMove : NetworkBehaviour
         CharacterController controller = GetComponent<CharacterController>();
         if (!controller.enabled) return;
         StatManager manager = GetComponent<StatManager>();
+
+        Vector2 moveDirection2D = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")).normalized;
+
+        float moveDirectionY = moveDirection.y;
+        moveDirection = new Vector3(moveDirection2D.x, 0, moveDirection2D.y);
+        moveDirection = transform.TransformDirection(moveDirection);
+        moveDirection *= (float)manager.GetStat(NumericalStats.MovementSpeed);
+        moveDirection.y = moveDirectionY;
+
         if (controller.isGrounded)
         {
             childAnimator.SetBool(AnimJumpingHash, false);
             tempGravity = 0;
-            moveDirection = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
-            moveDirection.Normalize();
-            moveDirection = transform.TransformDirection(moveDirection);
-            moveDirection *= (float)manager.GetStat(NumericalStats.MovementSpeed);
+            moveDirection.y = 0;
             if (Input.GetButton("Jump"))
             {
                 moveDirection.y = (float)manager.GetStat(NumericalStats.JumpHeight);

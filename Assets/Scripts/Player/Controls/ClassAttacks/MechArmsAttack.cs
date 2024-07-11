@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class MechArmsAttack : AttackManager
 {
+    [SerializeField] GameObject ArmPrefab;
+
     //LMB
     protected override void OnPrimaryAttack()
     {

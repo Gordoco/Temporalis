@@ -140,7 +140,7 @@ public abstract class EnemyController : NetworkBehaviour
     protected void Move(Vector3 location)
     {
         RaycastHit hit;
-        Physics.Raycast(new Vector3(location.x, 99, location.z), Vector3.down, out hit, int.MaxValue);
+        Physics.Raycast(new Vector3(location.x, location.y, location.z), Vector3.down, out hit, int.MaxValue);
         agent.destination = hit.point;
         agent.velocity = agent.desiredVelocity; //Instant movement changing
     }
