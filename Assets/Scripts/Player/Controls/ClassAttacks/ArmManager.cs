@@ -22,7 +22,7 @@ public class ArmManager : NetworkBehaviour
         initRotation = transform.localRotation;
         Owner = owner;
         Manager = owner.GetComponent<PlayerStatManager>();
-        travelSpeed = (float)Manager.GetStat(NumericalStats.AttackSpeed)/2;
+        travelSpeed = (float)Manager.GetStat(NumericalStats.AttackSpeed)/4;
         if (!Manager) Debug.LogError("ERROR - [ArmManager.cs - Attempted to initialize an arm on non-player]");
         ToggleActive(true);
     }
