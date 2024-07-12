@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 1303501802}
-  m_IndirectSpecularColor: {r: 0.6761182, g: 0.7602272, b: 0.41180283, a: 1}
+  m_IndirectSpecularColor: {r: 0.6773252, g: 0.7610975, b: 0.4208011, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -2478,6 +2478,8 @@ MonoBehaviour:
   m_Options:
     m_Options:
     - m_Text: Pew Pew Guy
+      m_Image: {fileID: 0}
+    - m_Text: Dr. Octagon (Legal Reasons)
       m_Image: {fileID: 0}
   m_OnValueChanged:
     m_PersistentCalls:

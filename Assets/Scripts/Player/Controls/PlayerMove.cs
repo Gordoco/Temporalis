@@ -80,13 +80,13 @@ public class PlayerMove : NetworkBehaviour
 
         if (controller.isGrounded)
         {
-            childAnimator.SetBool(AnimJumpingHash, false);
+            if (childAnimator) childAnimator.SetBool(AnimJumpingHash, false);
             tempGravity = 0;
             moveDirection.y = 0;
             if (Input.GetButton("Jump"))
             {
                 moveDirection.y = (float)manager.GetStat(NumericalStats.JumpHeight);
-                childAnimator.SetBool(AnimJumpingHash, true);
+                if (childAnimator) childAnimator.SetBool(AnimJumpingHash, true);
             }
         }
         moveDirection.y -= (gravity + tempGravity) * Time.deltaTime;
@@ -98,8 +98,8 @@ public class PlayerMove : NetworkBehaviour
 
     void AnimationHandler(Vector3 tempDir, CharacterController controller)
     {
-        childAnimator.SetFloat(AnimMovingHash, Input.GetAxis("Vertical"));
-        childAnimator.SetFloat(AnimStrafingHash, Input.GetAxis("Horizontal"));
+        if (childAnimator) childAnimator.SetFloat(AnimMovingHash, Input.GetAxis("Vertical"));
+        if (childAnimator) childAnimator.SetFloat(AnimStrafingHash, Input.GetAxis("Horizontal"));
     }
 
     [ClientRpc]

@@ -20,7 +20,6 @@ public class ExplosionCreator : NetworkBehaviour
     [Server]
     public void InitializeExplosion(GameObject owningObject, Vector3 startLocation, float radius, float damage, bool bPlayer, AudioClip sound = null)
     {
-        if (isServer) Debug.Log("SHOULD EXPLODE SERVER");
         owner = owningObject;
         this.radius = radius;
         this.damage = damage;
