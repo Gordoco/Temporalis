@@ -374,7 +374,7 @@ MonoBehaviour:
   syncInterval: 0
   initStats:
   - stat: 0
-    val: 1
+    val: 8
   - stat: 1
     val: 5
   - stat: 2

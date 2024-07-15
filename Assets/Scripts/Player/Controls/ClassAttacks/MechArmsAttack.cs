@@ -13,7 +13,7 @@ public class MechArmsAttack : AttackManager
         base.Start();
         if (isServer)
         {
-            for (int i = 0; i < ArmSpawnLocations.Length; i++)
+            for (int i = 0; i < 1; i++)
             {
                 GameObject arm = Instantiate(ArmPrefab, transform);
                 arm.transform.localPosition = ArmSpawnLocations[i].transform.localPosition;
