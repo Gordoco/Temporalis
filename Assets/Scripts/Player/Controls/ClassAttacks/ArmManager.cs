@@ -44,8 +44,20 @@ public class ArmManager : NetworkBehaviour
     {
         //Server only script
         if (!isServer) return;
-        AttackHandler();
-        AmbientMovementHandler();
+        if (bActive)
+        {
+            AttackHandler();
+            AmbientMovementHandler();
+        }
+        else
+        {
+            ResetActive();
+        }
+    }
+
+    private void ResetActive()
+    {
+        transform.localPosition = initLocation;
     }
 
     private IEnumerator AttackCooldown()
@@ -102,7 +114,7 @@ public class ArmManager : NetworkBehaviour
             speed = Vector3.Distance(initLocation, endLocation) != 0 ? Time.deltaTime * (travelSpeed / Vector3.Distance(initLocation, endLocation)) : Time.deltaTime * travelSpeed;
             prog += speed;
             transform.localPosition = Vector3.Lerp(initLocation, endLocation, prog);
-            //transform.localRotation = Quaternion.Lerp(initRotation, Quaternion.LookRotation(endLocation - initLocation), prog);
+            transform.localRotation = Quaternion.Lerp(initRotation, Quaternion.LookRotation(endLocation - initLocation), prog * 2);
         }
         if (enemy)
         {
@@ -116,7 +128,7 @@ public class ArmManager : NetworkBehaviour
             speed = Vector3.Distance(initLocation, endLocation) != 0 ? Time.deltaTime * (travelSpeed / Vector3.Distance(initLocation, endLocation)) : Time.deltaTime * travelSpeed;
             prog -= speed;
             transform.localPosition = Vector3.Lerp(initLocation, endLocation, prog);
-            //transform.localRotation = Quaternion.Lerp(initRotation, Quaternion.LookRotation(endLocation - initLocation), prog);
+            transform.localRotation = Quaternion.Lerp(initRotation, Quaternion.LookRotation(endLocation - initLocation), prog * 2);
         }
         attackInProg = false;
     }
