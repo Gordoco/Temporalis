@@ -26,7 +26,7 @@ public class MechArmsAttack : AttackManager
     {
         if (arms.Count >= 8) return;
         GameObject arm = Instantiate(ArmPrefab);
-        arm.transform.position = ArmSpawnLocations[arms.Count - 1].transform.position;
+        arm.transform.position = ArmSpawnLocations[arms.Count].transform.position;
         arm.transform.rotation = transform.rotation;
         arm.GetComponent<ArmManager>().Init(gameObject);
         arms.Add(arm);
