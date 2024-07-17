@@ -34,7 +34,7 @@ public class ArmManager : NetworkBehaviour
         RandomizeSpeed();
     }
 
-    private Vector3 GetInitLocation()
+    public Vector3 GetInitLocation()
     {
         return RotatePointAroundPivot(initLocation + Owner.transform.position, Owner.transform.position, Owner.transform.rotation.eulerAngles);
     }
@@ -57,6 +57,7 @@ public class ArmManager : NetworkBehaviour
     public void ToggleActive(bool newActive)
     {
         bActive = newActive;
+        ResetActive();
     }
 
     [Server]
@@ -75,14 +76,11 @@ public class ArmManager : NetworkBehaviour
             AttackHandler();
             if (!attackInProg) AmbientMovementHandler();
         }
-        else
-        {
-            ResetActive();
-        }
     }
 
     private void ResetActive()
     {
+        StopAllCoroutines();
         transform.position = GetInitLocation();
     }
 
