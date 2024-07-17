@@ -13,10 +13,11 @@ public class MechArmsAttack : AttackManager
         base.Start();
         if (isServer)
         {
-            for (int i = 0; i < 1; i++)
+            for (int i = 0; i < ArmSpawnLocations.Length; i++)
             {
-                GameObject arm = Instantiate(ArmPrefab, transform);
-                arm.transform.localPosition = ArmSpawnLocations[i].transform.localPosition;
+                GameObject arm = Instantiate(ArmPrefab);
+                arm.transform.position = ArmSpawnLocations[i].transform.position;
+                arm.transform.rotation = transform.rotation;
                 arm.GetComponent<ArmManager>().Init(gameObject);
                 NetworkServer.Spawn(arm);
             }

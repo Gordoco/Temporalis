@@ -18,13 +18,39 @@ public class ArmManager : NetworkBehaviour
     [Server]
     public void Init(GameObject owner)
     {
-        initLocation = transform.localPosition;
-        initRotation = transform.localRotation;
+        initLocation = transform.position - owner.transform.position;
+        initRotation = transform.rotation;
         Owner = owner;
         Manager = owner.GetComponent<PlayerStatManager>();
         travelSpeed = (float)Manager.GetStat(NumericalStats.AttackSpeed) * 25;
         if (!Manager) Debug.LogError("ERROR - [ArmManager.cs - Attempted to initialize an arm on non-player]");
         ToggleActive(true);
+    }
+
+    private void Start()
+    {
+        if (!isServer) return;
+        RandomizeDir();
+        RandomizeSpeed();
+    }
+
+    private Vector3 GetInitLocation()
+    {
+        return RotatePointAroundPivot(initLocation + Owner.transform.position, Owner.transform.position, Owner.transform.rotation.eulerAngles);
+    }
+
+    private void RandomizeDir()
+    {
+        dir.x = Random.Range(0, 2) == 0 ? 1 : -1;
+        dir.y = Random.Range(0, 2) == 0 ? 1 : -1;
+        dir.z = Random.Range(0, 2) == 0 ? 1 : -1;
+    }
+
+    private void RandomizeSpeed()
+    {
+        speed.x = Random.Range(0.1f, 0.4f);
+        speed.y = Random.Range(0.1f, 0.4f);
+        speed.z = Random.Range(0.1f, 0.4f);
     }
 
     [Server]
@@ -47,7 +73,7 @@ public class ArmManager : NetworkBehaviour
         if (bActive)
         {
             AttackHandler();
-            AmbientMovementHandler();
+            if (!attackInProg) AmbientMovementHandler();
         }
         else
         {
@@ -57,16 +83,23 @@ public class ArmManager : NetworkBehaviour
 
     private void ResetActive()
     {
-        transform.localPosition = initLocation;
+        transform.position = GetInitLocation();
     }
 
     private IEnumerator AttackCooldown()
     {
-        yield return new WaitForSeconds(1 / (float) Manager.GetStat(NumericalStats.AttackSpeed));
+        yield return new WaitForSeconds(5 / (float) Manager.GetStat(NumericalStats.AttackSpeed));
         bCanAttack = true;
     }
 
-    private void AttackHandler()
+    private Vector3 RotatePointAroundPivot(Vector3 point, Vector3 pivot, Vector3 angles) {
+          Vector3 dir = point - pivot; // get point direction relative to pivot
+          dir = Quaternion.Euler(angles) * dir; // rotate it
+          point = dir + pivot; // calculate rotated point
+          return point; // return it
+    }
+
+private void AttackHandler()
     {
         if (!bCanAttack) return;
         bCanAttack = false;
@@ -105,16 +138,16 @@ public class ArmManager : NetworkBehaviour
         yield return new WaitForSeconds(Random.Range(0, 0.3f));
         attackInProg = true;
         float prog = 0;
-        Vector3 endLocation = enemy ? transform.InverseTransformPoint(enemy.transform.position) : initLocation;
-        float speed = Time.deltaTime * (travelSpeed/Vector3.Distance(initLocation, endLocation));
+        Vector3 endLocation = enemy ? enemy.transform.position : GetInitLocation();
+        float speed = Time.deltaTime * (travelSpeed / Vector3.Distance(GetInitLocation(), endLocation));
         while (prog < 1)
         {
             yield return new WaitForSeconds(Time.deltaTime);
-            if (enemy && enemy.GetComponent<StatManager>().GetHealth() > 0) endLocation = transform.InverseTransformPoint(enemy.transform.position);
-            speed = Vector3.Distance(initLocation, endLocation) != 0 ? Time.deltaTime * (travelSpeed / Vector3.Distance(initLocation, endLocation)) : Time.deltaTime * travelSpeed;
+            if (enemy && enemy.GetComponent<StatManager>().GetHealth() > 0) endLocation = enemy.transform.position;
+            speed = Vector3.Distance(GetInitLocation(), endLocation) != 0 ? Time.deltaTime * (travelSpeed / Vector3.Distance(GetInitLocation(), endLocation)) : Time.deltaTime * travelSpeed;
             prog += speed;
-            transform.localPosition = Vector3.Lerp(initLocation, endLocation, prog);
-            transform.localRotation = Quaternion.Lerp(initRotation, Quaternion.LookRotation(endLocation - initLocation), prog * 2);
+            transform.position = Vector3.Lerp(GetInitLocation(), endLocation, prog);
+            transform.rotation = Quaternion.Lerp(initRotation, Quaternion.LookRotation(endLocation - GetInitLocation()), prog * 10);
         }
         if (enemy)
         {
@@ -124,18 +157,49 @@ public class ArmManager : NetworkBehaviour
         while (prog > 0)
         {
             yield return new WaitForSeconds(Time.deltaTime);
-            if (enemy && enemy.GetComponent<StatManager>().GetHealth() > 0) endLocation = transform.InverseTransformPoint(enemy.transform.position);
-            speed = Vector3.Distance(initLocation, endLocation) != 0 ? Time.deltaTime * (travelSpeed / Vector3.Distance(initLocation, endLocation)) : Time.deltaTime * travelSpeed;
+            if (enemy && enemy.GetComponent<StatManager>().GetHealth() > 0) endLocation = enemy.transform.position;
+            speed = Vector3.Distance(GetInitLocation(), endLocation) != 0 ? Time.deltaTime * (travelSpeed / Vector3.Distance(GetInitLocation(), endLocation)) : Time.deltaTime * travelSpeed;
             prog -= speed;
-            transform.localPosition = Vector3.Lerp(initLocation, endLocation, prog);
-            transform.localRotation = Quaternion.Lerp(initRotation, Quaternion.LookRotation(endLocation - initLocation), prog * 2);
+            transform.position = Vector3.Lerp(GetInitLocation(), endLocation, prog);
+            transform.rotation = Quaternion.Lerp(Owner.transform.rotation, Quaternion.LookRotation(endLocation - GetInitLocation()), prog * 10);
         }
         attackInProg = false;
     }
 
+    float prog = 0;
+    Vector3 dir = Vector3.one;
+    Vector3 speed = Vector3.one;
+    bool bReversed = false;
+    int progDir = 1;
     private void AmbientMovementHandler()
     {
-        //TODO
+        Vector3 modifiedInitLocation = GetInitLocation();
+        float x = LerpVal(modifiedInitLocation.x, dir.x, speed.x, prog);
+        float y = LerpVal(modifiedInitLocation.y, dir.y, speed.y, prog);
+        float z = LerpVal(modifiedInitLocation.z, dir.z, speed.z, prog);
+        prog += Time.deltaTime * 0.3f * progDir;
+        transform.position = new Vector3(x, y, z);
+        transform.rotation = Owner.transform.rotation;
+        if (prog > 1 || prog < 0)
+        {
+            if (!bReversed)
+            {
+                progDir = -1;
+                prog = 1;
+            }
+            else
+            {
+                RandomizeSpeed();
+                RandomizeDir();
+                progDir = 1;
+                prog = 0;
+            }
+            bReversed = !bReversed;
+        }
     }
-    
+
+    private float LerpVal(float init, float dir, float speed, float prog)
+    {
+        return Mathf.Lerp(init, init + (speed * dir), prog);
+    }
 }
