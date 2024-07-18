@@ -8,7 +8,7 @@ public class MechArmsAttack : AttackManager
     [SerializeField] GameObject[] ArmSpawnLocations;
     [SerializeField] GameObject ArmPrefab;
 
-    [SyncVar] List<GameObject> arms = new List<GameObject>();
+    [SyncVar] List<GameObject> arms = new List<GameObject>(); //Synced for reference use by clients
     protected override void Start()
     {
         base.Start();
@@ -22,6 +22,9 @@ public class MechArmsAttack : AttackManager
         }
     }
 
+    /// <summary>
+    /// Creates another of 8 possible arms for the character and allocates a spot for them in the arm array and in local player space
+    /// </summary>
     private void AddArm()
     {
         if (arms.Count >= 8) return;
@@ -62,36 +65,36 @@ public class MechArmsAttack : AttackManager
     //LMB
     protected override void OnPrimaryAttack()
     {
-
+        //Dual function, Spotter (double damage and priority target for arms) and Simple rifle
     }
 
     //RMB
     protected override void OnSecondaryAttack()
     {
-
+        //1 Arm for Grappling hook, allowing swinging
     }
 
     //Q
     protected override void OnAbility1()
     {
-
+        //1 Arm for pull effect
     }
 
     //E
     protected override void OnAbility2()
     {
-
+        //1 Arm for temp Shield
     }
 
     //L-CTRL
     protected override void OnAbility3()
     {
-
+        //Toggle for LMB Ability
     }
 
     //R
     protected override void OnAbility4()
     {
-
+        //Bayblade using all remaining arms (ie. use after other abilities)
     }
 }

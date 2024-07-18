@@ -86,7 +86,7 @@ public class ArmManager : NetworkBehaviour
 
     private IEnumerator AttackCooldown()
     {
-        yield return new WaitForSeconds(5 / (float) Manager.GetStat(NumericalStats.AttackSpeed));
+        yield return new WaitForSeconds(4 / (float) Manager.GetStat(NumericalStats.AttackSpeed));
         bCanAttack = true;
     }
 
