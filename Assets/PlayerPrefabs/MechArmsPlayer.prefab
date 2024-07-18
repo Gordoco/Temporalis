@@ -440,7 +440,7 @@ MonoBehaviour:
   - stat: 0
     val: 4
   - stat: 1
-    val: 5
+    val: 0
   - stat: 2
     val: 10
   - stat: 3
@@ -520,6 +520,7 @@ MonoBehaviour:
   - {fileID: 2355506072548729313}
   - {fileID: 1271740513573111510}
   ArmPrefab: {fileID: 3487797511639532930, guid: 84ad9c6eebd38264f869a325269a7b3e, type: 3}
+  armScaleFactor: 0.5
 --- !u!81 &6749050381447142582
 AudioListener:
   m_ObjectHideFlags: 0

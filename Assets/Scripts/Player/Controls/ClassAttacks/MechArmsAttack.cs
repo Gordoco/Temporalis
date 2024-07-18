@@ -8,18 +8,42 @@ public class MechArmsAttack : AttackManager
     [SerializeField] GameObject[] ArmSpawnLocations;
     [SerializeField] GameObject ArmPrefab;
 
+    /// <summary>
+    /// Represents percent that attack speed has to increase to manifest another arm
+    /// </summary>
+    [SerializeField] float armScaleFactor = 0.25f;
+
     [SyncVar] List<GameObject> arms = new List<GameObject>(); //Synced for reference use by clients
+
+    private double lastAttackSpeed = -1;
+    private double baseAttackSpeed = -1;
     protected override void Start()
     {
         base.Start();
         if (isServer)
         {
+            lastAttackSpeed = statManager.GetStat(NumericalStats.AttackSpeed);
+            baseAttackSpeed = lastAttackSpeed;
             //Start With 1 Arm
             for (int i = 0; i < 1/*ArmSpawnLocations.Length*/; i++)
             {
                 AddArm();
             }
         }
+    }
+
+    protected override void Update()
+    {
+        if (isServer && arms.Count < 8)
+        {
+            double currAttackSpeed = statManager.GetStat(NumericalStats.AttackSpeed);
+            if (currAttackSpeed - lastAttackSpeed >= baseAttackSpeed * armScaleFactor)
+            {
+                lastAttackSpeed = currAttackSpeed;
+                AddArm();
+            }
+        }
+        base.Update();
     }
 
     /// <summary>
@@ -29,8 +53,8 @@ public class MechArmsAttack : AttackManager
     {
         if (arms.Count >= 8) return;
         GameObject arm = Instantiate(ArmPrefab);
-        arm.transform.position = ArmSpawnLocations[arms.Count].transform.position;
-        arm.transform.rotation = transform.rotation;
+        Debug.Log(arms.Count);
+        arm.transform.SetPositionAndRotation(ArmSpawnLocations[arms.Count].transform.position, transform.rotation);
         arm.GetComponent<ArmManager>().Init(gameObject);
         arms.Add(arm);
         NetworkServer.Spawn(arm);
@@ -58,7 +82,7 @@ public class MechArmsAttack : AttackManager
                 }
             }
         }
-        bestArm.ToggleActive(false);
+        if (bestArm) bestArm.ToggleActive(false);
         return bestArm;
     }
 
@@ -72,6 +96,15 @@ public class MechArmsAttack : AttackManager
     protected override void OnSecondaryAttack()
     {
         //1 Arm for Grappling hook, allowing swinging
+        if (isServer)
+        {
+            ArmManager arm = GetFreeArm();
+            if (arm != null)
+            {
+                //Reset
+                arm.ToggleActive(true);
+            }
+        }
     }
 
     //Q

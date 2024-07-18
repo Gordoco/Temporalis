@@ -67,7 +67,7 @@ public abstract class AttackManager : NetworkBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    protected virtual void Update()
     {
         if (!bEnabled) return;
         if (!isOwned) { this.enabled = false; return; }

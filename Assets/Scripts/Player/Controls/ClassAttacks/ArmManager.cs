@@ -6,12 +6,15 @@ using UnityEngine;
 public class ArmManager : NetworkBehaviour
 {
     [SerializeField] private float travelSpeed = 0.5f;
+    [SerializeField] private float armCooldown = 0.5f;
 
     private GameObject Owner;
     private PlayerStatManager Manager;
-    private bool bActive = false;
 
+    private bool bActive = false;
+    private bool bResetting = false;
     private bool bCanAttack = true;
+
     private Quaternion initRotation = Quaternion.identity;
     private Vector3 initLocation = Vector3.zero;
 
@@ -24,7 +27,7 @@ public class ArmManager : NetworkBehaviour
         Manager = owner.GetComponent<PlayerStatManager>();
         travelSpeed = (float)Manager.GetStat(NumericalStats.AttackSpeed) * 25;
         if (!Manager) Debug.LogError("ERROR - [ArmManager.cs - Attempted to initialize an arm on non-player]");
-        ToggleActive(true);
+        ToggleActive(true, true);
     }
 
     private void Start()
@@ -54,10 +57,30 @@ public class ArmManager : NetworkBehaviour
     }
 
     [Server]
-    public void ToggleActive(bool newActive)
+    public void ToggleActive(bool newActive, bool bOverrideCooldown = false)
     {
-        bActive = newActive;
         ResetActive();
+        bCanAttack = true;
+        RandomizeSpeed();
+        RandomizeDir();
+        progDir = 1;
+        prog = 0;
+        attackInProg = false;
+        bReversed = false;
+        if (!newActive || bOverrideCooldown) bActive = newActive;
+        else if (!bResetting)
+        {
+            bResetting = true;
+            StartCoroutine(ArmCooldown());
+        }
+    }
+
+    [Server]
+    private IEnumerator ArmCooldown()
+    {
+        yield return new WaitForSeconds(armCooldown);
+        bActive = true;
+        bResetting = false;
     }
 
     [Server]
@@ -71,11 +94,9 @@ public class ArmManager : NetworkBehaviour
     {
         //Server only script
         if (!isServer) return;
-        if (bActive)
-        {
-            AttackHandler();
-            if (!attackInProg) AmbientMovementHandler();
-        }
+        Debug.Log(bActive);
+        if (bActive) AttackHandler();
+        if (!attackInProg && (bActive || bResetting)) AmbientMovementHandler();
     }
 
     private void ResetActive()
@@ -97,7 +118,7 @@ public class ArmManager : NetworkBehaviour
           return point; // return it
     }
 
-private void AttackHandler()
+    private void AttackHandler()
     {
         if (!bCanAttack) return;
         bCanAttack = false;
@@ -127,14 +148,17 @@ private void AttackHandler()
 
     private void MakeAttack(GameObject enemy)
     {
-        if (!attackInProg) StartCoroutine(TravelToAttack(enemy));
+        if (!attackInProg)
+        {
+            attackInProg = true;
+            StartCoroutine(TravelToAttack(enemy));
+        }
     }
 
     bool attackInProg = false;
     private IEnumerator TravelToAttack(GameObject enemy)
     {
         yield return new WaitForSeconds(Random.Range(0, 0.3f));
-        attackInProg = true;
         float prog = 0;
         Vector3 endLocation = enemy ? enemy.transform.position : GetInitLocation();
         float speed = Time.deltaTime * (travelSpeed / Vector3.Distance(GetInitLocation(), endLocation));
@@ -171,6 +195,7 @@ private void AttackHandler()
     int progDir = 1;
     private void AmbientMovementHandler()
     {
+        if (attackInProg) return;
         Vector3 modifiedInitLocation = GetInitLocation();
         float x = LerpVal(modifiedInitLocation.x, dir.x, speed.x, prog);
         float y = LerpVal(modifiedInitLocation.y, dir.y, speed.y, prog);
