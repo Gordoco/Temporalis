@@ -65,9 +65,11 @@ public class LoopbreakerNetworkManager : NetworkManager
         foreach (PlayerObjectController GamePlayer in GamePlayers)
         {
             GamePlayer.gameObject.transform.position = StartLocation;
+
             GameObject gamePrefab = Instantiate(GamePlayer.GamePrefabs[GamePlayer.PlayerCharacterChoice], StartLocation, Quaternion.identity);
             gamePrefab.transform.SetParent(GamePlayer.transform, false);
             NetworkServer.Spawn(gamePrefab, GetConnectionFromID(GamePlayer.ConnectionID));
+
             GamePlayer.RpcSetParent(gamePrefab, GamePlayer.gameObject, false);
             GamePlayer.StartGameMap();
             //gamePrefab.GetComponent<PlayerMove>().SetStart();
