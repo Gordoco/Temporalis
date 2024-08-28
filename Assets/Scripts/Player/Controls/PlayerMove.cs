@@ -30,6 +30,7 @@ public class PlayerMove : NetworkBehaviour
     {
         if (b)
         {
+            if (childAnimator) childAnimator.SetBool(AnimJumpingHash, true);
             moveDirection.y = 0;
             bFlying = true;
             tempGravity = -1 * (2 * gravity);
@@ -78,7 +79,7 @@ public class PlayerMove : NetworkBehaviour
         moveDirection *= (float)manager.GetStat(NumericalStats.MovementSpeed);
         moveDirection.y = moveDirectionY;
 
-        if (controller.isGrounded)
+        if (controller.isGrounded && !bFlying)
         {
             if (childAnimator) childAnimator.SetBool(AnimJumpingHash, false);
             tempGravity = 0;

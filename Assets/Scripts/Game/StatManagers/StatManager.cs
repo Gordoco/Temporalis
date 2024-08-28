@@ -52,7 +52,8 @@ public abstract class StatManager : NetworkBehaviour
     private readonly SyncList<double> stats = new SyncList<double>();
     protected readonly SyncList<BaseItem> items = new SyncList<BaseItem>();
     [SerializeField] private InitStatsDisplay[] initStats = new InitStatsDisplay[(int)NumericalStats.NumberOfStats];
-    
+
+    [SyncVar] private bool ShouldShowHP = false;
     [SyncVar] private bool CCImmune = false;
 
     /// <summary>
@@ -97,6 +98,11 @@ public abstract class StatManager : NetworkBehaviour
     public bool CheckReady()
     {
         return stats.Count == (int)NumericalStats.NumberOfStats;
+    }
+
+    public bool CheckIfShouldShowHP()
+    {
+        return ShouldShowHP;
     }
 
     /// <summary>
@@ -150,6 +156,8 @@ public abstract class StatManager : NetworkBehaviour
     /// <returns></returns>
     public double GetHealth() { return Health; }
 
+
+    private Coroutine showHPRoutine;
     /// <summary>
     /// Server-Only Method for applying damage to the entity
     /// </summary>
@@ -159,6 +167,15 @@ public abstract class StatManager : NetworkBehaviour
     {
         //Debug.Log("DAMAGED");
         Health -= Damage;
+        ShouldShowHP = true;
+        if (showHPRoutine != null) StopCoroutine(showHPRoutine);
+        showHPRoutine = StartCoroutine(ShowHPReset());
+    }
+
+    private IEnumerator ShowHPReset()
+    {
+        yield return new WaitForSeconds(2);
+        ShouldShowHP = false;
     }
 
     /// <summary>
