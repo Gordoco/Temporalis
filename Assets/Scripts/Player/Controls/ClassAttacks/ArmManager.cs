@@ -16,6 +16,7 @@ public class ArmManager : NetworkBehaviour
     private bool bResetting = false;
     private bool bAttacking = false;
     private bool bCanAttack = true;
+    private bool bGrappled = false;
 
     private const float APPROXIMATE_EQUAL_DIST = 1f;
 
@@ -24,6 +25,11 @@ public class ArmManager : NetworkBehaviour
     public bool GetActive()
     {
         return bActive;
+    }
+
+    public bool GetGrappled()
+    {
+        return bGrappled;
     }
 
     public void CallForReset()
@@ -39,6 +45,7 @@ public class ArmManager : NetworkBehaviour
     public void ToggleActive(bool b)
     {
         bActive = b;
+        bGrappled = false;
     }
 
     [Server]
@@ -108,6 +115,7 @@ public class ArmManager : NetworkBehaviour
             if (transform.position == ExternalMovementObj)//Vector3.Distance(transform.position, ExternalMovementObj) < APPROXIMATE_EQUAL_DIST)
             {
                 ExternalMovementObj = Vector3.zero;
+                bGrappled = true;
             }
         }
     }

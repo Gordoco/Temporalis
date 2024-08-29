@@ -55,9 +55,11 @@ public class MechArmsAttack : AttackManager
             {
                 swingArm.CallForReset();
                 swingArm.ToggleActive(true);
+                
                 bSwinging = false;
                 swingArm = null;
                 GetComponent<LineRenderer>().enabled = false;
+                GetComponent<PlayerMove>().Server_StopSwing();
             }
         }
         base.Update();
@@ -165,6 +167,11 @@ public class MechArmsAttack : AttackManager
                 LR.enabled = true;
                 LR.SetPosition(0, transform.position);
                 LR.SetPosition(1, swingArm.transform.position);
+
+                if (swingArm.GetGrappled())
+                {
+                    GetComponent<PlayerMove>().Server_Swing(swingArm.transform.position, Vector3.Distance(transform.position, swingArm.transform.position));
+                }
             }
         }
     }
