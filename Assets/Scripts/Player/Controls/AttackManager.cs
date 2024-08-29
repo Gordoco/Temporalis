@@ -10,6 +10,10 @@ public abstract class AttackManager : NetworkBehaviour
     [SerializeField] private GameObject StunnedParticleEffect;
     [SerializeField, SyncVar] protected bool PrimaryFullAuto = true;
     [SerializeField, SyncVar] protected bool SecondaryFullAuto = false;
+    [SerializeField, SyncVar] protected bool Ability1FullAuto = false;
+    [SerializeField, SyncVar] protected bool Ability2FullAuto = false;
+    [SerializeField, SyncVar] protected bool Ability3FullAuto = false;
+    [SerializeField, SyncVar] protected bool Ability4FullAuto = false;
     [SyncVar] private bool bCanAttack = true;
     [SyncVar] private bool bCanSecondary = true;
     [SyncVar] private bool bCanAbility1 = true;
@@ -94,7 +98,8 @@ public abstract class AttackManager : NetworkBehaviour
         }
 
         //Q
-        if (Input.GetButtonDown("Ability1") && bCanAbility1)
+        bool ability1Input = Ability1FullAuto ? Input.GetButton("Ability1") : Input.GetButtonDown("Ability1");
+        if (ability1Input && bCanAbility1)
         {
             bCanAbility1 = false;
             Debug.Log("First Ability PewPew");
@@ -104,7 +109,8 @@ public abstract class AttackManager : NetworkBehaviour
         }
 
         //E
-        if (Input.GetButtonDown("Ability2") && bCanAbility2)
+        bool ability2Input = Ability2FullAuto ? Input.GetButton("Ability2") : Input.GetButtonDown("Ability2");
+        if (ability2Input && bCanAbility2)
         {
             bCanAbility2 = false;
             Debug.Log("Second Ability PewPew");
@@ -114,7 +120,8 @@ public abstract class AttackManager : NetworkBehaviour
         }
 
         //LEFT-CTRL
-        if (Input.GetButtonDown("Ability3") && bCanAbility3)
+        bool ability3Input = Ability3FullAuto ? Input.GetButton("Ability3") : Input.GetButtonDown("Ability3");
+        if (ability3Input && bCanAbility3)
         {
             bCanAbility3 = false;
             Debug.Log("Third Ability PewPew");
@@ -124,7 +131,8 @@ public abstract class AttackManager : NetworkBehaviour
         }
 
         //R
-        if (Input.GetButtonDown("Ability4") && bCanAbility4)
+        bool ability4Input = Ability4FullAuto ? Input.GetButton("Ability4") : Input.GetButtonDown("Ability4");
+        if (ability4Input && bCanAbility4)
         {
             bCanAbility4 = false;
             Debug.Log("Fourth Ability PewPew");

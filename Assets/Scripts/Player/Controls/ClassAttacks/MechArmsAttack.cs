@@ -3,6 +3,7 @@ using Mirror;
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(LineRenderer))]
 public class MechArmsAttack : AttackManager
 {
     [SerializeField] GameObject[] ArmSpawnLocations;
@@ -17,6 +18,9 @@ public class MechArmsAttack : AttackManager
 
     private double lastAttackSpeed = -1;
     private double baseAttackSpeed = -1;
+
+    private bool bSwinging = false;
+
     protected override void Start()
     {
         base.Start();
@@ -25,7 +29,7 @@ public class MechArmsAttack : AttackManager
             lastAttackSpeed = statManager.GetStat(NumericalStats.AttackSpeed);
             baseAttackSpeed = lastAttackSpeed;
             //Start With 1 Arm
-            for (int i = 0; i < 1/*ArmSpawnLocations.Length*/; i++)
+            for (int i = 0; i < ArmSpawnLocations.Length; i++)
             {
                 AddArm();
             }
@@ -34,13 +38,26 @@ public class MechArmsAttack : AttackManager
 
     protected override void Update()
     {
-        if (isServer && arms.Count < 8)
+        if (!isServer) return;
+        if (arms.Count < 8)
         {
             double currAttackSpeed = statManager.GetStat(NumericalStats.AttackSpeed);
             if (currAttackSpeed - lastAttackSpeed >= baseAttackSpeed * armScaleFactor)
             {
                 lastAttackSpeed = currAttackSpeed;
                 AddArm();
+            }
+        }
+
+        if (!Input.GetButton("Ability3"))
+        {
+            if (bSwinging)
+            {
+                swingArm.CallForReset();
+                swingArm.ToggleActive(true);
+                bSwinging = false;
+                swingArm = null;
+                GetComponent<LineRenderer>().enabled = false;
             }
         }
         base.Update();
@@ -55,7 +72,7 @@ public class MechArmsAttack : AttackManager
         GameObject arm = Instantiate(ArmPrefab);
         Debug.Log(arms.Count);
         arm.transform.SetPositionAndRotation(ArmSpawnLocations[arms.Count].transform.position, transform.rotation);
-        arm.GetComponent<ArmManager>().Init(gameObject);
+        arm.GetComponent<ArmManager>().Init(gameObject, ArmSpawnLocations[arms.Count]);
         arms.Add(arm);
         NetworkServer.Spawn(arm);
     }
@@ -93,18 +110,10 @@ public class MechArmsAttack : AttackManager
     }
 
     //RMB
+    private ArmManager swingArm = null;
     protected override void OnSecondaryAttack()
     {
-        //1 Arm for Grappling hook, allowing swinging
-        if (isServer)
-        {
-            ArmManager arm = GetFreeArm();
-            if (arm != null)
-            {
-                //Reset
-                arm.ToggleActive(true);
-            }
-        }
+        
     }
 
     //Q
@@ -122,7 +131,42 @@ public class MechArmsAttack : AttackManager
     //L-CTRL
     protected override void OnAbility3()
     {
-        //Toggle for LMB Ability
+        //1 Arm for Grappling hook, allowing swinging
+        if (isServer)
+        {
+            if (!bSwinging)
+            {
+                swingArm = GetFreeArm();
+                if (swingArm != null)
+                {
+                    //Reset
+                    //arm.ToggleActive(true);
+                    GameObject Camera = null;
+                    for (int i = 0; i < gameObject.transform.childCount; i++) if (gameObject.transform.GetChild(i).tag == "MainCamera") { Camera = gameObject.transform.GetChild(i).gameObject; break; }
+                    RaycastHit hit;
+                    Physics.Raycast(transform.position, Camera.transform.forward, out hit, int.MaxValue);
+                    if (Vector3.Distance(transform.position, hit.point) > GetComponent<PlayerStatManager>().GetStat(NumericalStats.Range) * 1.5)
+                    {
+                        swingArm.ToggleActive(true);
+                        swingArm = null;
+                    }
+                    else
+                    {
+                        swingArm.ExternalMovementObj = hit.point;
+                        bSwinging = true;
+                    }
+                }
+            }
+            else
+            {
+                LineRenderer LR = GetComponent<LineRenderer>();
+                LR.startWidth = 0.25f;
+                LR.endWidth = 0.25f;
+                LR.enabled = true;
+                LR.SetPosition(0, transform.position);
+                LR.SetPosition(1, swingArm.transform.position);
+            }
+        }
     }
 
     //R

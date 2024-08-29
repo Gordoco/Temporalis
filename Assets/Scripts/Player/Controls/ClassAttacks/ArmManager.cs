@@ -5,224 +5,185 @@ using UnityEngine;
 
 public class ArmManager : NetworkBehaviour
 {
-    [SerializeField] private float travelSpeed = 0.5f;
-    [SerializeField] private float armCooldown = 0.5f;
+    public Vector3 ExternalMovementObj = Vector3.zero;
+
+    [SerializeField] private float ambientRange = 1f;
 
     private GameObject Owner;
     private PlayerStatManager Manager;
 
     private bool bActive = false;
     private bool bResetting = false;
+    private bool bAttacking = false;
     private bool bCanAttack = true;
 
-    private Quaternion initRotation = Quaternion.identity;
-    private Vector3 initLocation = Vector3.zero;
+    private const float APPROXIMATE_EQUAL_DIST = 1f;
 
-    [Server]
-    public void Init(GameObject owner)
-    {
-        initLocation = transform.position - owner.transform.position;
-        initRotation = transform.rotation;
-        Owner = owner;
-        Manager = owner.GetComponent<PlayerStatManager>();
-        travelSpeed = (float)Manager.GetStat(NumericalStats.AttackSpeed) * 25;
-        if (!Manager) Debug.LogError("ERROR - [ArmManager.cs - Attempted to initialize an arm on non-player]");
-        ToggleActive(true, true);
-    }
+    private GameObject HomeLocation;
 
-    private void Start()
-    {
-        if (!isServer) return;
-        RandomizeDir();
-        RandomizeSpeed();
-    }
-
-    public Vector3 GetInitLocation()
-    {
-        return RotatePointAroundPivot(initLocation + Owner.transform.position, Owner.transform.position, Owner.transform.rotation.eulerAngles);
-    }
-
-    private void RandomizeDir()
-    {
-        dir.x = Random.Range(0, 2) == 0 ? 1 : -1;
-        dir.y = Random.Range(0, 2) == 0 ? 1 : -1;
-        dir.z = Random.Range(0, 2) == 0 ? 1 : -1;
-    }
-
-    private void RandomizeSpeed()
-    {
-        speed.x = Random.Range(0.1f, 0.4f);
-        speed.y = Random.Range(0.1f, 0.4f);
-        speed.z = Random.Range(0.1f, 0.4f);
-    }
-
-    [Server]
-    public void ToggleActive(bool newActive, bool bOverrideCooldown = false)
-    {
-        ResetActive();
-        bCanAttack = true;
-        RandomizeSpeed();
-        RandomizeDir();
-        progDir = 1;
-        prog = 0;
-        attackInProg = false;
-        bReversed = false;
-        if (!newActive || bOverrideCooldown) bActive = newActive;
-        else if (!bResetting)
-        {
-            bResetting = true;
-            StartCoroutine(ArmCooldown());
-        }
-    }
-
-    [Server]
-    private IEnumerator ArmCooldown()
-    {
-        yield return new WaitForSeconds(armCooldown);
-        bActive = true;
-        bResetting = false;
-    }
-
-    [Server]
     public bool GetActive()
     {
         return bActive;
     }
 
-    // Update is called once per frame
-    void Update()
+    public void CallForReset()
     {
-        //Server only script
+        bResetting = true;
+    }
+
+    public Vector3 GetInitLocation()
+    {
+        return HomeLocation.transform.position;
+    }
+
+    public void ToggleActive(bool b)
+    {
+        bActive = b;
+    }
+
+    [Server]
+    public void Init(GameObject owner, GameObject homeLoc)
+    {
+        bActive = true;
+        HomeLocation = homeLoc;
+        Owner = owner;
+        Manager = owner.GetComponent<PlayerStatManager>();
+        if (!Manager) Debug.LogError("ERROR - [ArmManager.cs - Attempted to initialize an arm on non-player]");
+    }
+
+    private float GetTravelSpeed()
+    {
+        return (float)Manager.GetStat(NumericalStats.AttackSpeed) * 10;
+    }
+
+    private void Start()
+    {
         if (!isServer) return;
-        Debug.Log(bActive);
-        if (bActive) AttackHandler();
-        if (!attackInProg && (bActive || bResetting)) AmbientMovementHandler();
+
     }
 
-    private void ResetActive()
+    /// <summary>
+    /// Applies a movement in the supplied direction at a consistent speed dictated by travelSpeed. Optionally adds a rotation in travel direction.
+    /// </summary>
+    /// <param name="direction">Vector to apply movement in, will be normalized</param>
+    [Server]
+    private void MoveInDirection(Vector3 direction, Vector3 goal)
     {
-        StopAllCoroutines();
-        transform.position = GetInitLocation();
+        transform.parent = null;
+        direction.Normalize();
+        Quaternion rot = Quaternion.LookRotation(direction);
+        transform.rotation = rot;
+        if (Vector3.Distance(transform.position, transform.position + direction * GetTravelSpeed() * Time.deltaTime) > Vector3.Distance(transform.position, goal))
+            transform.position = goal;
+        else
+            transform.position += direction * GetTravelSpeed() * Time.deltaTime;
     }
 
-    private IEnumerator AttackCooldown()
+    private void Update()
     {
-        yield return new WaitForSeconds(4 / (float) Manager.GetStat(NumericalStats.AttackSpeed));
-        bCanAttack = true;
-    }
-
-    private Vector3 RotatePointAroundPivot(Vector3 point, Vector3 pivot, Vector3 angles) {
-          Vector3 dir = point - pivot; // get point direction relative to pivot
-          dir = Quaternion.Euler(angles) * dir; // rotate it
-          point = dir + pivot; // calculate rotated point
-          return point; // return it
-    }
-
-    private void AttackHandler()
-    {
-        if (!bCanAttack) return;
-        bCanAttack = false;
-        StartCoroutine(AttackCooldown());
-
-        float currShortest = float.MaxValue;
-        GameObject currNearest = null;
-        GameObject[] Enemies = GameObject.FindGameObjectsWithTag("Enemy");
-        for (int i = 0; i < Enemies.Length; i++)
+        if (!isServer) return;
+        if (bActive)
         {
-            float dist = Vector3.Distance(gameObject.transform.position, Enemies[i].transform.position);
-            if (dist < currShortest)
+            GameObject Enemy = CheckForEnemies();
+            if (bCanAttack && Enemy != null)
             {
-                currShortest = dist;
-                currNearest = Enemies[i];
+                MakeAttack(Enemy);
             }
-        }
-
-        if (currNearest == null) return;
-
-        if (currShortest <= (float)Manager.GetStat(NumericalStats.Range))
-        {
-            if (!currNearest.GetComponent<StatManager>()) return;
-            MakeAttack(currNearest);
-        }
-    }
-
-    private void MakeAttack(GameObject enemy)
-    {
-        if (!attackInProg)
-        {
-            attackInProg = true;
-            StartCoroutine(TravelToAttack(enemy));
-        }
-    }
-
-    bool attackInProg = false;
-    private IEnumerator TravelToAttack(GameObject enemy)
-    {
-        yield return new WaitForSeconds(Random.Range(0, 0.3f));
-        float prog = 0;
-        Vector3 endLocation = enemy ? enemy.transform.position : GetInitLocation();
-        float speed = Time.deltaTime * (travelSpeed / Vector3.Distance(GetInitLocation(), endLocation));
-        while (prog < 1)
-        {
-            yield return new WaitForSeconds(Time.deltaTime);
-            if (enemy && enemy.GetComponent<StatManager>().GetHealth() > 0) endLocation = enemy.transform.position;
-            speed = Vector3.Distance(GetInitLocation(), endLocation) != 0 ? Time.deltaTime * (travelSpeed / Vector3.Distance(GetInitLocation(), endLocation)) : Time.deltaTime * travelSpeed;
-            prog += speed;
-            transform.position = Vector3.Lerp(GetInitLocation(), endLocation, prog);
-            transform.rotation = Quaternion.Lerp(initRotation, Quaternion.LookRotation(endLocation - GetInitLocation()), prog * 10);
-        }
-        if (enemy)
-        {
-            StatManager enemyManager = enemy.GetComponent<StatManager>();
-            enemyManager.DealDamage(Manager.GetStat(NumericalStats.PrimaryDamage));
-        }
-        while (prog > 0)
-        {
-            yield return new WaitForSeconds(Time.deltaTime);
-            if (enemy && enemy.GetComponent<StatManager>().GetHealth() > 0) endLocation = enemy.transform.position;
-            speed = Vector3.Distance(GetInitLocation(), endLocation) != 0 ? Time.deltaTime * (travelSpeed / Vector3.Distance(GetInitLocation(), endLocation)) : Time.deltaTime * travelSpeed;
-            prog -= speed;
-            transform.position = Vector3.Lerp(GetInitLocation(), endLocation, prog);
-            transform.rotation = Quaternion.Lerp(Owner.transform.rotation, Quaternion.LookRotation(endLocation - GetInitLocation()), prog * 10);
-        }
-        attackInProg = false;
-    }
-
-    float prog = 0;
-    Vector3 dir = Vector3.one;
-    Vector3 speed = Vector3.one;
-    bool bReversed = false;
-    int progDir = 1;
-    private void AmbientMovementHandler()
-    {
-        if (attackInProg) return;
-        Vector3 modifiedInitLocation = GetInitLocation();
-        float x = LerpVal(modifiedInitLocation.x, dir.x, speed.x, prog);
-        float y = LerpVal(modifiedInitLocation.y, dir.y, speed.y, prog);
-        float z = LerpVal(modifiedInitLocation.z, dir.z, speed.z, prog);
-        prog += Time.deltaTime * 0.3f * progDir;
-        transform.position = new Vector3(x, y, z);
-        transform.rotation = Owner.transform.rotation;
-        if (prog > 1 || prog < 0)
-        {
-            if (!bReversed)
+            if (bAttacking)
             {
-                progDir = -1;
-                prog = 1;
+                AttackHandler();
+            }
+            else if (bResetting)
+            {
+                ResetPosition();
             }
             else
             {
-                RandomizeSpeed();
-                RandomizeDir();
-                progDir = 1;
-                prog = 0;
+                AmbientMovement();
             }
-            bReversed = !bReversed;
+        }
+        else if (ExternalMovementObj != Vector3.zero)
+        {
+            MoveInDirection(ExternalMovementObj - transform.position, ExternalMovementObj);
+            if (transform.position == ExternalMovementObj)//Vector3.Distance(transform.position, ExternalMovementObj) < APPROXIMATE_EQUAL_DIST)
+            {
+                ExternalMovementObj = Vector3.zero;
+            }
         }
     }
 
-    private float LerpVal(float init, float dir, float speed, float prog)
+    private void MakeAttack(GameObject Enemy)
     {
-        return Mathf.Lerp(init, init + (speed * dir), prog);
+        EnemyToAttack = Enemy;
+        bCanAttack = false;
+        bAttacking = true;
     }
+
+    private GameObject EnemyToAttack = null;
+    private void AttackHandler()
+    {
+        if (EnemyToAttack == null || EnemyToAttack.GetComponent<EnemyStatManager>() == null)
+        {
+            FinishedAttack();
+            return;
+        }
+
+        Vector3 dir = EnemyToAttack.transform.position - transform.position;
+        MoveInDirection(dir, EnemyToAttack.transform.position);
+        if (transform.position == EnemyToAttack.transform.position)//Mathf.Abs(Vector3.Distance(transform.position, EnemyToAttack.transform.position)) < APPROXIMATE_EQUAL_DIST)
+        {
+            EnemyToAttack.GetComponent<EnemyStatManager>().DealDamage(Manager.GetStat(NumericalStats.PrimaryDamage));
+            FinishedAttack();
+        }
+    }
+
+    private void FinishedAttack()
+    {
+        bAttacking = false;
+        bResetting = true;
+    }
+
+    Vector3 randomDir;
+    private void AmbientMovement()
+    {
+        transform.parent = Owner.transform;
+        if (randomDir == Vector3.zero) randomDir = new Vector3(Random.Range(-100, 100), Random.Range(-100, 100), Random.Range(-100, 100)).normalized;
+        Vector3 nextPos = transform.localPosition + (randomDir * ambientRange);
+        Vector3 dir = nextPos - transform.localPosition;
+        transform.localPosition += 0.03f * Time.deltaTime * dir;
+        if (Vector3.Distance(transform.localPosition, nextPos) < APPROXIMATE_EQUAL_DIST) randomDir = Vector3.zero;
+    }
+
+    private void ResetPosition()
+    {
+        Vector3 dir = GetInitLocation() - transform.position;
+        MoveInDirection(dir, GetInitLocation());
+        if (transform.position == GetInitLocation())//Mathf.Abs(Vector3.Distance(transform.position, GetInitLocation())) < APPROXIMATE_EQUAL_DIST)
+        {
+            transform.position = GetInitLocation();
+            bResetting = false;
+            bCanAttack = true;
+            transform.parent = Owner.transform;
+        }
+    }
+
+    private GameObject CheckForEnemies()
+    {
+        RaycastHit[] hits = Physics.SphereCastAll(transform.position, (float)Manager.GetStat(NumericalStats.Range), Vector3.up);
+        float currDist = float.MaxValue;
+        GameObject currClosest = null;
+        for (int i = 0; i < hits.Length; i++)
+        {
+            if (hits[i].collider.gameObject.tag != "Enemy") continue;
+            GameObject Enemy = hits[i].collider.gameObject;
+            float dist = Vector3.Distance(Enemy.transform.position, GetInitLocation());
+            if (dist < Manager.GetStat(NumericalStats.Range) && dist < currDist)
+            {
+                currDist = dist;
+                currClosest = Enemy;
+            }
+        }
+        return currClosest;
+    }
+
 }
