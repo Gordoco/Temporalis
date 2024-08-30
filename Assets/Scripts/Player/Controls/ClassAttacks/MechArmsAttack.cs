@@ -3,7 +3,6 @@ using Mirror;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(LineRenderer))]
 public class MechArmsAttack : AttackManager
 {
     [SerializeField] GameObject[] ArmSpawnLocations;
@@ -58,7 +57,6 @@ public class MechArmsAttack : AttackManager
                 
                 bSwinging = false;
                 swingArm = null;
-                GetComponent<LineRenderer>().enabled = false;
                 GetComponent<PlayerMove>().Server_StopSwing();
             }
         }
@@ -161,13 +159,6 @@ public class MechArmsAttack : AttackManager
             }
             else
             {
-                LineRenderer LR = GetComponent<LineRenderer>();
-                LR.startWidth = 0.25f;
-                LR.endWidth = 0.25f;
-                LR.enabled = true;
-                LR.SetPosition(0, transform.position);
-                LR.SetPosition(1, swingArm.transform.position);
-
                 if (swingArm.GetGrappled())
                 {
                     GetComponent<PlayerMove>().Server_Swing(swingArm.transform.position, Vector3.Distance(transform.position, swingArm.transform.position));

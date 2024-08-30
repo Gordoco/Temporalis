@@ -12,13 +12,17 @@ public class PlayerMove : NetworkBehaviour
     private bool bFlying = false;
     [SyncVar] private bool bDead = false;
     private bool bAwake = false;
-    private bool bInputDisabled = false;
+    [SyncVar] private bool bInputDisabled = false;
     private float tempGravity = 0;
     private int AnimMovingHash;
     private int AnimStrafingHash;
     private int AnimJumpingHash;
+
     Animator childAnimator;
-    private Vector2 tempMomentum = Vector2.zero;
+    private Vector3 tempMomentum = Vector3.zero;
+
+    private Vector3 center;
+    private float radius;
 
     private void Awake()
     {
@@ -64,26 +68,8 @@ public class PlayerMove : NetworkBehaviour
     private void Client_Swing(Vector3 center, float radius)
     {
         bInputDisabled = true;
-        GameObject Camera = null;
-        for (int i = 0; i < gameObject.transform.childCount; i++) if (gameObject.transform.GetChild(i).tag == "MainCamera") { Camera = gameObject.transform.GetChild(i).gameObject; break; }
-        //Debug.DrawLine(transform.position, Camera.transform.forward * 1000, Color.green);
-        
-        Vector3 forward = Camera.transform.forward * (float)GetComponent<PlayerStatManager>().GetStat(NumericalStats.MovementSpeed);
-        Vector3 radialVector = (forward + transform.position - center).normalized;
-        Vector3 loc = center + (radialVector * radius);
-        Vector3 dirVector;
-        if (Vector3.Distance(forward + transform.position, center) > Vector3.Distance(loc, center))
-        {
-            dirVector = (loc - transform.position).normalized;
-        }
-        else
-        {
-            dirVector = forward.normalized;
-        }
-        //Debug.DrawLine(transform.position, (loc - transform.position).normalized * 1000, Color.red);
-        moveDirection = dirVector * ((float)GetComponent<PlayerStatManager>().GetStat(NumericalStats.MovementSpeed) * (Mathf.Abs((loc - transform.position).magnitude)/1.5f));
-        tempMomentum = new Vector2(moveDirection.x, moveDirection.y);
-        GetComponent<CharacterController>().Move(moveDirection * Time.deltaTime);
+        this.center = center;
+        this.radius = radius;
     }
 
     public void SetTempGravity(float val) { tempGravity = val; bFlying = false; }
@@ -107,10 +93,38 @@ public class PlayerMove : NetworkBehaviour
         bDead = true;
     }
 
-    void Update()
+    /// <summary>
+    /// Handles swing movememnt from some classes
+    /// </summary>
+    private void Swing()
     {
-        if (!isOwned || bDead || !bAwake || bInputDisabled) return;
+        GameObject Camera = null;
+        for (int i = 0; i < gameObject.transform.childCount; i++) if (gameObject.transform.GetChild(i).tag == "MainCamera") { Camera = gameObject.transform.GetChild(i).gameObject; break; }
 
+        Vector3 forward = Camera.transform.forward * (float)GetComponent<PlayerStatManager>().GetStat(NumericalStats.MovementSpeed);
+        Vector3 radialVector = (forward + transform.position - center).normalized;
+        Vector3 loc = center + (radialVector * radius);
+        Vector3 dirVector;
+        if (Vector3.Distance(forward + transform.position, center) > Vector3.Distance(loc, center))
+        {
+            dirVector = (loc - transform.position).normalized;
+        }
+        else
+        {
+            dirVector = forward.normalized;
+        }
+
+        moveDirection = dirVector * ((float)GetComponent<PlayerStatManager>().GetStat(NumericalStats.MovementSpeed) * (Mathf.Abs((loc - transform.position).magnitude) / 1.5f));
+        tempMomentum = moveDirection;
+        GetComponent<CharacterController>().Move(moveDirection * Time.deltaTime);
+        if (isServer) UpdateTransform(transform.position);
+    }
+
+    /// <summary>
+    /// Handles normal player movement and gravity
+    /// </summary>
+    private void Movement()
+    {
         CharacterController controller = GetComponent<CharacterController>();
         if (!controller.enabled) return;
         StatManager manager = GetComponent<StatManager>();
@@ -124,7 +138,7 @@ public class PlayerMove : NetworkBehaviour
         moveDirection.y = moveDirectionY;
 
         moveDirection.x += tempMomentum.x;
-        moveDirection.z += tempMomentum.y;
+        moveDirection.z += tempMomentum.z;
 
         float slowSpeed = ((float)manager.GetStat(NumericalStats.MovementSpeed) + tempMomentum.magnitude) * Time.deltaTime;
 
@@ -132,9 +146,9 @@ public class PlayerMove : NetworkBehaviour
         else if (tempMomentum.x < 0) tempMomentum.x += slowSpeed;
         if (slowSpeed >= tempMomentum.x && -slowSpeed <= tempMomentum.x) tempMomentum.x = 0;
 
-        if (tempMomentum.y > 0) tempMomentum.y -= slowSpeed;
-        else if (tempMomentum.y < 0) tempMomentum.y += slowSpeed;
-        if (slowSpeed >= tempMomentum.y && -slowSpeed <= tempMomentum.y) tempMomentum.y = 0;
+        if (tempMomentum.z > 0) tempMomentum.z -= slowSpeed;
+        else if (tempMomentum.z < 0) tempMomentum.z += slowSpeed;
+        if (slowSpeed >= tempMomentum.z && -slowSpeed <= tempMomentum.z) tempMomentum.z = 0;
 
 
         if (controller.isGrounded && !bFlying)
@@ -153,6 +167,19 @@ public class PlayerMove : NetworkBehaviour
         Vector3 tempDir = new Vector3(moveDirection.x, 0, moveDirection.z);
         AnimationHandler(tempDir, controller);
         if (isServer) UpdateTransform(transform.position);
+    }
+
+    void Update()
+    {
+        if (!isOwned || bDead || !bAwake) return;
+        if (bInputDisabled)
+        {
+            Swing();
+        }
+        else
+        {
+            Movement();    
+        }
     }
 
     void AnimationHandler(Vector3 tempDir, CharacterController controller)

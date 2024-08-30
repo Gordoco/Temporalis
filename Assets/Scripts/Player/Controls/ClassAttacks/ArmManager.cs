@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(LineRenderer))]
 public class ArmManager : NetworkBehaviour
 {
     public Vector3 ExternalMovementObj = Vector3.zero;
@@ -84,6 +85,15 @@ public class ArmManager : NetworkBehaviour
             transform.position = goal;
         else
             transform.position += direction * GetTravelSpeed() * Time.deltaTime;
+    }
+
+    private void LateUpdate()
+    {
+        if (Owner)
+        {     
+            GetComponent<LineRenderer>().SetPosition(0, transform.position);
+            GetComponent<LineRenderer>().SetPosition(1, Owner.transform.position);
+        }
     }
 
     private void Update()
