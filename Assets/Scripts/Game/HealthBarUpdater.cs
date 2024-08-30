@@ -17,7 +17,7 @@ public class HealthBarUpdater : MonoBehaviour
         if (!manager.CheckReady()) return;
         if (slider) slider.value = (float)(manager.GetHealth() / manager.GetStat(NumericalStats.Health));
         if (text) text.text = (int)manager.GetHealth() + "/" + (int)manager.GetStat(NumericalStats.Health);
-        Debug.Log("HBU VALUE: " + manager.CheckIfShouldShowHP());
+        //Debug.Log("HBU VALUE: " + manager.CheckIfShouldShowHP());
         if (bEnemy && manager.CheckIfShouldShowHP())
         {
             for (var i = 0; i < transform.childCount; ++i)
