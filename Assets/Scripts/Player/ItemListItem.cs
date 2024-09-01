@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// Component holding data associated with the display of an item object on the UI
+/// </summary>
 public class ItemListItem : MonoBehaviour
 {
     [SerializeField] private Image image;

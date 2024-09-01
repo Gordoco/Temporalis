@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Simple script to keep track of all items and retrieve them using a weighted random method
+/// </summary>
 public class WeightedItemList : MonoBehaviour
 {
     [SerializeField] private GameObject[] ItemList;

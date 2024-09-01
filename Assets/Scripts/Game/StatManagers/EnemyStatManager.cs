@@ -5,7 +5,7 @@ using Mirror;
 
 public class EnemyStatManager : StatManager
 {
-    private const int BASE_ITEM_SPAWN_RATE = 10;
+    private const int BASE_ITEM_SPAWN_RATE = 10; // Serves as an arbitrary value to compare enemy spawn chance against
 
     /// <summary>
     /// Weight Multiplier for Special Enemies. Any value over BASE_ITEM_SPAWN_RATE will result in guarunteed item spawns
@@ -21,7 +21,7 @@ public class EnemyStatManager : StatManager
     /// </summary>
     [SerializeField] private int EnemySpawnChance = 1;
 
-
+    // Operator definitions to allow easy comparisons of EnemyStatManagers
     public static EnemyStatManager operator >(EnemyStatManager a, EnemyStatManager b)
     {
         return a.GetEnemySpawnCost() > b.GetEnemySpawnCost() ? a : b;
@@ -31,11 +31,16 @@ public class EnemyStatManager : StatManager
         return a.GetEnemySpawnCost() < b.GetEnemySpawnCost() ? a : b;
     }
 
-    private static string ITEM_PATH = "ConcreteItems";
+    // Allows dynamic and autonomous loading of all item objects
+    private static string ITEM_PATH = "ConcreteItems"; // Required to be of the form ./Assets/Resources/ITEM_PATH
+    /// <summary>
+    /// Retrieves a weighted random item from all possible item objects
+    /// </summary>
+    /// <returns></returns>
     private GameObject GetRandomWeightedItem()
     {
         GameObject[] itemPrefabs = Resources.LoadAll<GameObject>(ITEM_PATH);
-        Debug.Log("NUM ITEMS: " + itemPrefabs.Length);
+        //Debug.Log("NUM ITEMS: " + itemPrefabs.Length);
         int sum = 0;
         foreach (GameObject i in itemPrefabs)
         {
@@ -44,20 +49,23 @@ public class EnemyStatManager : StatManager
         }
         int rand = Random.Range(0, sum);
         int index = -1;
-        Debug.Log("SUM: " + sum + "RAND: " + rand);
+        //Debug.Log("SUM: " + sum + "RAND: " + rand);
         sum = 0;
         for (int i = 0; i < itemPrefabs.Length; i++) { sum += itemPrefabs[i].GetComponent<BaseItemComponent>().GetItemWeight(); if (sum > rand) { index = i; break; } }
         return itemPrefabs[index];
     }
 
+    /// <summary>
+    /// Randomly decide whether to spawn an item on Enemy death
+    /// </summary>
     [Server]
     protected override void OnDeath()
     {
         int chance = Random.Range(0, Mathf.Clamp((int)(BASE_ITEM_SPAWN_RATE - ItemWeightMult), 0, BASE_ITEM_SPAWN_RATE));
-        Debug.Log("YOU ROLLED: " + chance);
+        //Debug.Log("YOU ROLLED: " + chance);
         if (chance == 0)
         {
-            Debug.Log("SPAWNED ITEM YAYYYYYYYYYYYYY");
+            //Debug.Log("SPAWNED ITEM YAYYYYYYYYYYYYY");
             GameObject item = Instantiate(GetRandomWeightedItem(), transform.position + (transform.up * 10), Quaternion.identity);
             NetworkServer.Spawn(item);
         }

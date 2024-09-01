@@ -49,9 +49,9 @@ public abstract class StatManager : NetworkBehaviour
         }
     }
 
+    // Network variables
     private readonly SyncList<double> stats = new SyncList<double>();
     protected readonly SyncList<BaseItem> items = new SyncList<BaseItem>();
-    [SerializeField] private InitStatsDisplay[] initStats = new InitStatsDisplay[(int)NumericalStats.NumberOfStats];
 
     [SyncVar] private bool ShouldShowHP = false;
     [SyncVar] private bool CCImmune = false;
@@ -63,6 +63,9 @@ public abstract class StatManager : NetworkBehaviour
 
     [SyncVar] public bool Initialized = false;
 
+    // Editor value
+    [SerializeField] private InitStatsDisplay[] initStats = new InitStatsDisplay[(int)NumericalStats.NumberOfStats];
+
     [Server]
     public void ToggleCCImmune(bool b)
     {
@@ -71,6 +74,9 @@ public abstract class StatManager : NetworkBehaviour
 
     public bool GetCCImmune() { return CCImmune; }
 
+    /// <summary>
+    /// Copies base stats into network replicated stat list, flags the StatManager as Initialized when complete.
+    /// </summary>
     private void Start()
     {
         if (isServer)
@@ -100,6 +106,10 @@ public abstract class StatManager : NetworkBehaviour
         return stats.Count == (int)NumericalStats.NumberOfStats;
     }
 
+    /// <summary>
+    /// Will be true after recently having its health stat modified
+    /// </summary>
+    /// <returns></returns>
     public bool CheckIfShouldShowHP()
     {
         return ShouldShowHP;
@@ -129,6 +139,9 @@ public abstract class StatManager : NetworkBehaviour
         }
     }
 
+    /// <summary>
+    /// Simple server-side check of the health stat for evaluating a death
+    /// </summary>
     private void Update()
     {
         if (isServer)
@@ -140,6 +153,7 @@ public abstract class StatManager : NetworkBehaviour
         }
     }
 
+    //TODO: More elegant solution than "Destroy"
     /// <summary>
     /// Server handler for death
     /// </summary>
@@ -157,7 +171,7 @@ public abstract class StatManager : NetworkBehaviour
     public double GetHealth() { return Health; }
 
 
-    private Coroutine showHPRoutine;
+    private Coroutine showHPRoutine; // Coroutine identifier to ensure full 2 second window after each damage event
     /// <summary>
     /// Server-Only Method for applying damage to the entity
     /// </summary>
@@ -223,9 +237,13 @@ public abstract class StatManager : NetworkBehaviour
             items.Add(newItem);
             AddItemChild(newItem);
         }
-        else Debug.Log("ERROR: Bad Item Insertion in " + gameObject.name);
+        else Debug.Log("[ERROR - StatManager.cs: Bad Item Insertion in " + gameObject.name + "]");
     }
 
+    /// <summary>
+    /// By default there is no generic implementation for adding an item at runtime, see PlayerStatManager.cs
+    /// </summary>
+    /// <param name="item"></param>
     [Server]
     protected virtual void AddItemChild(BaseItem item) {}
 

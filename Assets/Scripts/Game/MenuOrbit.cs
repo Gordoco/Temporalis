@@ -16,9 +16,13 @@ public class MenuOrbit : MonoBehaviour
     bool bPanning = true;
     bool bFixed = false;
 
-    /*bool bHostHovered = false;
-    bool bHostStopHovered = false;*/
-
+    /// <summary>
+    /// Rotates the supplied point "angle" radians about the pivot
+    /// </summary>
+    /// <param name="point"></param>
+    /// <param name="pivot"></param>
+    /// <param name="angle"></param>
+    /// <returns></returns>
     private Vector3 RotatePointAroundPivot(Vector3 point, Vector3 pivot, float angle) 
     {
         Vector3 dir = point - pivot; // get point direction relative to pivot
@@ -28,7 +32,7 @@ public class MenuOrbit : MonoBehaviour
     }
 
     bool bReset = true;
-    //float hostPositionProg = 0;
+
     Vector3 PrevPanPoint = Vector3.zero;
     Quaternion PrevPanRotation = Quaternion.identity;
 
@@ -69,6 +73,9 @@ public class MenuOrbit : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Main rotation algorithm for Main Menu panning
+    /// </summary>
     private void PanLogic()
     {
         Quaternion newRotation = Quaternion.LookRotation(OrbitPoint.position - transform.position);
@@ -88,6 +95,10 @@ public class MenuOrbit : MonoBehaviour
 
     bool bCooldown = false;
 
+    /// <summary>
+    /// Allows snappy alignment to fixed positions
+    /// </summary>
+    /// <param name="fixedPos"></param>
     private void ChangeToFixCameraPos(Transform fixedPos)
     {
         if (bCooldown) return;
@@ -101,12 +112,15 @@ public class MenuOrbit : MonoBehaviour
         }
         PrevPoint = transform.position;
         PrevRotation = transform.rotation;
-        //if (fixedPoint != fixedPos) transitionProgress = 0;
+
         bPanning = false;
         bFixed = true;
         fixedPoint = fixedPos;
     }
 
+    /// <summary>
+    /// Cleans up snapped movement and returns to previous point in the Pan
+    /// </summary>
     private void ResetToCameraPanning()
     {
         bPanning = true;
@@ -120,6 +134,8 @@ public class MenuOrbit : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
         bCooldown = false;
     }
+
+    // A Series of methods for Menu Button hovers to trigger visual accentuation
 
     public void OnHostStartHover()
     {

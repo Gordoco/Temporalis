@@ -10,13 +10,12 @@ using UnityEngine.AI;
 [RequireComponent(typeof(SoundManager))]
 public abstract class EnemyController : NetworkBehaviour
 {
+    // Editor values
     [SerializeField] protected GameObject EnemyProjPrefab;
     [SerializeField] private float gravity = 20;
     [SerializeField] protected float BaseRotationSpeed = 20f;
     [SerializeField] protected GameObject ProjectileOffset = null;
     [SerializeField] private AudioClip ShotSound;
-
-    private GameObject Player;
 
     protected StatManager Manager;
     protected CharacterController controller;
@@ -28,6 +27,8 @@ public abstract class EnemyController : NetworkBehaviour
     protected Animator animator;
 
     protected const float OVER_RANGE_APPROX = 1.25f;
+
+    private GameObject Player;
 
     private bool bInRange = false;
 
@@ -86,11 +87,13 @@ public abstract class EnemyController : NetworkBehaviour
         if (!Player) Player = GetRandomPlayer();
         if (!ValidatePlayer(Player)) return;
 
+        // Calculate direction for firing projectiles
         Vector3 dir = ProjectileOffset != null ? Player.transform.position - ProjectileOffset.transform.position : Player.transform.position - transform.position;
         Vector3 destination = Player.transform.position;
 
         float dist = Vector3.Distance(Player.transform.position, transform.position);
 
+        // Calculate the correct state for the agent for this frame based on range to player
         if (dist > Manager.GetStat(NumericalStats.Range))
         {
             bInRange = false;
@@ -112,8 +115,11 @@ public abstract class EnemyController : NetworkBehaviour
         {
             OutOfRangeBehavior(Player, ref destination);
         }
+
+        // Late direction normalization to preserve distance information
         dir.Normalize();
 
+        // Apply gravity to enemy agents
         if (controller.isGrounded)
         {
             dir.y = 0;
@@ -122,9 +128,11 @@ public abstract class EnemyController : NetworkBehaviour
         {
             dir.y -= gravity;
         }
-        //Move((float)Manager.GetStat(NumericalStats.MovementSpeed) * Time.deltaTime * dir);
+
+        // Execute the current frame's movement
         Move(destination);
 
+        // Handle animations
         if (!animator) return;
         if (agent.velocity.magnitude != 0)
         {
@@ -136,6 +144,10 @@ public abstract class EnemyController : NetworkBehaviour
         }
     }
 
+    /// <summary>
+    /// Handles NavMesh compatible movement over the network
+    /// </summary>
+    /// <param name="location"></param>
     [Server]
     protected void Move(Vector3 location)
     {
@@ -187,12 +199,22 @@ public abstract class EnemyController : NetworkBehaviour
     /// </summary>
     /// <param name="Player"></param>
     /// <param name="dir"></param>
-    protected abstract void InRangeBehavior(GameObject Player, ref Vector3 destination);
+    protected virtual void InRangeBehavior(GameObject Player, ref Vector3 destination)
+    {
+        Vector3 LookDir = Player.transform.position - transform.position;
+        destination = transform.position;
+        Quaternion targetRotation = Quaternion.LookRotation(new Vector3(LookDir.x, 0, LookDir.z));
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, BaseRotationSpeed * Time.deltaTime);
+    }
 
     /// <summary>
     /// Behavior agent utilizes when not in range of the targeted player
     /// </summary>
     /// <param name="Player"></param>
     /// <param name="dir"></param>
-    protected abstract void OutOfRangeBehavior(GameObject Player, ref Vector3 destination);
+    protected virtual void OutOfRangeBehavior(GameObject Player, ref Vector3 destination)
+    {
+        Quaternion targetRotation = Quaternion.LookRotation(agent.velocity.normalized);
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, BaseRotationSpeed * Time.deltaTime);
+    }
 }

@@ -4,6 +4,9 @@ using UnityEngine;
 using System;
 using Mirror;
 
+/// <summary>
+/// Lightweight object for holding item information
+/// </summary>
 public class BaseItem
 {
     public string ItemName;

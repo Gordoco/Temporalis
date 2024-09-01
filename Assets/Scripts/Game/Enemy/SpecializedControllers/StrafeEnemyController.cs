@@ -17,6 +17,11 @@ public class StrafeEnemyController : EnemyController
         travelDirection = Random.Range(0, 1) == 0 ? 1 : -1;
     }
 
+    /// <summary>
+    /// Override of base attack behavior to allow for strafe firing
+    /// </summary>
+    /// <param name="Player"></param>
+    /// <param name="dir"></param>
     protected override void AttackFunctionality(GameObject Player, Vector3 dir)
     {
         base.AttackFunctionality(Player, dir);

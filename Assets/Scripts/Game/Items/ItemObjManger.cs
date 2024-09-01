@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 
+/// <summary>
+/// Simple enforcement and pickup script for ensuring spawned items have the required functionality
+/// </summary>
 [RequireComponent(typeof(Collider))]
 [RequireComponent(typeof(NetworkRigidbodyUnreliable))]
 [RequireComponent(typeof(BaseItemComponent))]
@@ -14,16 +17,7 @@ public class ItemObjManger : NetworkBehaviour
     {
         //Do not let this object move
         GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezeRotation;
-        //if (isServer) StartCoroutine(ItemDespawn());
     }
-
-    //If a despawn time is needed
-    /*private IEnumerator ItemDespawn()
-    {
-        yield return new WaitForSeconds(10);
-        NetworkServer.Destroy(gameObject);
-        Destroy(gameObject);
-    }*/
 
     public void OnTriggerEnter(Collider collision)
     {

@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 
+/// <summary>
+/// Helper class for spawning explosion effects and handling their effects on gameplay actors, fully netowork compatible
+/// </summary>
 public class ExplosionCreator : NetworkBehaviour
 {
     private float damage;
@@ -39,7 +42,7 @@ public class ExplosionCreator : NetworkBehaviour
                 if (hits[i].collider.gameObject.GetComponentInParent<HitManager>())
                 {
                     hits[i].collider.gameObject.GetComponentInParent<HitManager>().Hit(damage);
-                    Debug.Log("HIT SOMONE: " + hits[i].collider.gameObject.transform.root.gameObject.name);
+                    //Debug.Log("HIT SOMONE: " + hits[i].collider.gameObject.transform.root.gameObject.name);
                     oldHits.Add(hits[i].collider.gameObject.transform.root.gameObject);
                 }
             }

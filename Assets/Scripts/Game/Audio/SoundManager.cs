@@ -7,6 +7,7 @@ using UnityEngine;
 [RequireComponent(typeof(AudioSource))]
 public class SoundManager : NetworkBehaviour
 {
+    // Editor values
     [SerializeField] private const float DEFAULT_FADE_TIME = 10f;
     [SerializeField] private int DefaultBackground = -1;
     [SerializeField] private float MusicVolume = 1f;
@@ -14,6 +15,7 @@ public class SoundManager : NetworkBehaviour
     [SerializeField] private AudioClip[] clips;
     [SerializeField] private bool bCarryThroughLevels = false;
 
+    // Local values
     private int currentBackgroundIndex = -1;
     private float currentVolume;
     private AudioSource source;
@@ -147,6 +149,11 @@ public class SoundManager : NetworkBehaviour
         PlaySoundEffect(clipName, volumeMult);
     }
 
+    /// <summary>
+    /// Plays a sound effect over the network. Requires AudioCollection registration on all clients and server
+    /// </summary>
+    /// <param name="effectName"></param>
+    /// <param name="volumeMult"></param>
     public void PlaySoundEffect(string effectName, float volumeMult = 1)
     {
         if (isClient && !isServer)

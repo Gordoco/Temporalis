@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Simple spectator camera, used as a placeholder due to feature prioritization
+/// </summary>
 public class SpectatorMove : MonoBehaviour
 {
     /*

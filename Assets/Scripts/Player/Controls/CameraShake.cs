@@ -1,6 +1,9 @@
 using UnityEngine;
 using System.Collections;
 
+/// <summary>
+/// Simple component for adding client side camera shake
+/// </summary>
 public class CameraShake : MonoBehaviour
 {
     // Transform of the camera to shake. Grabs the gameObject's transform

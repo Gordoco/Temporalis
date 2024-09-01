@@ -6,15 +6,24 @@ using Mirror;
 [RequireComponent(typeof(SoundManager))]
 public class GrenadeTimedExplosion : NetworkBehaviour
 {
+    // Editor exposed values
     [SerializeField] private GameObject ExplosionPrefab;
     [SerializeField] private float time = 5;
     [SerializeField] private AudioClip ExplosionSound;
 
+    // Local values
     private GameObject owner;
     private float radius;
     private float damage;
     private bool bFromServer = false;
 
+    /// <summary>
+    /// Initialization method acting as a constructor within the Component API
+    /// </summary>
+    /// <param name="owner"></param>
+    /// <param name="radius"></param>
+    /// <param name="damage"></param>
+    /// <param name="inServer"></param>
     public void Init(GameObject owner, float radius, float damage, bool inServer)
     {
         this.owner = owner;
@@ -46,6 +55,12 @@ public class GrenadeTimedExplosion : NetworkBehaviour
         Explode(owner, radius, damage);
     }
 
+    /// <summary>
+    /// Handles explosion event trigger dependant on network status
+    /// </summary>
+    /// <param name="owner"></param>
+    /// <param name="radius"></param>
+    /// <param name="damage"></param>
     private void Explode(GameObject owner, float radius, float damage)
     {
         if (bFromServer)

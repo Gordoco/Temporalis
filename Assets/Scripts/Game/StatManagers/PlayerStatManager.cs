@@ -3,18 +3,28 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 
+/// <summary>
+/// Serializable struct to keep track of whether an item being added is unique or not, used to spawn new item display images vs simply updating an existing one
+/// </summary>
 [System.Serializable]
 public struct ItemUnique { public BaseItem item; public bool bUnique; public ItemUnique(BaseItem i, bool b) { item = i; bUnique = b; } }
 
 public class PlayerStatManager : StatManager
 {
     [SerializeField] private ItemDisplay display;
+    /// <summary>
+    /// Handle Player death more elegantly through spawning of spectator objects, etc.
+    /// </summary>
     protected override void OnDeath()
     {
         gameObject.transform.parent.GetComponent<PlayerObjectController>().Die();
         base.OnDeath();
     }
 
+    /// <summary>
+    /// Item addition interface for players
+    /// </summary>
+    /// <param name="item"></param>
     [Server]
     protected override void AddItemChild(BaseItem item)
     {

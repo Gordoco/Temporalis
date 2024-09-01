@@ -28,7 +28,7 @@ public class MechArmsAttack : AttackManager
             lastAttackSpeed = statManager.GetStat(NumericalStats.AttackSpeed);
             baseAttackSpeed = lastAttackSpeed;
             //Start With 1 Arm
-            for (int i = 0; i < ArmSpawnLocations.Length; i++)
+            for (int i = 0; i < 1/*ArmSpawnLocations.Length*/; i++)
             {
                 AddArm();
             }
@@ -107,13 +107,14 @@ public class MechArmsAttack : AttackManager
     protected override void OnPrimaryAttack()
     {
         //Dual function, Spotter (double damage and priority target for arms) and Simple rifle
+
     }
 
     //RMB
     private ArmManager swingArm = null;
     protected override void OnSecondaryAttack()
     {
-        
+        //Primary Toggle
     }
 
     //Q

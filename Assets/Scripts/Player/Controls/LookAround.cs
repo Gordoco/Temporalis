@@ -13,7 +13,9 @@ public struct View
     public View(Vector3 inLoc, Vector3 inRot) { loc = inLoc; rot = inRot; }
 }
 
-
+/// <summary>
+/// Handler for Player camera control
+/// </summary>
 public class LookAround : NetworkBehaviour
 {
     public float mouseXSensitivity = 100f;

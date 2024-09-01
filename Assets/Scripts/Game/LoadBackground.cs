@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 using UnityEngine;
 
+/// <summary>
+/// Simple MainMenu script to add level visuals to main menu screen
+/// </summary>
 public class LoadBackground : MonoBehaviour
 {
     // Start is called before the first frame update

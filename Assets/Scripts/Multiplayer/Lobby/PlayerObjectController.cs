@@ -53,10 +53,8 @@ public class PlayerObjectController : NetworkBehaviour
     [Server]
     public void Die()
     {
-        //if (GetComponent<Camera>() == null) gameObject.AddComponent<Camera>();
         DieRpc(isServer);
         Manager.PlayerDied(this);
-        //lookComp.enabled = true;
     }
 
     [ClientRpc]
@@ -68,8 +66,6 @@ public class PlayerObjectController : NetworkBehaviour
         GameObject spectator = Instantiate(SpectatorPrefab, transform.position, Quaternion.identity);
         spectator.GetComponent<SpectatorMove>().isServer = server;
         if (gameObject.name == "LocalGamePlayer") GetComponent<AudioListener>().enabled = true;
-        //if (GetComponent<Camera>() == null) gameObject.AddComponent<Camera>();
-        //lookComp.enabled = true;
     }
 
     [ClientRpc]

@@ -2,8 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Full component holding detailed item logic and behavior
+/// </summary>
 public class BaseItemComponent : MonoBehaviour
 {
+    // Editor values
     [SerializeField] private int ItemWeight;
     [SerializeField] private Texture2D ItemImage;
     [SerializeField] private AudioClip ItemPickupSound;

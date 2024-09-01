@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Simple helper script to auto-destroy particle system GameObjects when their lifespan is done
+/// </summary>
 public class AutoDestroyParticle : MonoBehaviour
 {
     private ParticleSystem p;

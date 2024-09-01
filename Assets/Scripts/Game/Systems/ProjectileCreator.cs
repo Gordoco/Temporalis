@@ -4,17 +4,23 @@ using UnityEngine;
 using Mirror;
 using Unity.VisualScripting;
 
+/// <summary>
+/// Helper class for spawning and evaluating projectiles on gameplay actors, fully netowrk compatible
+/// </summary>
 [RequireComponent(typeof(MeshFilter))]
 [RequireComponent(typeof(Collider))]
 [RequireComponent(typeof(NetworkTransformUnreliable))]
 public class ProjectileCreator : NetworkBehaviour
 {
+    // Event callback
+    public event System.EventHandler<Collider> OnHitEnemy;
+
+    // Configurable values
     [SerializeField] private float projectileSpeed;
     [SerializeField] private bool bInteractWithTerrain = true;
-    private float damage;
 
     /// <summary>
-    /// Number of entities that can have damage applied from this projectile.
+    /// Number of distinct entities that can have damage applied from this projectile.
     /// </summary>
     [SerializeField] private int pierceLevel = 1;
 
@@ -23,11 +29,10 @@ public class ProjectileCreator : NetworkBehaviour
     /// </summary>
     [SerializeField] private float lifespan = 5.0f;
 
+    private float damage;
     private Vector3 direction;
     private bool bAlive = false;
     private List<GameObject> hitObjects = new List<GameObject>();
-
-    public event System.EventHandler<Collider> OnHitEnemy;
 
     private bool bEnemy = false;
     private bool bFromServer = false;
@@ -81,7 +86,7 @@ public class ProjectileCreator : NetworkBehaviour
 
     public void OnTriggerEnter(Collider collision)
     {
-        Debug.Log("COLLIDED WITH: " + collision.gameObject.transform.root.gameObject.name);
+        //Debug.Log("COLLIDED WITH: " + collision.gameObject.transform.root.gameObject.name);
         if (bAlive)
         {
             if (!(hitObjects.Contains(collision.gameObject.transform.root.gameObject)) && collision.gameObject.GetComponentInParent<HitManager>() != null)

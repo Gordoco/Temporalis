@@ -3,26 +3,33 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 
+/// <summary>
+/// Handler for all player movement
+/// </summary>
 public class PlayerMove : NetworkBehaviour
 {
-    //public float speed = 6.0f;
-    //public float jumpSpeed = 8.0f;
+    // Editor/Public values
     public float gravity = 20.0f;
-    private Vector3 moveDirection = Vector3.zero;
-    private bool bFlying = false;
+    
+    // Network values
     [SyncVar] private bool bDead = false;
-    private bool bAwake = false;
     [SyncVar] private bool bInputDisabled = false;
+
+    // Local values
     private float tempGravity = 0;
+
     private int AnimMovingHash;
     private int AnimStrafingHash;
     private int AnimJumpingHash;
+    private Animator childAnimator;
 
-    Animator childAnimator;
     private Vector3 tempMomentum = Vector3.zero;
-
     private Vector3 center;
     private float radius;
+    private Vector3 moveDirection = Vector3.zero;
+
+    private bool bFlying = false;
+    private bool bAwake = false;
 
     private void Awake()
     {

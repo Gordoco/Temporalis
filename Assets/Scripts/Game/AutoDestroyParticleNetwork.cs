@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 
+/// <summary>
+/// Simple helper script to auto-destroy particle system GameObjects when their lifespan is done. Adapted from AutoDestroyParticle.cs for network usage.
+/// </summary>
 public class AutoDestroyParticleNetwork : NetworkBehaviour
 {
     private ParticleSystem p;

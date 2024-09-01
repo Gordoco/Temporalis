@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Depricated.
+/// </summary>
 public class ItemImageList : MonoBehaviour
 {
     [System.Serializable]

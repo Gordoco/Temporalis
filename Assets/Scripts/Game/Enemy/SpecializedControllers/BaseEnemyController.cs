@@ -9,6 +9,11 @@ public class BaseEnemyController : EnemyController
         base.Start();
     }
 
+    /// <summary>
+    /// Simple projectile firing attack behavior
+    /// </summary>
+    /// <param name="Player"></param>
+    /// <param name="dir"></param>
     protected override void AttackFunctionality(GameObject Player, Vector3 dir)
     {
         base.AttackFunctionality(Player, dir);
@@ -18,19 +23,5 @@ public class BaseEnemyController : EnemyController
             Vector3 ProjLocation = ProjectileOffset != null ? ProjectileOffset.transform.position : transform.position;
             proj.GetComponent<ProjectileCreator>().InitializeProjectile(gameObject, ProjLocation, dir, Manager.GetStat(NumericalStats.PrimaryDamage), true);
         }
-    }
-
-    protected override void InRangeBehavior(GameObject Player, ref Vector3 destination)
-    {
-        Vector3 LookDir = Player.transform.position - transform.position;
-        destination = transform.position;
-        Quaternion targetRotation = Quaternion.LookRotation(new Vector3(LookDir.x, 0, LookDir.z));
-        transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, BaseRotationSpeed * Time.deltaTime);
-    }
-
-    protected override void OutOfRangeBehavior(GameObject Player, ref Vector3 destination)
-    {
-        Quaternion targetRotation = Quaternion.LookRotation(agent.velocity.normalized);
-        transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, BaseRotationSpeed * Time.deltaTime);
     }
 }

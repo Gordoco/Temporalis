@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// Handles changing the UI color of Player abilities to correspond with their cooldowns
+/// </summary>
 public class PlayerAbilityUpdate : MonoBehaviour
 {
     [SerializeField] private Image primary;

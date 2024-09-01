@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Spawns a client-side particle effect for the local player
+/// </summary>
 public class PlayerDesertParticleSpawner : MonoBehaviour
 {
     [SerializeField] private GameObject ParticlePrefab;

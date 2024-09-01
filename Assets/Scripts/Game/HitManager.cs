@@ -31,6 +31,7 @@ public class HitManager : NetworkBehaviour
         return false;
     }
 
+    //TODO: Convert to generic Status-Effect API
     /// <summary>
     /// Server-Only method which stuns the selected entity, preventing actions
     /// </summary>

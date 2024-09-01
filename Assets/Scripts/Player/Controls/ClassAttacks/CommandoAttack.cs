@@ -4,9 +4,13 @@ using UnityEngine;
 using Mirror;
 using UnityEngine.UI;
 
+/// <summary>
+/// Majority of the logic for player control of the Commando class
+/// </summary>
 [RequireComponent(typeof(SoundManager))]
 public class CommandoAttack : AttackManager
 {
+    // Editor values
     [SerializeField] private GameObject SecondaryAttackProjPrefab;
     [SerializeField] private GameObject GrenadePrefab;
     [SerializeField] private GameObject LShotStart;
@@ -26,6 +30,9 @@ public class CommandoAttack : AttackManager
 
     [SerializeField] private CameraShake CameraShakeRef;
 
+    /// <summary>
+    /// Sets up all class audio
+    /// </summary>
     protected override void Start()
     {
         base.Start();
@@ -131,6 +138,9 @@ public class CommandoAttack : AttackManager
         yield return null;
     }
 
+    /// <summary>
+    /// Implements a thrown grenade
+    /// </summary>
     protected override void OnSecondaryAttack()
     {
         if (GrenadePrefab != null)
@@ -157,6 +167,9 @@ public class CommandoAttack : AttackManager
         }
     }
 
+    /// <summary>
+    /// Implements a "stim" effect inspired by Starcraft 2's marines
+    /// </summary>
     protected override void OnAbility1()
     {
         if (StimImage) StimImage.enabled = true;
@@ -194,6 +207,9 @@ public class CommandoAttack : AttackManager
         if (StimImage) StimImage.enabled = false;
     }
 
+    /// <summary>
+    /// Implements a simple regen ability that scales with player passive regen speed
+    /// </summary>
     protected override void OnAbility2()
     {
         if (RegenParticleEffect) RegenParticleEffect.SetActive(true);
@@ -218,6 +234,9 @@ public class CommandoAttack : AttackManager
         if (RegenParticleEffect) RegenParticleEffect.SetActive(false);
     }
 
+    /// <summary>
+    /// Implements a short Jetpack boost
+    /// </summary>
     protected override void OnAbility3()
     {
         CharacterController controller = GetComponent<CharacterController>();
@@ -261,6 +280,9 @@ public class CommandoAttack : AttackManager
         GetComponent<PlayerMove>().SetFlying(b);
     }
 
+    /// <summary>
+    /// Implements a ground slam ability
+    /// </summary>
     protected override void OnAbility4()
     {
         float startLoc = transform.position.y;

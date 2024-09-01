@@ -3,17 +3,25 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 
+/// <summary>
+/// Abstract interface for handling the network resolution of player controls
+/// </summary>
 public abstract class AttackManager : NetworkBehaviour
 {
+    // Editor values
     [SerializeField] private GameObject PauseMenuPrefab;
     [SerializeField] protected StatManager statManager;
     [SerializeField] private GameObject StunnedParticleEffect;
+
+    // Editor network values
     [SerializeField, SyncVar] protected bool PrimaryFullAuto = true;
     [SerializeField, SyncVar] protected bool SecondaryFullAuto = false;
     [SerializeField, SyncVar] protected bool Ability1FullAuto = false;
     [SerializeField, SyncVar] protected bool Ability2FullAuto = false;
     [SerializeField, SyncVar] protected bool Ability3FullAuto = false;
     [SerializeField, SyncVar] protected bool Ability4FullAuto = false;
+
+    // Local network values
     [SyncVar] private bool bCanAttack = true;
     [SyncVar] private bool bCanSecondary = true;
     [SyncVar] private bool bCanAbility1 = true;
@@ -22,6 +30,7 @@ public abstract class AttackManager : NetworkBehaviour
     [SyncVar] private bool bCanAbility4 = true;
     [SyncVar] private bool bEnabled = true;
 
+    // Local values
     private GameObject PauseMenu;
 
     public bool GetAbilityReady(int abilityNum)
@@ -47,6 +56,7 @@ public abstract class AttackManager : NetworkBehaviour
 
     public void SetEnabled(bool b) { bEnabled = b; }
 
+    // TODO: Post Status-Effect implementation, convert to a more generic solution
     protected virtual void Start()
     {
         GetComponent<HitManager>().OnStunned += ShowStunnedEffect;
@@ -76,6 +86,7 @@ public abstract class AttackManager : NetworkBehaviour
         if (!bEnabled) return;
         if (!isOwned) { this.enabled = false; return; }
 
+        //Default: LMB
         bool primaryInput = PrimaryFullAuto ? Input.GetButton("PrimaryAttack") : Input.GetButtonDown("PrimaryAttack");
         if (primaryInput && bCanAttack)
         {
@@ -86,7 +97,7 @@ public abstract class AttackManager : NetworkBehaviour
             ServerStartPrimaryAttackCooldown();
         }
 
-
+        //Default: RMB
         bool secondaryInput = SecondaryFullAuto ? Input.GetButton("SecondaryAttack") : Input.GetButtonDown("SecondaryAttack");
         if (secondaryInput && bCanSecondary)
         {
@@ -97,7 +108,7 @@ public abstract class AttackManager : NetworkBehaviour
             ServerStartSecondaryAttackCooldown();
         }
 
-        //Q
+        //Default: Q
         bool ability1Input = Ability1FullAuto ? Input.GetButton("Ability1") : Input.GetButtonDown("Ability1");
         if (ability1Input && bCanAbility1)
         {
@@ -108,7 +119,7 @@ public abstract class AttackManager : NetworkBehaviour
             ServerStartAbility1Cooldown();
         }
 
-        //E
+        //Default: E
         bool ability2Input = Ability2FullAuto ? Input.GetButton("Ability2") : Input.GetButtonDown("Ability2");
         if (ability2Input && bCanAbility2)
         {
@@ -119,7 +130,7 @@ public abstract class AttackManager : NetworkBehaviour
             ServerStartAbility2Cooldown();
         }
 
-        //LEFT-CTRL
+        //Default: LEFT-CTRL
         bool ability3Input = Ability3FullAuto ? Input.GetButton("Ability3") : Input.GetButtonDown("Ability3");
         if (ability3Input && bCanAbility3)
         {
@@ -130,7 +141,7 @@ public abstract class AttackManager : NetworkBehaviour
             ServerStartAbility3Cooldown();
         }
 
-        //R
+        //Default: R
         bool ability4Input = Ability4FullAuto ? Input.GetButton("Ability4") : Input.GetButtonDown("Ability4");
         if (ability4Input && bCanAbility4)
         {
@@ -141,12 +152,13 @@ public abstract class AttackManager : NetworkBehaviour
             ServerStartAbility4Cooldown();
         }
 
+        //Default: ESC
         if (Input.GetButtonDown("Pause"))
         {
             if (PauseMenuPrefab == null)
             {
-                Debug.Log("ERROR: No Pause Menu Defined AttackManager");
-                Debug.Break();
+                Debug.Log("[ERROR - AttackManager.cs: No Pause Menu Defined]");
+                Debug.Break(); // Stops editor play "Freezing" game
                 return;
             }
 
