@@ -21,7 +21,7 @@ public class BaseEnemyController : EnemyController
         {
             GameObject proj = Instantiate(EnemyProjPrefab);
             Vector3 ProjLocation = ProjectileOffset != null ? ProjectileOffset.transform.position : transform.position;
-            proj.GetComponent<ProjectileCreator>().InitializeProjectile(gameObject, ProjLocation, dir, Manager.GetStat(NumericalStats.PrimaryDamage), true);
+            proj.GetComponent<ProjectileCreator>().InitializeProjectile(gameObject, ProjLocation, dir.normalized, Manager.GetStat(NumericalStats.PrimaryDamage), true);
         }
     }
 }
