@@ -91,7 +91,6 @@ public abstract class AttackManager : NetworkBehaviour
         if (primaryInput && bCanAttack)
         {
             bCanAttack = false;
-            Debug.Log("Shot Gat");
             if (isClient) OnServerPrimaryAttack();
             else if (isServer) OnClientPrimaryAttack();
             ServerStartPrimaryAttackCooldown();
@@ -102,7 +101,6 @@ public abstract class AttackManager : NetworkBehaviour
         if (secondaryInput && bCanSecondary)
         {
             bCanSecondary = false;
-            Debug.Log("Shot Gat Extra Good");
             if (isClient) OnServerSecondaryAttack();
             else if (isServer) OnClientSecondaryAttack();
             ServerStartSecondaryAttackCooldown();
@@ -113,7 +111,6 @@ public abstract class AttackManager : NetworkBehaviour
         if (ability1Input && bCanAbility1)
         {
             bCanAbility1 = false;
-            Debug.Log("First Ability PewPew");
             if (isClient) OnServerAbility1();
             else if (isServer) OnClientAbility1();
             ServerStartAbility1Cooldown();
@@ -124,7 +121,6 @@ public abstract class AttackManager : NetworkBehaviour
         if (ability2Input && bCanAbility2)
         {
             bCanAbility2 = false;
-            Debug.Log("Second Ability PewPew");
             if (isClient) OnServerAbility2();
             else if (isServer) OnClientAbility2();
             ServerStartAbility2Cooldown();
@@ -135,7 +131,6 @@ public abstract class AttackManager : NetworkBehaviour
         if (ability3Input && bCanAbility3)
         {
             bCanAbility3 = false;
-            Debug.Log("Third Ability PewPew");
             if (isClient) OnServerAbility3();
             else if (isServer) OnClientAbility3();
             ServerStartAbility3Cooldown();
@@ -146,7 +141,6 @@ public abstract class AttackManager : NetworkBehaviour
         if (ability4Input && bCanAbility4)
         {
             bCanAbility4 = false;
-            Debug.Log("Fourth Ability PewPew");
             if (isClient) OnServerAbility4();
             else if (isServer) OnClientAbility4();
             ServerStartAbility4Cooldown();

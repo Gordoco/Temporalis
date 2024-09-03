@@ -48,7 +48,7 @@ public class PlayerMove : NetworkBehaviour
             bFlying = true;
             tempGravity = -1 * (2 * gravity);
         }
-        else if (bFlying)
+        else
         {
             bFlying = false;
             tempGravity = 0;
