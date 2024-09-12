@@ -11,7 +11,7 @@ public class AutoScreenshotter : MonoBehaviour
     void Start()
     {
         rand = Random.Range(0, 999999999);
-        //StartCoroutine(AutoScreenshot());
+        StartCoroutine(AutoScreenshot());
     }
 
     private IEnumerator AutoScreenshot()
