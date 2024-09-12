@@ -107,6 +107,17 @@ public abstract class StatManager : NetworkBehaviour
     }
 
     /// <summary>
+    /// Network-Independant method which gets the specified stat of the player
+    /// </summary>
+    /// <param name="stat"></param>
+    /// <returns>The double value of the specified stat</returns>
+    public double GetStat(NumericalStats stat)
+    {
+        if ((int)stat >= (int)NumericalStats.NumberOfStats || (int)stat < 0) return Mathf.Infinity;
+        return GetCombinedValueFromItems(stat);
+    }
+
+    /// <summary>
     /// Will be true after recently having its health stat modified
     /// </summary>
     /// <returns></returns>
@@ -123,20 +134,6 @@ public abstract class StatManager : NetworkBehaviour
     public void ModifyCurrentHealth(double value)
     {
         Health = Mathf.Clamp((float)(value + Health), 0, (float)GetStat(NumericalStats.Health));
-    }
-
-    /// <summary>
-    /// Coroutine for passive health regen
-    /// </summary>
-    /// <returns></returns>
-    private IEnumerator HealthRegen()
-    {
-        yield return new WaitForSeconds(0.5f);
-        while (true)
-        {
-            yield return new WaitForSeconds((float)GetStat(NumericalStats.HealthRegenSpeed));
-            Health = Mathf.Clamp((float)Health + (float)GetStat(NumericalStats.HealthRegenAmount), 0, (float)GetStat(NumericalStats.Health));
-        }
     }
 
     /// <summary>
@@ -184,12 +181,6 @@ public abstract class StatManager : NetworkBehaviour
         ShouldShowHP = true;
         if (showHPRoutine != null) StopCoroutine(showHPRoutine);
         showHPRoutine = StartCoroutine(ShowHPReset());
-    }
-
-    private IEnumerator ShowHPReset()
-    {
-        yield return new WaitForSeconds(2);
-        ShouldShowHP = false;
     }
 
     /// <summary>
@@ -275,13 +266,26 @@ public abstract class StatManager : NetworkBehaviour
     }
 
     /// <summary>
-    /// Network-Independant method which gets the specified stat of the player
+    /// Coroutine for passive health regen
     /// </summary>
-    /// <param name="stat"></param>
-    /// <returns>The double value of the specified stat</returns>
-    public double GetStat(NumericalStats stat)
+    /// <returns></returns>
+    private IEnumerator HealthRegen()
     {
-        if ((int)stat >= (int)NumericalStats.NumberOfStats || (int)stat < 0) return Mathf.Infinity;
-        return GetCombinedValueFromItems(stat);
+        yield return new WaitForSeconds(0.5f);
+        while (true)
+        {
+            yield return new WaitForSeconds((float)GetStat(NumericalStats.HealthRegenSpeed));
+            Health = Mathf.Clamp((float)Health + (float)GetStat(NumericalStats.HealthRegenAmount), 0, (float)GetStat(NumericalStats.Health));
+        }
+    }
+
+    /// <summary>
+    /// Keeps track of the recency of the statManager's HP's modification
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator ShowHPReset()
+    {
+        yield return new WaitForSeconds(2);
+        ShouldShowHP = false;
     }
 }
