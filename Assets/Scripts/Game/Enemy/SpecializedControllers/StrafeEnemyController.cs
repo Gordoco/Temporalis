@@ -30,7 +30,7 @@ public class StrafeEnemyController : EnemyController
         {
             Quaternion lookAtRotation = Quaternion.LookRotation(Player.transform.position - RotatingComponent.transform.position);
             float angle = 1 - Mathf.Abs(Quaternion.Dot(RotatingComponent.transform.rotation, lookAtRotation));
-            if (angle > 0.00872665 /* 0.5 degrees in radians */) return;
+            if (angle > 0.00872665) return;
         }
 
         if (ValidatePlayer(Player))

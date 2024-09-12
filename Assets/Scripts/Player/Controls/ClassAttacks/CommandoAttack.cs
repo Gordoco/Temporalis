@@ -178,7 +178,6 @@ public class CommandoAttack : AttackManager
         double[] vals = null;
         if (isServer)
         {
-            // Reduce HP to exactly 0
             if (manager.GetHealth() - 25 <= 0) manager.DealDamage(manager.GetHealth() - 1);
             else manager.DealDamage(25); //Deal Damage
 
@@ -253,6 +252,32 @@ public class CommandoAttack : AttackManager
         yield return new WaitForSeconds((float)time);
         if (JetpackParticleEffect != null) JetpackParticleEffect.SetActive(false);
         GetComponent<PlayerMove>().SetFlying(false);
+    }
+
+    Vector3 start;
+    int count = 0;
+    IEnumerator JetpackBoost(CharacterController controller, StatManager manager)
+    {
+        start = transform.position;
+        if (JetpackParticleEffect != null) JetpackParticleEffect.SetActive(true);
+        GetComponent<PlayerMove>().SetFlying(true);
+        if (isServer) ClientsToggleFlying(true);
+        while (count < 20)
+        {
+            if (isClient && controller.enabled) controller.Move(Vector3.up * (float)manager.GetStat(NumericalStats.JumpHeight) * 0.001f);
+            count++;
+            yield return new WaitForSeconds(0.02f);
+        }
+        count = 0;
+        if (JetpackParticleEffect != null) JetpackParticleEffect.SetActive(false);
+        GetComponent<PlayerMove>().SetFlying(false);
+        if (isServer) ClientsToggleFlying(false);
+    }
+
+    [ClientRpc]
+    void ClientsToggleFlying(bool b)
+    {
+        GetComponent<PlayerMove>().SetFlying(b);
     }
 
     /// <summary>

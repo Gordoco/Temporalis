@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 using UnityEngine.SceneManagement;
-using static UnityEditor.PlayerSettings;
-using Unity.Burst.CompilerServices;
 
 public class SimpleInfiniteEnemySpawner : NetworkBehaviour
 {
@@ -68,8 +66,7 @@ public class SimpleInfiniteEnemySpawner : NetworkBehaviour
 
         // Handle enemy spawning when dropship object has reached designated spawning location
         bool bStartedSpawning = false;
-        int maxCost = BaseNumEnemies + (int)(difficulty / 20);
-        while (i < maxCost)
+        while (i < (BaseNumEnemies + (int)(difficulty/20)))
         {
             // Delay for travel time
             if (!bStartedSpawning && DropShip && Vector3.Distance(DropShip.transform.position, SpawnPoints[randSpawn]) > 50)
@@ -80,15 +77,13 @@ public class SimpleInfiniteEnemySpawner : NetworkBehaviour
             else
             {
                 bStartedSpawning = true;
-                GameObject randEnemyPrefab = GetRandomEnemyPrefab(maxCost - i);
+                GameObject randEnemy = GetRandomEnemyPrefab((BaseNumEnemies + (int)(difficulty / 10)) - i);
 
                 RaycastHit hit;
                 Physics.Raycast(DropShip.transform.position, Vector3.down, out hit, int.MaxValue);
+                GameObject newEnemy = Instantiate(randEnemy, hit.point, Quaternion.identity);
 
-                GameObject newEnemy = Instantiate(randEnemyPrefab, hit.point, Quaternion.identity);
                 EnemyStatManager statManager = newEnemy.GetComponent<EnemyStatManager>();
-
-                // Error check for invalid statManager
                 if (statManager == null)
                 {
                     Destroy(newEnemy);
@@ -106,13 +101,11 @@ public class SimpleInfiniteEnemySpawner : NetworkBehaviour
                 while (statManager.Initialized == false) yield return new WaitForSeconds(0.01f);
 
                 // Scale enemy health with game difficulty as time progresses
-                double healthScalingFactor = (1 + (difficulty / 100));
-                statManager.SetStat(NumericalStats.Health, statManager.GetStat(NumericalStats.Health) * healthScalingFactor);
+                statManager.SetStat(NumericalStats.Health, statManager.GetStat(NumericalStats.Health) * (1 + (difficulty / 100)));
                 statManager.ModifyCurrentHealth(statManager.GetStat(NumericalStats.Health));
 
                 // Small delay between spawns to allow spread out enemy placement
-                float delayScaleFactor = (BaseNumEnemies + (int)(difficulty / 30));
-                yield return new WaitForSeconds(Random.Range(0.3f / delayScaleFactor, 0.75f / delayScaleFactor));
+                yield return new WaitForSeconds(Random.Range(0.3f / (BaseNumEnemies + (int)(difficulty / 30)), 0.75f / (BaseNumEnemies + (int)(difficulty / 30))));
             }
         }
         yield return 0;
@@ -140,13 +133,10 @@ public class SimpleInfiniteEnemySpawner : NetworkBehaviour
     private void SetupDropship(GameObject DropShip, Vector3 Location, Vector3 Goal)
     {
         if (DropShip == null) return;
-
         Vector3 dir = (Goal - Location).normalized;
         DropShip.transform.position = Location + (dir);
-
         Quaternion Rot = Quaternion.LookRotation(dir, Vector3.up);
         DropShip.transform.rotation = Rot;
-
         StartCoroutine(DropshipLocomotion(DropShip, 0.8f));
     }
 
@@ -160,13 +150,10 @@ public class SimpleInfiniteEnemySpawner : NetworkBehaviour
     private void SetupDropShipSpawnEffect(GameObject DropShipEffect, Vector3 Location, Vector3 Goal)
     {
         if (DropShipEffect == null) return;
-
         Vector3 dir = (Goal - Location).normalized;
         DropShipEffect.transform.position = Location + (dir);
-
         Quaternion Rot = Quaternion.LookRotation(dir, Vector3.up);
         DropShipEffect.transform.rotation = Rot;
-
         StartCoroutine(DestroyDropshipSpawnEffect(DropShipEffect));
     }
 
@@ -178,7 +165,6 @@ public class SimpleInfiniteEnemySpawner : NetworkBehaviour
     private IEnumerator DestroyDropshipSpawnEffect(GameObject Effect)
     {
         yield return new WaitForSeconds(2);
-
         Destroy(Effect);
         NetworkServer.Destroy(Effect);
     }
@@ -194,7 +180,6 @@ public class SimpleInfiniteEnemySpawner : NetworkBehaviour
         while (DropShip)
         {
             yield return new WaitForSeconds(0.01f);
-
             if (DropShip != null) DropShip.transform.position += DropShip.transform.forward * speed;
             if (DropShip != null && CheckOutOfBoundsDropShip(DropShip))
             {
@@ -223,12 +208,15 @@ public class SimpleInfiniteEnemySpawner : NetworkBehaviour
     public GameObject GetRandomEnemyPrefab(int maxCost)
     {
         if (EnemyTypes == null || EnemyTypes.Length == 0 || maxCost <= 0) return null;
-
-        int sumChance = GetSumOfChances(EnemyTypes, maxCost);
+        int sumChance = 0;
+        for (int i = 0; i < EnemyTypes.Length; i++)
+        {
+            if (EnemyTypes[i].GetComponent<EnemyStatManager>().GetEnemySpawnCost() > maxCost) continue; //Skip if too expensive
+            sumChance += EnemyTypes[i].GetComponent<EnemyStatManager>().GetEnemySpawnChance();
+        }
+        //Debug.Log("SUM CHANCE: " + sumChance);
 
         int randomNum = Random.Range(0, sumChance);
-
-        // Calculates the correctly "rolled" enemy type
         int count = 0;
         for (int i = 0; i < EnemyTypes.Length; i++)
         {
@@ -237,23 +225,6 @@ public class SimpleInfiniteEnemySpawner : NetworkBehaviour
             if (count > randomNum) return EnemyTypes[i];
         }
         return null;
-    }
-
-    /// <summary>
-    /// Gets the combined total of all enemy spawn chances
-    /// </summary>
-    /// <param name="Enemies"></param>
-    /// <param name="maxCost"></param>
-    /// <returns></returns>
-    private int GetSumOfChances(GameObject[] Enemies, int maxCost)
-    {
-        int sumChance = 0;
-        for (int i = 0; i < EnemyTypes.Length; i++)
-        {
-            if (EnemyTypes[i].GetComponent<EnemyStatManager>().GetEnemySpawnCost() > maxCost) continue; //Skip if too expensive
-            sumChance += EnemyTypes[i].GetComponent<EnemyStatManager>().GetEnemySpawnChance();
-        }
-        return sumChance;
     }
 
     /// <summary>
