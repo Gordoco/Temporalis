@@ -8,6 +8,8 @@ using Mirror;
 /// </summary>
 public class ExplosionCreator : NetworkBehaviour
 {
+    private float damage;
+    private float radius;
     private GameObject owner;
     private List<GameObject> oldHits = new List<GameObject>();
     private AudioClip ExplosionSound;
@@ -21,38 +23,28 @@ public class ExplosionCreator : NetworkBehaviour
     [Server]
     public void InitializeExplosion(GameObject owningObject, Vector3 startLocation, float radius, float damage, bool bPlayer, AudioClip sound = null)
     {
-        InitializeInstanceVariables(owningObject, startLocation, radius, damage, sound);
-
-        AudioCollection.RegisterAudioClip(ExplosionSound);
-        NetworkServer.Spawn(gameObject);
-
-        PlaySound();
-
-        RaycastHit[] hits = Physics.SphereCastAll(startLocation, radius, Vector3.up, 0);
-        for (int i = 0; i < hits.Length; i++)
-        {
-            HandleExplosionHit(hits[i], damage, bPlayer);
-        }
-    }
-
-    private void InitializeInstanceVariables(GameObject owningObject, Vector3 startLocation, float radius, float damage, AudioClip sound = null)
-    {
         owner = owningObject;
+        this.radius = radius;
+        this.damage = damage;
         gameObject.transform.position = startLocation;
         ExplosionSound = sound;
-    }
-
-    private void HandleExplosionHit(RaycastHit hit, float damage, bool bPlayer)
-    {
-        GameObject obj = hit.collider.gameObject;
-        GameObject rootObj = obj.transform.root.gameObject;
-        if (rootObj != owner && !oldHits.Contains(rootObj))
+        AudioCollection.RegisterAudioClip(ExplosionSound);
+        NetworkServer.Spawn(gameObject);
+        PlaySound();
+        RaycastHit[] hits = Physics.SphereCastAll(startLocation, radius, Vector3.up, 0);
+        //Debug.Log(hits.Length);
+        for (int i = 0; i < hits.Length; i++)
         {
-            if (bPlayer && obj.GetComponentInParent<PlayerMove>()) return;
-            if (obj.GetComponentInParent<HitManager>())
+            GameObject rootObj = hits[i].collider.gameObject.transform.root.gameObject;
+            if (rootObj != owningObject && !oldHits.Contains(rootObj))
             {
-                obj.GetComponentInParent<HitManager>().Hit(damage);
-                oldHits.Add(obj.transform.root.gameObject);
+                if (bPlayer && hits[i].collider.gameObject.GetComponentInParent<PlayerMove>()) continue;
+                if (hits[i].collider.gameObject.GetComponentInParent<HitManager>())
+                {
+                    hits[i].collider.gameObject.GetComponentInParent<HitManager>().Hit(damage);
+                    //Debug.Log("HIT SOMONE: " + hits[i].collider.gameObject.transform.root.gameObject.name);
+                    oldHits.Add(hits[i].collider.gameObject.transform.root.gameObject);
+                }
             }
         }
     }

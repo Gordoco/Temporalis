@@ -16,7 +16,6 @@ public class EnemyStatManager : StatManager
     /// Cost of spawning specified enemy, allows fewer, stronger enemies to be spawned.
     /// </summary>
     [SerializeField] private int EnemySpawnCost = 1;
-
     /// <summary>
     /// Chance of spawning specified enemy, allows rarer or stronger enemies to be spawned less often.
     /// </summary>
