@@ -111,7 +111,6 @@ public class MechArmsAttack : AttackManager
     /// Returns a free arm from the set of all active arms, prioritizes arms that are close to their resting position (ie. not travelling to attack)
     /// </summary>
     /// <returns></returns>
-    [Server]
     private ArmManager GetFreeArm()
     {
         float currClosest = float.MaxValue;
