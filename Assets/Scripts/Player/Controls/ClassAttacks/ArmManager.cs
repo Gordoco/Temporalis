@@ -8,13 +8,13 @@ using static UnityEngine.GraphicsBuffer;
 [RequireComponent(typeof(LineRenderer))]
 public class ArmManager : NetworkBehaviour
 {
-    [SyncVar] public Vector3 ExternalMovementLoc = Vector3.zero;
-    [SyncVar] public GameObject ExternalMovementObj;
+    public Vector3 ExternalMovementLoc = Vector3.zero;
+    public GameObject ExternalMovementObj;
 
     [SerializeField] private float ambientRange = 1f;
 
-    [SyncVar] private GameObject Owner;
-    [SyncVar] private PlayerStatManager Manager;
+    private GameObject Owner;
+    private PlayerStatManager Manager;
 
     private bool bActive = false;
     private bool bResetting = false;
@@ -25,7 +25,7 @@ public class ArmManager : NetworkBehaviour
 
     private const float APPROXIMATE_EQUAL_DIST = 1f;
 
-    [SyncVar] private GameObject HomeLocation;
+    private GameObject HomeLocation;
 
     private float normalRadius = 0;
 
@@ -68,9 +68,16 @@ public class ArmManager : NetworkBehaviour
         bActive = true;
         HomeLocation = homeLoc;
         Owner = owner;
+        SetClientOwner(Owner);
         Manager = owner.GetComponent<PlayerStatManager>();
         normalRadius = Vector3.Distance(transform.position, Owner.transform.position);
         if (!Manager) Debug.LogError("ERROR - [ArmManager.cs - Attempted to initialize an arm on non-player]");
+    }
+
+    [ClientRpc]
+    private void SetClientOwner(GameObject owner)
+    {
+        Owner = owner;
     }
 
     private float GetTravelSpeed()
