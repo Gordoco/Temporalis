@@ -31,6 +31,9 @@ public abstract class EnemyController : NetworkBehaviour
     private GameObject Player;
 
     private bool bInRange = false;
+    private bool bControlled = false;
+
+    private Vector3 ControlledForce;
 
     // Start is called before the first frame update
     protected virtual void Start()
@@ -76,13 +79,36 @@ public abstract class EnemyController : NetworkBehaviour
         return true;
     }
 
+    [Server]
+    public void TakeControlOfEnemy(Vector3 controlledForce)
+    {
+        //controller.enabled = false;
+        if (agent) agent.enabled = false;
+        ControlledForce = controlledForce;
+        bControlled = true;
+    }
+
+    [Server]
+    public void ReturnControlOfEnemy()
+    {
+        //controller.enabled = true;
+        if (agent) agent.enabled = true;
+        ControlledForce = Vector3.zero;
+        bControlled = false;
+    }
+
     /// <summary>
     /// Core Logic loop for NPC Agents
     /// </summary>
     void Update()
     {
+        if (bControlled)
+        {
+            controller.Move(ControlledForce * Time.deltaTime);
+        }
+
         if (!isServer) return;
-        if (!controller.enabled) return;
+        if (!controller.enabled || !agent.enabled) return;
 
         if (!Player) Player = GetRandomPlayer();
         if (!ValidatePlayer(Player)) return;

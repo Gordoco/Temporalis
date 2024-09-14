@@ -11,10 +11,17 @@ public class HealthBarUpdater : MonoBehaviour
     [SerializeField] private StatManager manager;
     [SerializeField] private TMP_Text text;
     [SerializeField] private bool bEnemy = false;
+    [SerializeField] private Image fill;
+
+    [SerializeField] private Color hpColor;
+    [SerializeField] private Color shieldColor;
 
     // Update is called once per frame
     void Update()
     {
+        if (manager.GetShield() > 0) fill.color = shieldColor;
+        else fill.color = hpColor;
+
         if (!manager.CheckReady()) return;
 
         SetSlider();
@@ -44,7 +51,7 @@ public class HealthBarUpdater : MonoBehaviour
     /// </summary>
     private void SetDisplayText()
     {
-        if (text) text.text = (int)manager.GetHealth() + "/" + (int)manager.GetStat(NumericalStats.Health);
+        if (text) text.text = (int)manager.GetHealth() + (int)manager.GetShield() + "/" + (int)manager.GetStat(NumericalStats.Health);
     }
 
     /// <summary>

@@ -245,6 +245,9 @@ MonoBehaviour:
   manager: {fileID: 0}
   text: {fileID: 0}
   bEnemy: 1
+  fill: {fileID: 6769684974412374277}
+  hpColor: {r: 1, g: 0, b: 0, a: 1}
+  shieldColor: {r: 0, g: 1, b: 0.9003706, a: 1}
 --- !u!114 &1986488994903722800 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3687905193769816575, guid: 8335bd2e35e11194ca8ae3a7b865159a, type: 3}

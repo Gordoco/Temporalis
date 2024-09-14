@@ -61,6 +61,11 @@ public abstract class StatManager : NetworkBehaviour
     /// </summary>
     [SyncVar] private double Health;
 
+    /// <summary>
+    /// double value representing temporary entity shields
+    /// </summary>
+    [SyncVar] private double Shield;
+
     [SyncVar] public bool Initialized = false;
 
     // Editor value
@@ -117,6 +122,28 @@ public abstract class StatManager : NetworkBehaviour
         return GetCombinedValueFromItems(stat);
     }
 
+    Coroutine resetCoroutine;
+    /// <summary>
+    /// Adds temporary shields for a specified number of seconds. Subsequent calls will overwrite previous shields.
+    /// </summary>
+    /// <param name="val"></param>
+    /// <param name="time"></param>
+    [Server]
+    public void AddShield(double val, float time)
+    {
+        if (resetCoroutine != null) StopCoroutine(resetCoroutine);
+        Shield = val;
+        resetCoroutine = StartCoroutine(ResetShields(time));
+    }
+
+    public double GetShield() { return Shield; }
+
+    private IEnumerator ResetShields(float time)
+    {
+        yield return new WaitForSeconds(time);
+        Shield = 0;
+    }
+ 
     /// <summary>
     /// Will be true after recently having its health stat modified
     /// </summary>
@@ -177,6 +204,9 @@ public abstract class StatManager : NetworkBehaviour
     public void DealDamage(double Damage)
     {
         //Debug.Log("DAMAGED");
+        Shield -= Damage;
+        if (Shield >= 0) return;
+        else Damage = -1 * Shield;
         Health -= Damage;
         ShouldShowHP = true;
         if (showHPRoutine != null) StopCoroutine(showHPRoutine);

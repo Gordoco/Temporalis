@@ -1,12 +1,15 @@
 using Mirror;
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
 using UnityEngine;
+using static UnityEngine.GraphicsBuffer;
 
 [RequireComponent(typeof(LineRenderer))]
 public class ArmManager : NetworkBehaviour
 {
-    public Vector3 ExternalMovementObj = Vector3.zero;
+    public Vector3 ExternalMovementLoc = Vector3.zero;
+    public GameObject ExternalMovementObj;
 
     [SerializeField] private float ambientRange = 1f;
 
@@ -18,10 +21,13 @@ public class ArmManager : NetworkBehaviour
     private bool bAttacking = false;
     private bool bCanAttack = true;
     private bool bGrappled = false;
+    private bool bBeyblade = false;
 
     private const float APPROXIMATE_EQUAL_DIST = 1f;
 
     private GameObject HomeLocation;
+
+    private float normalRadius = 0;
 
     public bool GetActive()
     {
@@ -49,6 +55,13 @@ public class ArmManager : NetworkBehaviour
         bGrappled = false;
     }
 
+    public void ToggleBeyblade()
+    {
+        bBeyblade = !bBeyblade;
+        ExternalMovementLoc = Vector3.zero;
+        currRotation = Random.Range(0, 2 * Mathf.PI);
+    }
+
     [Server]
     public void Init(GameObject owner, GameObject homeLoc)
     {
@@ -56,6 +69,7 @@ public class ArmManager : NetworkBehaviour
         HomeLocation = homeLoc;
         Owner = owner;
         Manager = owner.GetComponent<PlayerStatManager>();
+        normalRadius = Vector3.Distance(transform.position, Owner.transform.position);
         if (!Manager) Debug.LogError("ERROR - [ArmManager.cs - Attempted to initialize an arm on non-player]");
     }
 
@@ -96,6 +110,8 @@ public class ArmManager : NetworkBehaviour
         }
     }
 
+    float currRotation = 0;
+    float armCooldown = 0;
     private void Update()
     {
         if (!isServer) return;
@@ -119,15 +135,45 @@ public class ArmManager : NetworkBehaviour
                 AmbientMovement();
             }
         }
-        else if (ExternalMovementObj != Vector3.zero)
+        else if (ExternalMovementLoc != Vector3.zero && ExternalMovementObj != null)
         {
-            MoveInDirection(ExternalMovementObj - transform.position, ExternalMovementObj);
-            if (transform.position == ExternalMovementObj)//Vector3.Distance(transform.position, ExternalMovementObj) < APPROXIMATE_EQUAL_DIST)
+            Vector3 ExternalPoint = ExternalMovementObj.transform.position + ExternalMovementLoc;
+            MoveInDirection(ExternalPoint - transform.position, ExternalPoint);
+            if (transform.position == ExternalPoint)//Vector3.Distance(transform.position, ExternalMovementObj) < APPROXIMATE_EQUAL_DIST)
             {
-                ExternalMovementObj = Vector3.zero;
                 bGrappled = true;
             }
         }
+        else if (bBeyblade)
+        {
+            transform.parent = null;
+            transform.position = GetInitLocation();
+            transform.parent = Owner.transform;
+            transform.localPosition = rotateAboutOwner(currRotation);
+            currRotation += Time.deltaTime * (float)Manager.GetStat(NumericalStats.AttackSpeed);
+        }
+        else
+        {
+            currRotation = 0;
+        }
+    }
+
+    /// <summary>
+    /// Object space orbit of owner
+    /// </summary>
+    /// <param name="angleInRads"></param>
+    /// <returns></returns>
+    Vector3 rotateAboutOwner(float angleInRads)
+    {
+        float dist = normalRadius * 3;
+        float sin = Mathf.Sin(angleInRads);
+        float cos = Mathf.Cos(angleInRads);
+        Vector3 newPos = new Vector3(
+            dist * cos,
+            0,
+            dist * sin
+            );
+        return newPos;
     }
 
     private void MakeAttack(GameObject Enemy)
@@ -176,18 +222,31 @@ public class ArmManager : NetworkBehaviour
     {
         Vector3 dir = GetInitLocation() - transform.position;
         MoveInDirection(dir, GetInitLocation());
-        if (transform.position == GetInitLocation())//Mathf.Abs(Vector3.Distance(transform.position, GetInitLocation())) < APPROXIMATE_EQUAL_DIST)
+        if (transform.position == GetInitLocation() && armCooldown >= (1/(float)Manager.GetStat(NumericalStats.AttackSpeed)))//Mathf.Abs(Vector3.Distance(transform.position, GetInitLocation())) < APPROXIMATE_EQUAL_DIST)
         {
             transform.position = GetInitLocation();
             bResetting = false;
             bCanAttack = true;
             transform.parent = Owner.transform;
+            armCooldown = 0;
         }
+        armCooldown += Time.deltaTime;
     }
 
     private GameObject CheckForEnemies()
     {
+        MechArmsAttack attackHandler = Owner.GetComponent<MechArmsAttack>();
+        if (attackHandler != null)
+        {
+            GameObject enemy = attackHandler.GetEnemyFocus();
+            if (enemy && enemy.GetComponent<EnemyStatManager>() && enemy.GetComponent<EnemyStatManager>().GetHealth() > 0)
+            {
+                return enemy;
+            }
+        }
+
         RaycastHit[] hits = Physics.SphereCastAll(transform.position, (float)Manager.GetStat(NumericalStats.Range), Vector3.up);
+
         float currDist = float.MaxValue;
         GameObject currClosest = null;
         for (int i = 0; i < hits.Length; i++)

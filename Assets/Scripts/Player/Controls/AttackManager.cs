@@ -14,21 +14,30 @@ public abstract class AttackManager : NetworkBehaviour
     [SerializeField] private GameObject StunnedParticleEffect;
 
     // Editor network values
+    [SerializeField, SyncVar] protected bool bIgnorePrimaryCooldown = false;
     [SerializeField, SyncVar] protected bool PrimaryFullAuto = true;
     [SerializeField, SyncVar] protected bool SecondaryFullAuto = false;
+    [SerializeField, SyncVar] protected bool bIgnoreAbility1Cooldown = false;
     [SerializeField, SyncVar] protected bool Ability1FullAuto = false;
     [SerializeField, SyncVar] protected bool Ability2FullAuto = false;
     [SerializeField, SyncVar] protected bool Ability3FullAuto = false;
     [SerializeField, SyncVar] protected bool Ability4FullAuto = false;
 
     // Local network values
-    [SyncVar] private bool bCanAttack = true;
-    [SyncVar] private bool bCanSecondary = true;
-    [SyncVar] private bool bCanAbility1 = true;
-    [SyncVar] private bool bCanAbility2 = true;
-    [SyncVar] private bool bCanAbility3 = true;
-    [SyncVar] private bool bCanAbility4 = true;
-    [SyncVar] private bool bEnabled = true;
+    [SyncVar] protected bool bCanAttack = true;
+    [SyncVar] protected bool bCanSecondary = true;
+    [SyncVar] protected bool bCanAbility1 = true;
+    [SyncVar] protected bool bCanAbility2 = true;
+    [SyncVar] protected bool bCanAbility3 = true;
+    [SyncVar] protected bool bCanAbility4 = true;
+    [SyncVar] protected bool bEnabled = true;
+
+    protected Coroutine PrimaryCooldownCoroutine;
+    protected Coroutine SecondaryCooldownCoroutine;
+    protected Coroutine Ability1CooldownCoroutine;
+    protected Coroutine Ability2CooldownCoroutine;
+    protected Coroutine Ability3CooldownCoroutine;
+    protected Coroutine Ability4CooldownCoroutine;
 
     // Local values
     private GameObject PauseMenu;
@@ -90,10 +99,10 @@ public abstract class AttackManager : NetworkBehaviour
         bool primaryInput = PrimaryFullAuto ? Input.GetButton("PrimaryAttack") : Input.GetButtonDown("PrimaryAttack");
         if (primaryInput && bCanAttack)
         {
-            bCanAttack = false;
+            if (!bIgnorePrimaryCooldown) bCanAttack = false;
             if (isClient) OnServerPrimaryAttack();
             else if (isServer) OnClientPrimaryAttack();
-            ServerStartPrimaryAttackCooldown();
+            if (!bIgnorePrimaryCooldown) ServerStartPrimaryAttackCooldown();
         }
 
         //Default: RMB
@@ -113,7 +122,7 @@ public abstract class AttackManager : NetworkBehaviour
             bCanAbility1 = false;
             if (isClient) OnServerAbility1();
             else if (isServer) OnClientAbility1();
-            ServerStartAbility1Cooldown();
+            if (!bIgnoreAbility1Cooldown) ServerStartAbility1Cooldown();
         }
 
         //Default: E
@@ -187,7 +196,7 @@ public abstract class AttackManager : NetworkBehaviour
     private void ServerStartPrimaryAttackCooldown()
     {
         bCanAttack = false;
-        StartCoroutine(PrimaryAttackCooldown());
+        PrimaryCooldownCoroutine = StartCoroutine(PrimaryAttackCooldown());
     }
 
     private IEnumerator PrimaryAttackCooldown()
@@ -209,7 +218,7 @@ public abstract class AttackManager : NetworkBehaviour
     private void ServerStartSecondaryAttackCooldown()
     {
         bCanSecondary = false;
-        StartCoroutine(SecondaryAttackCooldown());
+        SecondaryCooldownCoroutine = StartCoroutine(SecondaryAttackCooldown());
     }
 
     private IEnumerator SecondaryAttackCooldown()
@@ -231,7 +240,7 @@ public abstract class AttackManager : NetworkBehaviour
     private void ServerStartAbility1Cooldown()
     {
         bCanAbility1 = false;
-        StartCoroutine(Ability1Cooldown());
+        Ability1CooldownCoroutine = StartCoroutine(Ability1Cooldown());
     }
 
     private IEnumerator Ability1Cooldown()
@@ -253,7 +262,7 @@ public abstract class AttackManager : NetworkBehaviour
     private void ServerStartAbility2Cooldown()
     {
         bCanAbility2 = false;
-        StartCoroutine(Ability2Cooldown());
+        Ability2CooldownCoroutine = StartCoroutine(Ability2Cooldown());
     }
 
     private IEnumerator Ability2Cooldown()
@@ -275,7 +284,7 @@ public abstract class AttackManager : NetworkBehaviour
     private void ServerStartAbility3Cooldown()
     {
         bCanAbility3 = false;
-        StartCoroutine(Ability3Cooldown());
+        Ability3CooldownCoroutine = StartCoroutine(Ability3Cooldown());
     }
 
     private IEnumerator Ability3Cooldown()
@@ -297,7 +306,7 @@ public abstract class AttackManager : NetworkBehaviour
     private void ServerStartAbility4Cooldown()
     {
         bCanAbility4 = false;
-        StartCoroutine(Ability4Cooldown());
+        Ability4CooldownCoroutine = StartCoroutine(Ability4Cooldown());
     }
 
     private IEnumerator Ability4Cooldown()

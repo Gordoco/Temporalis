@@ -145,6 +145,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  Initialized: 0
   initStats:
   - stat: 0
     val: 1
@@ -182,7 +183,6 @@ MonoBehaviour:
     val: 1
   - stat: 17
     val: 1
-  Initialized: 0
   ItemWeightMult: 1
   EnemySpawnCost: 1
   EnemySpawnChance: 10

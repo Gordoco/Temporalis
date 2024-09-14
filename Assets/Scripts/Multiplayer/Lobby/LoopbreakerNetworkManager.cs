@@ -9,6 +9,7 @@ public class LoopbreakerNetworkManager : NetworkManager
 {
     [SerializeField] private PlayerObjectController GamePlayerPrefab;
     [SerializeField] private Vector3 StartLocation = Vector3.zero;
+    [SerializeField] private GameObject AudioManager;
 
     public List<PlayerObjectController> GamePlayers { get; } = new List<PlayerObjectController>();
     private List<NetworkConnectionToClient> Clients = new List<NetworkConnectionToClient>();
@@ -21,6 +22,15 @@ public class LoopbreakerNetworkManager : NetworkManager
         base.Awake();
         if (StartLocation == Vector3.zero)
             StartLocation = new Vector3(Random.Range(-20f, 20f), 100, Random.Range(-20.0f, 20.0f));
+    }
+
+    public override void Start()
+    {
+        base.Start();
+        if (AudioManager)
+        {
+            AudioManager.SetActive(true);
+        }
     }
 
     [Server]

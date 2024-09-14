@@ -3,10 +3,13 @@ using Mirror;
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(LineRenderer))]
 public class MechArmsAttack : AttackManager
 {
     [SerializeField] GameObject[] ArmSpawnLocations;
     [SerializeField] GameObject ArmPrefab;
+    [SerializeField] GameObject SpotterLocation;
+    [SerializeField] GameObject Bubble;
 
     /// <summary>
     /// Represents percent that attack speed has to increase to manifest another arm
@@ -18,17 +21,27 @@ public class MechArmsAttack : AttackManager
     private double lastAttackSpeed = -1;
     private double baseAttackSpeed = -1;
 
+    private double primaryBoostFactor = 1;
+
     private bool bSwinging = false;
+
+    [SyncVar] private GameObject EnemyFocus;
+
+    public GameObject GetEnemyFocus()
+    {
+        return EnemyFocus;
+    }
 
     protected override void Start()
     {
         base.Start();
+        GetComponent<LineRenderer>().material.color = Color.green;
         if (isServer)
         {
             lastAttackSpeed = statManager.GetStat(NumericalStats.AttackSpeed);
             baseAttackSpeed = lastAttackSpeed;
             //Start With 1 Arm
-            for (int i = 0; i < 1/*ArmSpawnLocations.Length*/; i++)
+            for (int i = 0; i < 2/*ArmSpawnLocations.Length*/; i++)
             {
                 AddArm();
             }
@@ -59,6 +72,11 @@ public class MechArmsAttack : AttackManager
                 swingArm = null;
                 GetComponent<PlayerMove>().Server_StopSwing();
             }
+        }
+
+        if (!Input.GetButton("PrimaryAttack"))
+        {
+            GetComponent<LineRenderer>().enabled = false;
         }
         base.Update();
     }
@@ -107,29 +125,116 @@ public class MechArmsAttack : AttackManager
     protected override void OnPrimaryAttack()
     {
         //Dual function, Spotter (double damage and priority target for arms) and Simple rifle
+        GameObject Camera = null;
+        for (int i = 0; i < gameObject.transform.childCount; i++) if (gameObject.transform.GetChild(i).tag == "MainCamera") { Camera = gameObject.transform.GetChild(i).gameObject; break; }
+        RaycastHit hit;
+        Physics.Raycast(Camera.transform.position, Camera.transform.forward, out hit, (float)statManager.GetStat(NumericalStats.Range), LayerMask.GetMask("Default"));
 
+        if (hit.collider)
+        {
+            GetComponent<LineRenderer>().SetPosition(1, hit.point);
+            if (isServer && hit.collider.gameObject.GetComponent<EnemyStatManager>())
+            {
+                hit.collider.gameObject.GetComponent<EnemyStatManager>().DealDamage(statManager.GetStat(NumericalStats.SecondaryDamage) * Time.deltaTime * primaryBoostFactor);
+                EnemyFocus = hit.collider.gameObject;
+            }
+        }
+        else
+        {
+            EnemyFocus = null;
+            GetComponent<LineRenderer>().SetPosition(1, Camera.transform.position + (Camera.transform.forward * (float)statManager.GetStat(NumericalStats.Range)));
+        }
+        if (SpotterLocation) GetComponent<LineRenderer>().SetPosition(0, SpotterLocation.transform.position);
+        GetComponent<LineRenderer>().enabled = true;
     }
 
     //RMB
-    private ArmManager swingArm = null;
     protected override void OnSecondaryAttack()
     {
         //Primary Toggle
+        GetComponent<LineRenderer>().material.color = Color.red;
+        StartCoroutine(ResetSecondaryBoost());
+        if (!isServer) return;
+        primaryBoostFactor = 10;
+    }
+
+    private IEnumerator ResetSecondaryBoost()
+    {
+        yield return new WaitForSeconds(30/(float)statManager.GetStat(NumericalStats.SecondaryCooldown));
+        GetComponent<LineRenderer>().material.color = Color.green;
+        if (!isServer) yield return 0;
+        primaryBoostFactor = 1;
     }
 
     //Q
     protected override void OnAbility1()
     {
         //1 Arm for pull effect
+        if (!isServer) return;
+
+        ArmManager arm = GetFreeArm();
+
+        GameObject Camera = null;
+        for (int i = 0; i < gameObject.transform.childCount; i++) if (gameObject.transform.GetChild(i).tag == "MainCamera") { Camera = gameObject.transform.GetChild(i).gameObject; break; }
+        RaycastHit hit;
+        Physics.Raycast(Camera.transform.position, Camera.transform.forward, out hit, (float)statManager.GetStat(NumericalStats.Range) * 1.3f, LayerMask.GetMask("Default"));
+        if (arm && hit.collider && hit.collider.gameObject.GetComponent<EnemyStatManager>())
+        {
+            //Send arm to enemy
+            arm.ExternalMovementObj = hit.collider.gameObject;
+            arm.ExternalMovementLoc = hit.collider.transform.InverseTransformPoint(hit.point);
+
+            EnemyController controller = hit.collider.gameObject.GetComponent<EnemyController>();
+            controller.TakeControlOfEnemy((transform.position - hit.point) * 1.25f);
+            StartCoroutine(ReleaseEnemy(controller, arm));
+        }
+        else
+        {
+            bCanAbility1 = true;
+            if (arm)
+            {
+                arm.CallForReset();
+                arm.ToggleActive(true);
+            }
+            bIgnoreAbility1Cooldown = true;
+            StartCoroutine(FixFailedAbility1());
+        }
+    }
+
+    private IEnumerator ReleaseEnemy(EnemyController controller, ArmManager arm)
+    {
+        yield return new WaitForSeconds(1f);
+        if (controller) controller.ReturnControlOfEnemy();
+        arm.CallForReset();
+        arm.ToggleActive(true);
+    }
+
+    private IEnumerator FixFailedAbility1()
+    {
+        yield return new WaitForEndOfFrame();
+        bIgnoreAbility1Cooldown = false;
     }
 
     //E
     protected override void OnAbility2()
     {
         //1 Arm for temp Shield
+        Bubble.SetActive(true);
+        if (isServer)
+        {
+            statManager.AddShield(statManager.GetStat(NumericalStats.Ability2Damage), 5);
+        }
+        StartCoroutine(FinishAbility2());
+    }
+
+    private IEnumerator FinishAbility2()
+    {
+        yield return new WaitForSeconds(5);
+        Bubble.SetActive(false);
     }
 
     //L-CTRL
+    private ArmManager swingArm = null;
     protected override void OnAbility3()
     {
         //1 Arm for Grappling hook, allowing swinging
@@ -140,20 +245,22 @@ public class MechArmsAttack : AttackManager
                 swingArm = GetFreeArm();
                 if (swingArm != null)
                 {
-                    //Reset
-                    //arm.ToggleActive(true);
                     GameObject Camera = null;
                     for (int i = 0; i < gameObject.transform.childCount; i++) if (gameObject.transform.GetChild(i).tag == "MainCamera") { Camera = gameObject.transform.GetChild(i).gameObject; break; }
                     RaycastHit hit;
-                    Physics.Raycast(transform.position, Camera.transform.forward, out hit, int.MaxValue);
-                    if (Vector3.Distance(transform.position, hit.point) > GetComponent<PlayerStatManager>().GetStat(NumericalStats.Range) * 1.5)
+                    Physics.Raycast(Camera.transform.position, Camera.transform.forward, out hit, int.MaxValue, LayerMask.GetMask("Default"));
+                    if (Vector3.Distance(Camera.transform.position, hit.point) > GetComponent<PlayerStatManager>().GetStat(NumericalStats.Range) * 1.5)
                     {
                         swingArm.ToggleActive(true);
                         swingArm = null;
                     }
                     else
                     {
-                        swingArm.ExternalMovementObj = hit.point;
+                        if (!hit.collider) { swingArm.CallForReset(); swingArm.ToggleActive(true); return; }
+                        Vector3 localHit = hit.collider.transform.root.InverseTransformPoint(hit.point);
+                        Debug.DrawLine(transform.position, hit.collider.transform.root.position + localHit, Color.blue, 15);
+                        swingArm.ExternalMovementLoc = localHit;
+                        swingArm.ExternalMovementObj = hit.collider.transform.root.gameObject;
                         bSwinging = true;
                     }
                 }
@@ -169,8 +276,53 @@ public class MechArmsAttack : AttackManager
     }
 
     //R
+    List<ArmManager> armList;
     protected override void OnAbility4()
     {
         //Bayblade using all remaining arms (ie. use after other abilities)
+        if (isServer)
+        {
+            armList = new List<ArmManager>();
+            for (int i = 0; i < arms.Count; i++)
+            {
+                ArmManager manager = GetFreeArm();
+                if (manager == null) break;
+                else armList.Add(manager);
+                manager.ToggleBeyblade();
+            }
+            Coroutine damageRoutine = StartCoroutine(Ability4DamageCheck());
+            StartCoroutine(FinishAbility4(damageRoutine));
+        }
+    }
+
+    private IEnumerator FinishAbility4(Coroutine DamageRoutine)
+    {
+        yield return new WaitForSeconds(25/(float)statManager.GetStat(NumericalStats.Ability4Cooldown));
+        if (DamageRoutine != null) StopCoroutine(DamageRoutine);
+        foreach (ArmManager manager in armList)
+        {
+            manager.ToggleBeyblade();
+            manager.CallForReset();
+            manager.ToggleActive(true);
+        }
+        armList.Clear();
+    }
+
+    private IEnumerator Ability4DamageCheck()
+    {
+        if (!isServer) yield return 0;
+        while (true)
+        {
+            yield return new WaitForSeconds(1 / ((float)statManager.GetStat(NumericalStats.AttackSpeed) * armList.Count));
+            RaycastHit[] hits = Physics.SphereCastAll(transform.position, Vector3.Distance(armList[0].transform.position, transform.position) + 1f, Vector3.up, 0.01f);
+
+            foreach (RaycastHit hit in hits)
+            {
+                if (hit.collider && hit.collider.gameObject.GetComponent<EnemyStatManager>())
+                {
+                    hit.collider.gameObject.GetComponent<EnemyStatManager>().DealDamage(statManager.GetStat(NumericalStats.Ability4Damage));
+                }
+            }
+        }
     }
 }
