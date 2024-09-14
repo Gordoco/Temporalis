@@ -67,24 +67,10 @@ public class ArmManager : NetworkBehaviour
     {
         bActive = true;
         HomeLocation = homeLoc;
-        SetClientHomeLoc(homeLoc);
         Owner = owner;
-        SetClientOwner(Owner);
         Manager = owner.GetComponent<PlayerStatManager>();
         normalRadius = Vector3.Distance(transform.position, Owner.transform.position);
         if (!Manager) Debug.LogError("ERROR - [ArmManager.cs - Attempted to initialize an arm on non-player]");
-    }
-
-    [ClientRpc]
-    private void SetClientOwner(GameObject owner)
-    {
-        Owner = owner;
-    }
-
-    [ClientRpc]
-    private void SetClientHomeLoc(GameObject homeLoc)
-    {
-        HomeLocation = homeLoc;
     }
 
     private float GetTravelSpeed()
@@ -117,11 +103,19 @@ public class ArmManager : NetworkBehaviour
 
     private void LateUpdate()
     {
-        if (Owner)
+        if (Owner && isServer)
         {     
             GetComponent<LineRenderer>().SetPosition(0, transform.position);
             GetComponent<LineRenderer>().SetPosition(1, Owner.transform.position);
+            UpdateClientLineRenderer(transform.position, Owner.transform.position)
         }
+    }
+
+    [ClientRpc]
+    private void UpdateClientLineRenderer(Vector3 one, Vector3 two)
+    {
+        GetComponent<LineRenderer>().SetPosition(0, one);
+        GetComponent<LineRenderer>().SetPosition(1, two);
     }
 
     float currRotation = 0;
