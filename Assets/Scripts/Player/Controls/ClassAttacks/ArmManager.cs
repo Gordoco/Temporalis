@@ -67,6 +67,7 @@ public class ArmManager : NetworkBehaviour
     {
         bActive = true;
         HomeLocation = homeLoc;
+        SetClientHomeLoc(homeLoc);
         Owner = owner;
         SetClientOwner(Owner);
         Manager = owner.GetComponent<PlayerStatManager>();
@@ -78,6 +79,12 @@ public class ArmManager : NetworkBehaviour
     private void SetClientOwner(GameObject owner)
     {
         Owner = owner;
+    }
+
+    [ClientRpc]
+    private void SetClientHomeLoc(GameObject homeLoc)
+    {
+        HomeLocation = homeLoc;
     }
 
     private float GetTravelSpeed()
