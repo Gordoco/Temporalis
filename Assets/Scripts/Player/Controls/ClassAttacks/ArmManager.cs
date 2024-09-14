@@ -62,7 +62,6 @@ public class ArmManager : NetworkBehaviour
         currRotation = Random.Range(0, 2 * Mathf.PI);
     }
 
-    [Server]
     public void Init(GameObject owner, GameObject homeLoc)
     {
         bActive = true;
@@ -88,7 +87,6 @@ public class ArmManager : NetworkBehaviour
     /// Applies a movement in the supplied direction at a consistent speed dictated by travelSpeed. Optionally adds a rotation in travel direction.
     /// </summary>
     /// <param name="direction">Vector to apply movement in, will be normalized</param>
-    [Server]
     private void MoveInDirection(Vector3 direction, Vector3 goal)
     {
         transform.parent = null;
@@ -103,11 +101,11 @@ public class ArmManager : NetworkBehaviour
 
     private void LateUpdate()
     {
-        if (Owner && isServer)
+        if (Owner)
         {     
             GetComponent<LineRenderer>().SetPosition(0, transform.position);
             GetComponent<LineRenderer>().SetPosition(1, Owner.transform.position);
-            UpdateClientLineRenderer(transform.position, Owner.transform.position);
+            //UpdateClientLineRenderer(transform.position, Owner.transform.position);
         }
     }
 
@@ -122,7 +120,7 @@ public class ArmManager : NetworkBehaviour
     float armCooldown = 0;
     private void Update()
     {
-        if (!isServer) return;
+        //if (!isServer) return;
         if (bActive)
         {
             GameObject Enemy = CheckForEnemies();
@@ -204,7 +202,7 @@ public class ArmManager : NetworkBehaviour
         MoveInDirection(dir, EnemyToAttack.transform.position);
         if (transform.position == EnemyToAttack.transform.position)//Mathf.Abs(Vector3.Distance(transform.position, EnemyToAttack.transform.position)) < APPROXIMATE_EQUAL_DIST)
         {
-            EnemyToAttack.GetComponent<EnemyStatManager>().DealDamage(Manager.GetStat(NumericalStats.PrimaryDamage));
+            if (isServer) EnemyToAttack.GetComponent<EnemyStatManager>().DealDamage(Manager.GetStat(NumericalStats.PrimaryDamage));
             FinishedAttack();
         }
     }

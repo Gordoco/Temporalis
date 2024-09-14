@@ -84,6 +84,7 @@ public class MechArmsAttack : AttackManager
     /// <summary>
     /// Creates another of 8 possible arms for the character and allocates a spot for them in the arm array and in local player space
     /// </summary>
+    [Server]
     private void AddArm()
     {
         if (arms.Count >= 8) return;
@@ -92,6 +93,14 @@ public class MechArmsAttack : AttackManager
         arm.GetComponent<ArmManager>().Init(gameObject, ArmSpawnLocations[arms.Count]);
         arms.Add(arm);
         NetworkServer.Spawn(arm);
+        ClientUpdateArm(arm, arms.Count - 1);
+    }
+
+    [ClientRpc]
+    private void ClientUpdateArm(GameObject arm, int armNum)
+    {
+        arm.transform.SetPositionAndRotation(ArmSpawnLocations[armNum].transform.position, transform.rotation);
+        arm.GetComponent<ArmManager>().Init(gameObject, ArmSpawnLocations[armNum]);
     }
 
     /// <summary>
