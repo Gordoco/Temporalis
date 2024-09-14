@@ -249,7 +249,8 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  ExternalMovementObj: {x: 0, y: 0, z: 0}
+  ExternalMovementLoc: {x: 0, y: 0, z: 0}
+  ExternalMovementObj: {fileID: 0}
   ambientRange: 0.5
 --- !u!114 &-8995882756083478851
 MonoBehaviour:

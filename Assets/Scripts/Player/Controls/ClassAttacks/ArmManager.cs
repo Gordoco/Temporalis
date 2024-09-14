@@ -107,7 +107,7 @@ public class ArmManager : NetworkBehaviour
         {     
             GetComponent<LineRenderer>().SetPosition(0, transform.position);
             GetComponent<LineRenderer>().SetPosition(1, Owner.transform.position);
-            UpdateClientLineRenderer(transform.position, Owner.transform.position)
+            UpdateClientLineRenderer(transform.position, Owner.transform.position);
         }
     }
 
