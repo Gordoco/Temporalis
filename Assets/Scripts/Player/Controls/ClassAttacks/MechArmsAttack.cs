@@ -297,7 +297,7 @@ public class MechArmsAttack : AttackManager
 
     private IEnumerator FinishAbility4(Coroutine DamageRoutine)
     {
-        yield return new WaitForSeconds(25/(float)statManager.GetStat(NumericalStats.Ability4Cooldown));
+        yield return new WaitForSeconds(5);
         if (DamageRoutine != null) StopCoroutine(DamageRoutine);
         foreach (ArmManager manager in armList)
         {
