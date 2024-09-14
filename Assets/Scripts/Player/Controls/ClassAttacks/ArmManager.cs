@@ -8,13 +8,13 @@ using static UnityEngine.GraphicsBuffer;
 [RequireComponent(typeof(LineRenderer))]
 public class ArmManager : NetworkBehaviour
 {
-    public Vector3 ExternalMovementLoc = Vector3.zero;
-    public GameObject ExternalMovementObj;
+    [SyncVar] public Vector3 ExternalMovementLoc = Vector3.zero;
+    [SyncVar] public GameObject ExternalMovementObj;
 
     [SerializeField] private float ambientRange = 1f;
 
-    private GameObject Owner;
-    private PlayerStatManager Manager;
+    [SyncVar] private GameObject Owner;
+    [SyncVar] private PlayerStatManager Manager;
 
     private bool bActive = false;
     private bool bResetting = false;
@@ -25,7 +25,7 @@ public class ArmManager : NetworkBehaviour
 
     private const float APPROXIMATE_EQUAL_DIST = 1f;
 
-    private GameObject HomeLocation;
+    [SyncVar] private GameObject HomeLocation;
 
     private float normalRadius = 0;
 
