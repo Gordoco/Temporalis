@@ -77,8 +77,15 @@ public class MechArmsAttack : AttackManager
         if (!Input.GetButton("PrimaryAttack"))
         {
             GetComponent<LineRenderer>().enabled = false;
+            ClientToggleOffLineRenderer();
         }
         base.Update();
+    }
+
+    [ClientRpc]
+    private void ClientToggleOffLineRenderer()
+    {
+        GetComponent<LineRenderer>().enabled = false;
     }
 
     /// <summary>
@@ -133,6 +140,7 @@ public class MechArmsAttack : AttackManager
     protected override void OnPrimaryAttack()
     {
         //Dual function, Spotter (double damage and priority target for arms) and Simple rifle
+        if (isClient) Debug.Log("I AM CLIENT AND CLICKING HELP");
         GameObject Camera = null;
         for (int i = 0; i < gameObject.transform.childCount; i++) if (gameObject.transform.GetChild(i).tag == "MainCamera") { Camera = gameObject.transform.GetChild(i).gameObject; break; }
         RaycastHit hit;
