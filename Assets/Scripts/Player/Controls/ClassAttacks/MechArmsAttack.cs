@@ -141,9 +141,9 @@ public class MechArmsAttack : AttackManager
         if (hit.collider)
         {
             GetComponent<LineRenderer>().SetPosition(1, hit.point);
-            if (isServer && hit.collider.gameObject.GetComponent<EnemyStatManager>())
+            if (hit.collider.gameObject.GetComponent<EnemyStatManager>())
             {
-                hit.collider.gameObject.GetComponent<EnemyStatManager>().DealDamage(statManager.GetStat(NumericalStats.SecondaryDamage) * Time.deltaTime * primaryBoostFactor);
+                if (isServer) hit.collider.gameObject.GetComponent<EnemyStatManager>().DealDamage(statManager.GetStat(NumericalStats.SecondaryDamage) * Time.deltaTime * primaryBoostFactor);
                 EnemyFocus = hit.collider.gameObject;
             }
         }
