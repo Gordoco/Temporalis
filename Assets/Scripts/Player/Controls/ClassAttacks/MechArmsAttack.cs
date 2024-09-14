@@ -66,6 +66,7 @@ public class MechArmsAttack : AttackManager
         if (!Input.GetButton("PrimaryAttack"))
         {
             GetComponent<LineRenderer>().enabled = false;
+            if (isServer) PropogateLineRenderer();
         }
 
 
@@ -83,6 +84,12 @@ public class MechArmsAttack : AttackManager
         }
 
         base.Update();
+    }
+
+    [ClientRpc]
+    private void PropogateLineRenderer()
+    {
+        GetComponent<LineRenderer>().enabled = false;
     }
 
     /// <summary>
