@@ -8,20 +8,20 @@ using static UnityEngine.GraphicsBuffer;
 [RequireComponent(typeof(LineRenderer))]
 public class ArmManager : NetworkBehaviour
 {
-    public Vector3 ExternalMovementLoc = Vector3.zero;
-    public GameObject ExternalMovementObj;
+    [SyncVar] public Vector3 ExternalMovementLoc = Vector3.zero;
+    [SyncVar] public GameObject ExternalMovementObj;
 
     [SerializeField] private float ambientRange = 1f;
 
     private GameObject Owner;
     private PlayerStatManager Manager;
 
-    private bool bActive = false;
-    private bool bResetting = false;
-    private bool bAttacking = false;
-    private bool bCanAttack = true;
-    private bool bGrappled = false;
-    private bool bBeyblade = false;
+    [SyncVar] private bool bActive = false;
+    [SyncVar] private bool bResetting = false;
+    [SyncVar] private bool bAttacking = false;
+    [SyncVar] private bool bCanAttack = true;
+    [SyncVar] private bool bGrappled = false;
+    [SyncVar] private bool bBeyblade = false;
 
     private const float APPROXIMATE_EQUAL_DIST = 1f;
 
