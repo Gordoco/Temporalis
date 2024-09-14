@@ -88,11 +88,10 @@ public class MechArmsAttack : AttackManager
     {
         if (arms.Count >= 8) return;
         GameObject arm = Instantiate(ArmPrefab);
-        Debug.Log(arms.Count);
+        NetworkServer.Spawn(arm);
         arm.transform.SetPositionAndRotation(ArmSpawnLocations[arms.Count].transform.position, transform.rotation);
         arm.GetComponent<ArmManager>().Init(gameObject, ArmSpawnLocations[arms.Count]);
         arms.Add(arm);
-        NetworkServer.Spawn(arm);
     }
 
     /// <summary>

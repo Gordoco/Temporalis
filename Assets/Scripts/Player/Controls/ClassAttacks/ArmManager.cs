@@ -114,7 +114,7 @@ public class ArmManager : NetworkBehaviour
     float armCooldown = 0;
     private void Update()
     {
-        //if (!isServer) return;
+        if (!isServer) return;
         if (bActive)
         {
             GameObject Enemy = CheckForEnemies();
@@ -196,7 +196,7 @@ public class ArmManager : NetworkBehaviour
         MoveInDirection(dir, EnemyToAttack.transform.position);
         if (transform.position == EnemyToAttack.transform.position)//Mathf.Abs(Vector3.Distance(transform.position, EnemyToAttack.transform.position)) < APPROXIMATE_EQUAL_DIST)
         {
-            if (isServer) EnemyToAttack.GetComponent<EnemyStatManager>().DealDamage(Manager.GetStat(NumericalStats.PrimaryDamage));
+            EnemyToAttack.GetComponent<EnemyStatManager>().DealDamage(Manager.GetStat(NumericalStats.PrimaryDamage));
             FinishedAttack();
         }
     }
