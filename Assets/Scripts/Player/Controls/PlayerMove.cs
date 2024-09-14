@@ -66,11 +66,9 @@ public class PlayerMove : NetworkBehaviour
         bInputDisabled = false;
     }
 
-    [Server]
     public void Server_Swing(Vector3 center, float radius)
     {
-        Client_Swing(center, radius);
-        if (!isClient) Swing(center, radius);
+        Swing(center, radius);
     }
 
     [ClientRpc]

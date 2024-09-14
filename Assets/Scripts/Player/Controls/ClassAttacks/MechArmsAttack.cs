@@ -284,7 +284,7 @@ public class MechArmsAttack : AttackManager
         }
         else
         {
-            if (isServer && swingArm.GetGrappled())
+            if (swingArm.GetGrappled())
             {
                 GetComponent<PlayerMove>().Server_Swing(swingArm.transform.position, Vector3.Distance(transform.position, swingArm.transform.position));
             }
