@@ -70,9 +70,16 @@ public class PlayerMove : NetworkBehaviour
     public void Server_Swing(Vector3 center, float radius)
     {
         Client_Swing(center, radius);
+        if (!isClient) Swing(center, radius);
     }
 
+    [ClientRpc]
     private void Client_Swing(Vector3 center, float radius)
+    {
+        Swing(center, radius);
+    }
+
+    private void Swing(Vector3 center, float radius)
     {
         bInputDisabled = true;
         this.center = center;

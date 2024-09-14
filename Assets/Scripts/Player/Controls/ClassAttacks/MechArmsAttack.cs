@@ -268,7 +268,7 @@ public class MechArmsAttack : AttackManager
                 {
                     if (!hit.collider) { swingArm.CallForReset(); swingArm.ToggleActive(true); return; }
                     Vector3 localHit = hit.collider.transform.root.InverseTransformPoint(hit.point);
-                    Debug.DrawLine(transform.position, hit.collider.transform.root.position + localHit, Color.blue, 15);
+                    //Debug.DrawLine(transform.position, hit.collider.transform.root.position + localHit, Color.blue, 15);
                     swingArm.ExternalMovementLoc = localHit;
                     swingArm.ExternalMovementObj = hit.collider.transform.root.gameObject;
                     bSwinging = true;
