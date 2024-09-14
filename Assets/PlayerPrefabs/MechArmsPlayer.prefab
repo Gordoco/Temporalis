@@ -615,7 +615,7 @@ MonoBehaviour:
   mouseYSensitivity: 1
   playerBody: {fileID: 2654573300976310541}
   Weapon: {fileID: 3186172820372006579}
-  UI: {fileID: 0}
+  UI: {fileID: 403052005109743765}
   bIsServer: 0
   TopDownView:
     loc: {x: 0, y: 3, z: -2}
@@ -1447,6 +1447,11 @@ PrefabInstance:
     m_RemovedComponents:
     - {fileID: 5454705758961896407, guid: 65fbe2421b4335f4f9e36749c5e57eb2, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 65fbe2421b4335f4f9e36749c5e57eb2, type: 3}
+--- !u!1 &403052005109743765 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2782484610078909505, guid: 65fbe2421b4335f4f9e36749c5e57eb2, type: 3}
+  m_PrefabInstance: {fileID: 2525026990720672980}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &3425215232042393881 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 901421071889663437, guid: 65fbe2421b4335f4f9e36749c5e57eb2, type: 3}
