@@ -61,33 +61,28 @@ public class MechArmsAttack : AttackManager
                     AddArm();
                 }
             }
+        }
 
-            if (!Input.GetButton("Ability3"))
+        if (!Input.GetButton("PrimaryAttack"))
+        {
+            GetComponent<LineRenderer>().enabled = false;
+        }
+
+
+        if (!Input.GetButton("Ability3"))
+        {
+            if (bSwinging)
             {
-                if (bSwinging)
-                {
-                    swingArm.CallForReset();
-                    swingArm.ToggleActive(true);
+                swingArm.CallForReset();
+                swingArm.ToggleActive(true);
 
-                    bSwinging = false;
-                    swingArm = null;
-                    GetComponent<PlayerMove>().Server_StopSwing();
-                }
-            }
-
-            if (!Input.GetButton("PrimaryAttack"))
-            {
-                GetComponent<LineRenderer>().enabled = false;
-                ClientToggleOffLineRenderer();
+                bSwinging = false;
+                swingArm = null;
+                GetComponent<PlayerMove>().Server_StopSwing();
             }
         }
-        base.Update();
-    }
 
-    [ClientRpc]
-    private void ClientToggleOffLineRenderer()
-    {
-        GetComponent<LineRenderer>().enabled = false;
+        base.Update();
     }
 
     /// <summary>
@@ -187,8 +182,6 @@ public class MechArmsAttack : AttackManager
     protected override void OnAbility1()
     {
         //1 Arm for pull effect
-        if (!isServer) return;
-
         ArmManager arm = GetFreeArm();
 
         GameObject Camera = null;
@@ -201,11 +194,14 @@ public class MechArmsAttack : AttackManager
             arm.ExternalMovementObj = hit.collider.gameObject;
             arm.ExternalMovementLoc = hit.collider.transform.InverseTransformPoint(hit.point);
 
-            EnemyController controller = hit.collider.gameObject.GetComponent<EnemyController>();
-            controller.TakeControlOfEnemy((transform.position - hit.point) * 1.25f);
-            StartCoroutine(ReleaseEnemy(controller, arm));
+            if (isServer)
+            {
+                EnemyController controller = hit.collider.gameObject.GetComponent<EnemyController>();
+                controller.TakeControlOfEnemy((transform.position - hit.point) * 1.25f);
+                StartCoroutine(ReleaseEnemy(controller, arm));
+            }
         }
-        else
+        else if (isServer)
         {
             bCanAbility1 = true;
             if (arm)
@@ -255,39 +251,36 @@ public class MechArmsAttack : AttackManager
     protected override void OnAbility3()
     {
         //1 Arm for Grappling hook, allowing swinging
-        if (isServer)
+        if (!bSwinging)
         {
-            if (!bSwinging)
+            swingArm = GetFreeArm();
+            if (swingArm != null)
             {
-                swingArm = GetFreeArm();
-                if (swingArm != null)
+                GameObject Camera = null;
+                for (int i = 0; i < gameObject.transform.childCount; i++) if (gameObject.transform.GetChild(i).tag == "MainCamera") { Camera = gameObject.transform.GetChild(i).gameObject; break; }
+                RaycastHit hit;
+                Physics.Raycast(Camera.transform.position, Camera.transform.forward, out hit, int.MaxValue, LayerMask.GetMask("Default"));
+                if (Vector3.Distance(Camera.transform.position, hit.point) > GetComponent<PlayerStatManager>().GetStat(NumericalStats.Range) * 1.5)
                 {
-                    GameObject Camera = null;
-                    for (int i = 0; i < gameObject.transform.childCount; i++) if (gameObject.transform.GetChild(i).tag == "MainCamera") { Camera = gameObject.transform.GetChild(i).gameObject; break; }
-                    RaycastHit hit;
-                    Physics.Raycast(Camera.transform.position, Camera.transform.forward, out hit, int.MaxValue, LayerMask.GetMask("Default"));
-                    if (Vector3.Distance(Camera.transform.position, hit.point) > GetComponent<PlayerStatManager>().GetStat(NumericalStats.Range) * 1.5)
-                    {
-                        swingArm.ToggleActive(true);
-                        swingArm = null;
-                    }
-                    else
-                    {
-                        if (!hit.collider) { swingArm.CallForReset(); swingArm.ToggleActive(true); return; }
-                        Vector3 localHit = hit.collider.transform.root.InverseTransformPoint(hit.point);
-                        Debug.DrawLine(transform.position, hit.collider.transform.root.position + localHit, Color.blue, 15);
-                        swingArm.ExternalMovementLoc = localHit;
-                        swingArm.ExternalMovementObj = hit.collider.transform.root.gameObject;
-                        bSwinging = true;
-                    }
+                    swingArm.ToggleActive(true);
+                    swingArm = null;
+                }
+                else
+                {
+                    if (!hit.collider) { swingArm.CallForReset(); swingArm.ToggleActive(true); return; }
+                    Vector3 localHit = hit.collider.transform.root.InverseTransformPoint(hit.point);
+                    Debug.DrawLine(transform.position, hit.collider.transform.root.position + localHit, Color.blue, 15);
+                    swingArm.ExternalMovementLoc = localHit;
+                    swingArm.ExternalMovementObj = hit.collider.transform.root.gameObject;
+                    bSwinging = true;
                 }
             }
-            else
+        }
+        else
+        {
+            if (isServer && swingArm.GetGrappled())
             {
-                if (swingArm.GetGrappled())
-                {
-                    GetComponent<PlayerMove>().Server_Swing(swingArm.transform.position, Vector3.Distance(transform.position, swingArm.transform.position));
-                }
+                GetComponent<PlayerMove>().Server_Swing(swingArm.transform.position, Vector3.Distance(transform.position, swingArm.transform.position));
             }
         }
     }
@@ -297,19 +290,16 @@ public class MechArmsAttack : AttackManager
     protected override void OnAbility4()
     {
         //Bayblade using all remaining arms (ie. use after other abilities)
-        if (isServer)
+        armList = new List<ArmManager>();
+        for (int i = 0; i < arms.Count; i++)
         {
-            armList = new List<ArmManager>();
-            for (int i = 0; i < arms.Count; i++)
-            {
-                ArmManager manager = GetFreeArm();
-                if (manager == null) break;
-                else armList.Add(manager);
-                manager.ToggleBeyblade();
-            }
-            Coroutine damageRoutine = StartCoroutine(Ability4DamageCheck());
-            StartCoroutine(FinishAbility4(damageRoutine));
+            ArmManager manager = GetFreeArm();
+            if (manager == null) break;
+            else armList.Add(manager);
+            manager.ToggleBeyblade();
         }
+        Coroutine damageRoutine = StartCoroutine(Ability4DamageCheck());
+        StartCoroutine(FinishAbility4(damageRoutine));
     }
 
     private IEnumerator FinishAbility4(Coroutine DamageRoutine)
