@@ -50,34 +50,36 @@ public class MechArmsAttack : AttackManager
 
     protected override void Update()
     {
-        if (!isServer) return;
-        if (arms.Count < 8)
+        if (isServer)
         {
-            double currAttackSpeed = statManager.GetStat(NumericalStats.AttackSpeed);
-            if (currAttackSpeed - lastAttackSpeed >= baseAttackSpeed * armScaleFactor)
+            if (arms.Count < 8)
             {
-                lastAttackSpeed = currAttackSpeed;
-                AddArm();
+                double currAttackSpeed = statManager.GetStat(NumericalStats.AttackSpeed);
+                if (currAttackSpeed - lastAttackSpeed >= baseAttackSpeed * armScaleFactor)
+                {
+                    lastAttackSpeed = currAttackSpeed;
+                    AddArm();
+                }
             }
-        }
 
-        if (!Input.GetButton("Ability3"))
-        {
-            if (bSwinging)
+            if (!Input.GetButton("Ability3"))
             {
-                swingArm.CallForReset();
-                swingArm.ToggleActive(true);
-                
-                bSwinging = false;
-                swingArm = null;
-                GetComponent<PlayerMove>().Server_StopSwing();
-            }
-        }
+                if (bSwinging)
+                {
+                    swingArm.CallForReset();
+                    swingArm.ToggleActive(true);
 
-        if (!Input.GetButton("PrimaryAttack"))
-        {
-            GetComponent<LineRenderer>().enabled = false;
-            ClientToggleOffLineRenderer();
+                    bSwinging = false;
+                    swingArm = null;
+                    GetComponent<PlayerMove>().Server_StopSwing();
+                }
+            }
+
+            if (!Input.GetButton("PrimaryAttack"))
+            {
+                GetComponent<LineRenderer>().enabled = false;
+                ClientToggleOffLineRenderer();
+            }
         }
         base.Update();
     }
@@ -140,7 +142,6 @@ public class MechArmsAttack : AttackManager
     protected override void OnPrimaryAttack()
     {
         //Dual function, Spotter (double damage and priority target for arms) and Simple rifle
-        if (isClient) Debug.Log("I AM CLIENT AND CLICKING HELP");
         GameObject Camera = null;
         for (int i = 0; i < gameObject.transform.childCount; i++) if (gameObject.transform.GetChild(i).tag == "MainCamera") { Camera = gameObject.transform.GetChild(i).gameObject; break; }
         RaycastHit hit;

@@ -96,6 +96,7 @@ public class CommandoAttack : AttackManager
             GameObject HP2 = Instantiate(HitParticleEffect, hit2.transform.position, Quaternion.LookRotation(dir));
         }
     }
+
     private void PlayShootSound()
     {
         if (!ShootSound) return;
