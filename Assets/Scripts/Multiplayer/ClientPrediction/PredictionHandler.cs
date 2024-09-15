@@ -72,8 +72,6 @@ public class PredictionHandler : NetworkBehaviour
             if (isServer) ServerHandleTick();
             currentTick++;
         }
-
-        Debug.Log(transform.position);
     }
 
     [Client]
