@@ -113,9 +113,6 @@ public abstract class AttackManager : NetworkBehaviour
 
         if (!statManager.Initialized) return;
 
-        if (isClient && b) Debug.Log(transform.name + ": Is Running an Attack Manager");
-        b = false;
-
         //Default: LMB
         bool primaryInput = PrimaryFullAuto ? Input.GetButton("PrimaryAttack") : Input.GetButtonDown("PrimaryAttack");
         if (primaryInput && bCanAttack)
@@ -216,11 +213,9 @@ public abstract class AttackManager : NetworkBehaviour
         PredictionHandler predictionHandler = GetComponent<PredictionHandler>();
 
         moveDirection.x = Input.GetAxis("Horizontal");
-        moveDirection.y -= Gravity;
         moveDirection.z = Input.GetAxis("Vertical");
 
         Vector3 dir = transform.TransformDirection(new Vector3(moveDirection.x, 0, moveDirection.z).normalized) * (float)statManager.GetStat(NumericalStats.MovementSpeed);
-        //dir.y = moveDirection.y;
 
         predictionHandler.ProcessTranslation(dir);
     }
@@ -274,10 +269,9 @@ public abstract class AttackManager : NetworkBehaviour
     {
         bool bJump = Input.GetButton("Jump");
 
-        if (GetComponent<CharacterController>().isGrounded)
+        if (Physics.CheckSphere(transform.position, GetComponent<CapsuleCollider>().height, LayerMask.GetMask("Default")))
         {
-            if (bJump) moveDirection.y = (float)statManager.GetStat(NumericalStats.JumpHeight);
-            else moveDirection.y = 0;
+            if (bJump) GetComponent<Rigidbody>().AddForce(Vector3.up * (float)statManager.GetStat(NumericalStats.JumpHeight), ForceMode.VelocityChange);
         }
     }
 
