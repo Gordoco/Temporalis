@@ -38,8 +38,6 @@ public class PredictionHandler : NetworkBehaviour
 
     void Start()
     {
-        if (transform.root.name != "LocalGamePlayer") enabled = false;
-
         minTimeBetweenTicks = 1f / SERVER_TICK_RATE;
 
         if (isClient)
