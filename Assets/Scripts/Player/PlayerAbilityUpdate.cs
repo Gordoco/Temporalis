@@ -21,6 +21,7 @@ public class PlayerAbilityUpdate : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        if (player.transform.root.name != "LocalGamePlayer") Destroy(gameObject);
         if (!player.GetComponent<AttackManager>()) Destroy(gameObject);
         manager = player.GetComponent<AttackManager>();
     }
