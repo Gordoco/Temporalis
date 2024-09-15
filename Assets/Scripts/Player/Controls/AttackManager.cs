@@ -13,7 +13,6 @@ public abstract class AttackManager : NetworkBehaviour
     [SerializeField] private GameObject PauseMenuPrefab;
     [SerializeField] protected StatManager statManager;
     [SerializeField] private GameObject StunnedParticleEffect;
-    [SerializeField] private float Gravity = 1f;
     [SerializeField] private float mouseXSensitivity = 100f;
     [SerializeField] private float mouseYSensitivity = 1f;
     [SerializeField] private GameObject PlayerBody;
