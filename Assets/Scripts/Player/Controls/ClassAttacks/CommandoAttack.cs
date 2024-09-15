@@ -15,6 +15,7 @@ public class CommandoAttack : AttackManager
     [SerializeField] private GameObject GrenadePrefab;
     [SerializeField] private GameObject LShotStart;
     [SerializeField] private GameObject RShotStart;
+    [SerializeField] private GameObject Weapon;
 
     [SerializeField] private GameObject PrimaryAttackParticleEffect;
     [SerializeField] private GameObject DiveBombExplosionPrefab;
@@ -48,8 +49,9 @@ public class CommandoAttack : AttackManager
     /// </summary>
     protected override void OnPrimaryAttack()
     {
-        GameObject Weapon = null;
+        /*GameObject Weapon = null;
         for (int i = 0; i < gameObject.transform.childCount; i++) if (gameObject.transform.GetChild(i).tag == "Weapon") { Weapon = gameObject.transform.GetChild(i).gameObject; break; }
+        */
         GameObject Camera = null;
         for (int i = 0; i < gameObject.transform.childCount; i++) if (gameObject.transform.GetChild(i).tag == "MainCamera") { Camera = gameObject.transform.GetChild(i).gameObject; break; }
 
