@@ -103,7 +103,6 @@ public abstract class AttackManager : NetworkBehaviour
         if (StunnedParticleEffect) StunnedParticleEffect.SetActive(b);
     }
 
-    bool b = true;
     // Update is called once per frame
     protected virtual void Update()
     {
