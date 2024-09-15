@@ -109,8 +109,6 @@ public abstract class AttackManager : NetworkBehaviour
         if (!bEnabled) return;
         if (!isOwned) { return; }
 
-        if (isClient) Debug.Log("ONLY SHOULD BE ONE OF THESE WITH NAME = " + transform.root.name);
-
         if (!statManager.Initialized) return;
 
         //Default: LMB
@@ -215,12 +213,6 @@ public abstract class AttackManager : NetworkBehaviour
         moveDirection.z = Input.GetAxis("Vertical");
 
         bool bJump = Input.GetButton("Jump");
-        /*
-        if ()
-        {
-            if (bJump) moveDirection.y = (float)statManager.GetStat(NumericalStats.JumpHeight);
-            else moveDirection.y = 0;
-        }*/
 
         Vector3 dir = transform.TransformDirection(new Vector3(moveDirection.x, 0, moveDirection.z).normalized) * (float)statManager.GetStat(NumericalStats.MovementSpeed);
         if (bJump && Physics.CheckSphere(transform.position, GetComponent<CapsuleCollider>().height, LayerMask.GetMask("Default"))) dir.y = (float)statManager.GetStat(NumericalStats.JumpHeight);
