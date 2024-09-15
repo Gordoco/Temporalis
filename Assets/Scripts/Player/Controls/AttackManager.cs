@@ -109,6 +109,8 @@ public abstract class AttackManager : NetworkBehaviour
         if (!bEnabled) return;
         if (!isOwned) { return; }
 
+        if (isClient) Debug.Log("ONLY SHOULD BE ONE OF THESE WITH NAME = " + transform.root.name);
+
         if (!statManager.Initialized) return;
 
         //Default: LMB
