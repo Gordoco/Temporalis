@@ -38,6 +38,8 @@ public class PredictionHandler : NetworkBehaviour
 
     void Start()
     {
+        if (transform.root.name == "LocalGamePlayer") transform.name = "GamePlayerCharacter";
+
         minTimeBetweenTicks = 1f / SERVER_TICK_RATE;
 
         if (isClient)
@@ -137,7 +139,7 @@ public class PredictionHandler : NetworkBehaviour
             clientStateBuffer[serverStateBufferIndex] = latestServerState;
 
             //Resimulate the rest of the ticks up to the current client tick
-            int tickToProcess = latestServerState.tick + 1;
+            int tickToProcess = (latestServerState.tick) + 1 % BUFFER_SIZE;
 
             while (tickToProcess < currentTick)
             {
