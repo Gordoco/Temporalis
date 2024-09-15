@@ -22,6 +22,7 @@ public class PredictionHandler : NetworkBehaviour
     private StatePayload latestServerState;
     private StatePayload lastProcessedState;
     private Vector3 inputLocation;
+    private Vector3 inputScale = Vector3.one;
     private Quaternion inputRotation;
 
     //Server Specific
@@ -110,6 +111,7 @@ public class PredictionHandler : NetworkBehaviour
         InputPayload inputPayload = new InputPayload();
         inputPayload.tick = currentTick;
         if (!ROTATION_ONLY) inputPayload.inputVector = inputLocation;
+        inputPayload.inputScale = inputScale;
         inputPayload.inputRot = inputRotation;
         inputBuffer[bufferIndex] = inputPayload;
 
@@ -155,7 +157,16 @@ public class PredictionHandler : NetworkBehaviour
             Debug.Log("RECONCILING");
 
             //Rewind and Replay
-            transform.position = latestServerState.position;
+            if (!ROTATION_ONLY)
+            {
+                if (LOCAL_SPACE) transform.localPosition = latestServerState.position;
+                else transform.position = latestServerState.position;
+            }
+            
+            if (LOCAL_SPACE) transform.localRotation = latestServerState.rotation;
+            else transform.rotation = latestServerState.rotation;
+
+            transform.localScale = latestServerState.scale;
 
             //Update buffer at index of latest server state
             clientStateBuffer[serverStateBufferIndex] = latestServerState;
@@ -196,12 +207,15 @@ public class PredictionHandler : NetworkBehaviour
         if (LOCAL_SPACE) transform.localRotation = input.inputRot;
         else transform.rotation = input.inputRot;
 
+        transform.localScale = input.inputScale;
+
         return !LOCAL_SPACE ? 
         new StatePayload()
         {
             tick = input.tick,
             position = transform.position,
             rotation = transform.rotation,
+            scale = transform.localScale,
         }
         :
         new StatePayload()
@@ -209,6 +223,7 @@ public class PredictionHandler : NetworkBehaviour
             tick = input.tick,
             position = transform.localPosition,
             rotation = transform.localRotation,
+            scale = transform.localScale
         };
     }
 
