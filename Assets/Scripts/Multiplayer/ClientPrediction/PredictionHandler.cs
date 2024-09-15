@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 using Unity.VisualScripting;
+using UnityEngine.Windows;
 
 public class PredictionHandler : NetworkBehaviour
 {
@@ -132,6 +133,8 @@ public class PredictionHandler : NetworkBehaviour
 
             StatePayload statePayload = ProcessMovement(inputPayload);
             serverStateBuffer[bufferIndex] = statePayload;
+
+            Debug.Log("RECIEVING CLIENT INFO ON: " + transform.name);
         }
 
         if (bufferIndex != -1)
@@ -217,7 +220,6 @@ public class PredictionHandler : NetworkBehaviour
     void SendToServer(InputPayload input)
     {
         OnClientInput(input);
-        Debug.Log("RECIEVING CLIENT INFO FROM: " + transform.name + " WITH VAL: " + input.inputVector);
     }
 
     [ClientRpc]
