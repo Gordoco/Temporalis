@@ -68,7 +68,7 @@ public class PredictionHandler : NetworkBehaviour
         while (timer >= minTimeBetweenTicks)
         {
             timer -= minTimeBetweenTicks;
-            if (isClient && GetComponent<NetworkIdentity>().isLocalPlayer) ClientHandleTick();
+            if (isClient) ClientHandleTick();
             if (isServer) ServerHandleTick();
             currentTick++;
         }
@@ -167,7 +167,7 @@ public class PredictionHandler : NetworkBehaviour
         };
     }
 
-    [Command]
+    [Command(requiresAuthority = false)]
     void SendToServer(InputPayload input)
     {
         OnClientInput(input);
