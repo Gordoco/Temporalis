@@ -129,13 +129,14 @@ public class CommandoAttack : AttackManager
         PredictionHandler handler = Weapon.GetComponent<PredictionHandler>();
         for (int i = 0; i < 12; i++)
         {
-
-            Weapon.transform.localScale += new Vector3(swellSpeed, swellSpeed, swellSpeed);
+            handler.ProcessScaling(Weapon.transform.localScale + new Vector3(swellSpeed, swellSpeed, swellSpeed));
+            //Weapon.transform.localScale += new Vector3(swellSpeed, swellSpeed, swellSpeed);
             yield return new WaitForSeconds(0.01f / (float)AttackSpeed);
         }
         for (int i = 0; i < 12; i++)
         {
-            Weapon.transform.localScale += new Vector3(-swellSpeed, -swellSpeed, -swellSpeed);
+            handler.ProcessScaling(Weapon.transform.localScale - new Vector3(swellSpeed, swellSpeed, swellSpeed));
+            //Weapon.transform.localScale += new Vector3(-swellSpeed, -swellSpeed, -swellSpeed);
             yield return new WaitForSeconds(0.01f / (float)AttackSpeed);
         }
         yield return null;
