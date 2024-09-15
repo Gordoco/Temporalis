@@ -279,6 +279,17 @@ public abstract class AttackManager : NetworkBehaviour
         }
     }
 
+    protected bool CheckIfGrounded()
+    {
+        RaycastHit hit;
+        Physics.Raycast(transform.position, Vector3.down, out hit, int.MaxValue, LayerMask.GetMask("Default"));
+        if (Vector3.Distance(hit.point, transform.position) < (GetComponent<CapsuleCollider>().height/2) + 0.5f)
+        {
+            return true;
+        }
+        return false;
+    }
+
     /// <summary>
     /// Method called on Server and all Clients after client-side input is pressed
     /// </summary>
