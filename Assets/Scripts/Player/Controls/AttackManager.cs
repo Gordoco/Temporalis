@@ -213,16 +213,15 @@ public abstract class AttackManager : NetworkBehaviour
         moveDirection.x = Input.GetAxis("Horizontal");
         moveDirection.z = Input.GetAxis("Vertical");
 
-        bool bJump = Input.GetButton("Jump");
+        /*bool bJump = Input.GetButton("Jump");
 
         if (Physics.CheckSphere(transform.position, GetComponent<CapsuleCollider>().height, LayerMask.GetMask("Default")))
         {
             if (bJump) moveDirection.y = (float)statManager.GetStat(NumericalStats.JumpHeight);
             else moveDirection.y = 0;
-        }
+        }*/
 
         Vector3 dir = transform.TransformDirection(new Vector3(moveDirection.x, 0, moveDirection.z).normalized) * (float)statManager.GetStat(NumericalStats.MovementSpeed);
-        dir.y = moveDirection.y;
 
         predictionHandler.ProcessTranslation(dir);
     }
