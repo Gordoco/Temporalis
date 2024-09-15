@@ -58,6 +58,7 @@ public class PredictionHandler : NetworkBehaviour
         {
             if (transform.root.name == "LocalGamePlayer")
             {
+                Debug.Log(GetComponent<NetworkIdentity>().isLocalPlayer);
                 horizontalInput = Input.GetAxis("Horizontal");
                 verticalInput = Input.GetAxis("Vertical");
             }
