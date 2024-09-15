@@ -177,12 +177,12 @@ public class CommandoAttack : AttackManager
     /// </summary>
     protected override void OnAbility1()
     {
-        if (isClient) Debug.Log("SHOULD ONLY BE ONE OF THESE = " + transform.root.name);
         if (StimImage) StimImage.enabled = true;
 
         double[] vals = null;
         if (isServer)
         {
+            Debug.Log("SHOULD ONLY BE ONE OF THESE = " + transform.root.name + " || " + statManager.gameObject.transform.root.name);
             if (statManager.GetHealth() - 25 <= 0) statManager.DealDamage(statManager.GetHealth() - 1);
             else statManager.DealDamage(25); //Deal Damage
 
