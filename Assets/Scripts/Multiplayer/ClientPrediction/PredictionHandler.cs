@@ -56,11 +56,10 @@ public class PredictionHandler : NetworkBehaviour
 
     void Update()
     {
-        if (isClient)
+        if (isClient && !isServer)
         {
             if (transform.root.name == "LocalGamePlayer")
             {
-                Debug.Log(GetComponent<NetworkIdentity>().isLocalPlayer);
                 horizontalInput = Input.GetAxis("Horizontal");
                 verticalInput = Input.GetAxis("Vertical");
             }
@@ -130,8 +129,6 @@ public class PredictionHandler : NetworkBehaviour
 
         if (positionError > 0.001f)
         {
-            Debug.Log("[ TickHandler.cs - FIXING POSITION ]");
-
             //Rewind and Replay
             transform.position = latestServerState.position;
 
