@@ -195,6 +195,8 @@ public class PredictionHandler : NetworkBehaviour
                 transform.position += input.inputVector * minTimeBetweenTicks;
             }
         }
+        if (isServer) Debug.Log("SERVER VERSION OF: " + transform.root.name + ": MOVING WITH SPEED: " + input.inputVector.magnitude);
+        if (isClient) Debug.Log("CLIENT VERSION OF: " + transform.root.name + ": MOVING WITH SPEED: " + input.inputVector.magnitude);
 
         if (LOCAL_SPACE) transform.localRotation = input.inputRot;
         else transform.rotation = input.inputRot;
