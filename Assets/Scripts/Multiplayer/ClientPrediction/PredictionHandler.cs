@@ -217,7 +217,7 @@ public class PredictionHandler : NetworkBehaviour
     void SendToServer(InputPayload input)
     {
         OnClientInput(input);
-        Debug.Log("RECIEVING CLIENT INFO");
+        Debug.Log("RECIEVING CLIENT INFO FROM: " + transform.name + " WITH VAL: " + input.inputVector);
     }
 
     [ClientRpc]
