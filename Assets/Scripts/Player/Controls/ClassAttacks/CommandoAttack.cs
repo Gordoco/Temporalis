@@ -177,7 +177,7 @@ public class CommandoAttack : AttackManager
     /// </summary>
     protected override void OnAbility1()
     {
-        if (isClient) Debug.Log("SHOULD ONLY BE ONE OF THESE = " + transform.root.parent);
+        if (isClient) Debug.Log("SHOULD ONLY BE ONE OF THESE = " + transform.root.name);
         if (StimImage) StimImage.enabled = true;
 
         double[] vals = null;
