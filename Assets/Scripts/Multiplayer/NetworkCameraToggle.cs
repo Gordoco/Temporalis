@@ -6,6 +6,6 @@ public class NetworkCameraToggle : MonoBehaviour
 {
     private void Start()
     {
-        if (transform.root.name != "LocalGamePlayer") gameObject.SetActive(false);
+        if (transform.root.name != "LocalGamePlayer") GetComponent<Camera>().enabled = false;
     }
 }

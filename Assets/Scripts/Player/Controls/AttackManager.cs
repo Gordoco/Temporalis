@@ -203,7 +203,7 @@ public abstract class AttackManager : NetworkBehaviour
 
         HandleMovement();
         HandleJump();
-        //HandleLook();
+        HandleLook();
     }
 
     protected virtual void HandleMovement()
