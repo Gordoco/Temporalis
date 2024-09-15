@@ -201,12 +201,9 @@ public abstract class AttackManager : NetworkBehaviour
             }
         }
 
-        if (isClient)
-        {
-            HandleMovement();
-            HandleJump();
-            HandleLook();
-        }
+        HandleMovement();
+        HandleJump();
+        HandleLook();
     }
 
     protected virtual void HandleMovement()
@@ -219,8 +216,6 @@ public abstract class AttackManager : NetworkBehaviour
 
         Vector3 dir = transform.TransformDirection(new Vector3(moveDirection.x, 0, moveDirection.z)).normalized * (float)statManager.GetStat(NumericalStats.MovementSpeed);
         dir.y = moveDirection.y;
-
-        ServerUpdateMoveDirection(dir);
 
         predictionHandler.ProcessTranslation(dir);
     }
@@ -278,15 +273,7 @@ public abstract class AttackManager : NetworkBehaviour
         {
             if (bJump) moveDirection.y = (float)statManager.GetStat(NumericalStats.JumpHeight);
             else moveDirection.y = 0;
-
-            ServerUpdateMoveDirection(moveDirection);
         }
-    }
-
-    [Command]
-    private void ServerUpdateMoveDirection(Vector3 moveDir)
-    {
-        moveDirection = moveDir;
     }
 
     /// <summary>
