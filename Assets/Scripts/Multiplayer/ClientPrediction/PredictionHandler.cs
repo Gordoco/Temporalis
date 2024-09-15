@@ -119,6 +119,8 @@ public class PredictionHandler : NetworkBehaviour
 
         //Send input to Server
         SendToServer(inputPayload);
+        inputLocation = Vector3.zero;
+        inputRotation = transform.rotation;
     }
 
     [Server]
