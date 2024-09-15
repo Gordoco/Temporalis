@@ -115,7 +115,7 @@ public class PredictionHandler : NetworkBehaviour
 
         inputLocation = Vector3.zero;
 
-        clientStateBuffer[bufferIndex] = ProcessMovement(inputPayload);
+        clientStateBuffer[bufferIndex] = ProcessMovement(inputPayload, true);
 
         //Send input to Server
         SendToServer(inputPayload);
@@ -131,7 +131,7 @@ public class PredictionHandler : NetworkBehaviour
 
             bufferIndex = inputPayload.tick % BUFFER_SIZE;
 
-            StatePayload statePayload = ProcessMovement(inputPayload, true);
+            StatePayload statePayload = ProcessMovement(inputPayload);
             serverStateBuffer[bufferIndex] = statePayload;
         }
 
@@ -179,9 +179,9 @@ public class PredictionHandler : NetworkBehaviour
 
     }
 
-    StatePayload ProcessMovement(InputPayload input, bool bServer = false)
+    StatePayload ProcessMovement(InputPayload input, bool bClient = false)
     {
-        if (!(isClient && bServer))
+        if (!(bClient && isServer))
         {
             if (!ROTATION_ONLY)
             {
