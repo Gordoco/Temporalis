@@ -104,11 +104,15 @@ public abstract class AttackManager : NetworkBehaviour
         if (StunnedParticleEffect) StunnedParticleEffect.SetActive(b);
     }
 
+    bool b = true;
     // Update is called once per frame
     protected virtual void Update()
     {
         if (!bEnabled) return;
         if (!isOwned) { this.enabled = false; return; }
+
+        if (isClient && b) Debug.Log(transform.name + ": Is Running an Attack Manager");
+        b = false;
 
         //Default: LMB
         bool primaryInput = PrimaryFullAuto ? Input.GetButton("PrimaryAttack") : Input.GetButtonDown("PrimaryAttack");
