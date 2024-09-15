@@ -109,7 +109,7 @@ public abstract class AttackManager : NetworkBehaviour
     protected virtual void Update()
     {
         if (!bEnabled) return;
-        if (!isOwned) { this.enabled = false; return; }
+        if (transform.root.name != "LocalGamePlayer") { this.enabled = false; return; }
 
         if (isClient && b) Debug.Log(transform.name + ": Is Running an Attack Manager");
         b = false;
