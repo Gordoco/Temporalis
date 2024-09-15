@@ -203,6 +203,7 @@ MonoBehaviour:
   syncInterval: 0
   PauseMenuPrefab: {fileID: 2476583610894637245, guid: 5edd00a6d4670c24f9827530d36ca9fb, type: 3}
   statManager: {fileID: 1250715329504170301}
+  Gravity: 1
   StunnedParticleEffect: {fileID: 4445243316468252411}
   mouseXSensitivity: 100
   mouseYSensitivity: 1
