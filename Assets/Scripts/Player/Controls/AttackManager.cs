@@ -12,6 +12,7 @@ public abstract class AttackManager : NetworkBehaviour
     // Editor values
     [SerializeField] private GameObject PauseMenuPrefab;
     [SerializeField] protected StatManager statManager;
+    [SerializeField] private float Gravity = 1f;
     [SerializeField] private GameObject StunnedParticleEffect;
     [SerializeField] private float mouseXSensitivity = 100f;
     [SerializeField] private float mouseYSensitivity = 1f;
@@ -211,6 +212,7 @@ public abstract class AttackManager : NetworkBehaviour
         PredictionHandler predictionHandler = GetComponent<PredictionHandler>();
 
         moveDirection.x = Input.GetAxis("Horizontal");
+        moveDirection.y -= Gravity;
         moveDirection.z = Input.GetAxis("Vertical");
 
         bool bJump = Input.GetButton("Jump");
