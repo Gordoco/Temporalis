@@ -217,7 +217,7 @@ public abstract class AttackManager : NetworkBehaviour
         moveDirection.y -= Gravity;
         moveDirection.z = Input.GetAxis("Vertical");
 
-        Vector3 dir = transform.TransformDirection(new Vector3(moveDirection.x, 0, moveDirection.z)).normalized * (float)statManager.GetStat(NumericalStats.MovementSpeed);
+        Vector3 dir = transform.TransformDirection(new Vector3(moveDirection.x, 0, moveDirection.z).normalized) * (float)statManager.GetStat(NumericalStats.MovementSpeed);
         dir.y = moveDirection.y;
 
         predictionHandler.ProcessTranslation(dir);
