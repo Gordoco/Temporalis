@@ -115,7 +115,7 @@ public class PredictionHandler : NetworkBehaviour
 
         inputLocation = Vector3.zero;
 
-        if (!isServer) clientStateBuffer[bufferIndex] = ProcessMovement(inputPayload);
+        clientStateBuffer[bufferIndex] = ProcessMovement(inputPayload);
 
         //Send input to Server
         SendToServer(inputPayload);
@@ -131,7 +131,7 @@ public class PredictionHandler : NetworkBehaviour
 
             bufferIndex = inputPayload.tick % BUFFER_SIZE;
 
-            StatePayload statePayload = ProcessMovement(inputPayload);
+            StatePayload statePayload = ProcessMovement(inputPayload, true);
             serverStateBuffer[bufferIndex] = statePayload;
         }
 
@@ -179,22 +179,25 @@ public class PredictionHandler : NetworkBehaviour
 
     }
 
-    StatePayload ProcessMovement(InputPayload input)
+    StatePayload ProcessMovement(InputPayload input, bool bServer = false)
     {
-        if (!ROTATION_ONLY)
+        if (!(isClient && bServer))
         {
-            if (LOCAL_SPACE)
+            if (!ROTATION_ONLY)
             {
-                transform.localPosition = input.inputVector;
+                if (LOCAL_SPACE)
+                {
+                    transform.localPosition = input.inputVector;
+                }
+                else
+                {
+                    transform.position += input.inputVector * minTimeBetweenTicks;
+                }
             }
-            else
-            {
-                transform.position += input.inputVector * minTimeBetweenTicks;
-            }
-        }
 
-        if (LOCAL_SPACE) transform.localRotation = input.inputRot;
-        else transform.rotation = input.inputRot;
+            if (LOCAL_SPACE) transform.localRotation = input.inputRot;
+            else transform.rotation = input.inputRot;
+        }
 
         return !LOCAL_SPACE ? 
         new StatePayload()
