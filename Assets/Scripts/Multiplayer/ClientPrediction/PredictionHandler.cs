@@ -189,7 +189,8 @@ public class PredictionHandler : NetworkBehaviour
             }
             else
             {
-                transform.position += input.inputVector * minTimeBetweenTicks;
+                GetComponent<Rigidbody>().MovePosition(input.inputVector * minTimeBetweenTicks)
+                //transform.position += input.inputVector * minTimeBetweenTicks;
             }
         }
 
