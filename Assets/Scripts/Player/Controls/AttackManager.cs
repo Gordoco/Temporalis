@@ -206,8 +206,8 @@ public abstract class AttackManager : NetworkBehaviour
         if (isClient)
         {
             HandleMovement();
-            //HandleJump();
-            //HandleLook();
+            HandleJump();
+            HandleLook();
         }
     }
 

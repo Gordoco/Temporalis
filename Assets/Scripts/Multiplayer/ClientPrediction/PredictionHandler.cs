@@ -88,7 +88,7 @@ public class PredictionHandler : NetworkBehaviour
         while (timer >= minTimeBetweenTicks)
         {
             timer -= minTimeBetweenTicks;
-            if (isClient) ClientHandleTick();
+            if (isClient && isOwned) ClientHandleTick();
             if (isServer) ServerHandleTick();
             currentTick++;
         }
