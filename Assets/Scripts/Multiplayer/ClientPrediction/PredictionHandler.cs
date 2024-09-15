@@ -36,6 +36,11 @@ public class PredictionHandler : NetworkBehaviour
         latestServerState = serverState;
     }
 
+    private void Awake()
+    {
+        if (!authority) enabled = false;
+    }
+
     void Start()
     {
         minTimeBetweenTicks = 1f / SERVER_TICK_RATE;
