@@ -113,9 +113,6 @@ public class PredictionHandler : NetworkBehaviour
         inputPayload.inputRot = inputRotation;
         inputBuffer[bufferIndex] = inputPayload;
 
-        inputRotation = Quaternion.identity;
-        inputLocation = Vector3.zero;
-
         clientStateBuffer[bufferIndex] = ProcessMovement(inputPayload);
 
         //Send input to Server
