@@ -87,6 +87,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  SERVER_TICK_RATE: 60
 --- !u!1 &2654573301701016692
 GameObject:
   m_ObjectHideFlags: 0

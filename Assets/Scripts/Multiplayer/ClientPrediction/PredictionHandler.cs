@@ -9,7 +9,7 @@ public class PredictionHandler : NetworkBehaviour
     private float timer;
     private int currentTick;
     private float minTimeBetweenTicks;
-    private const float SERVER_TICK_RATE = 45f;
+    [SerializeField] private float SERVER_TICK_RATE = 45f;
     private const int BUFFER_SIZE = 1024;
 
     //Client specific
