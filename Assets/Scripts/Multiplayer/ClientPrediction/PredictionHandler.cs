@@ -21,8 +21,6 @@ public class PredictionHandler : NetworkBehaviour
     private InputPayload[] inputBuffer;
     private StatePayload latestServerState;
     private StatePayload lastProcessedState;
-    private float horizontalInput;
-    private float verticalInput;
     private Vector3 inputLocation;
     private Quaternion inputRotation;
 
@@ -115,12 +113,13 @@ public class PredictionHandler : NetworkBehaviour
         inputPayload.inputRot = inputRotation;
         inputBuffer[bufferIndex] = inputPayload;
 
+        inputRotation = Quaternion.identity;
+        inputLocation = Vector3.zero;
+
         clientStateBuffer[bufferIndex] = ProcessMovement(inputPayload);
 
         //Send input to Server
         SendToServer(inputPayload);
-        inputLocation = Vector3.zero;
-        inputRotation = transform.rotation;
     }
 
     [Server]
