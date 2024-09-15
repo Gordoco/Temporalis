@@ -203,7 +203,6 @@ public abstract class AttackManager : NetworkBehaviour
         if (isClient)
         {
             HandleMovement();
-            HandleJump();
             HandleLook();
         }
     }
@@ -215,7 +214,15 @@ public abstract class AttackManager : NetworkBehaviour
         moveDirection.x = Input.GetAxis("Horizontal");
         moveDirection.z = Input.GetAxis("Vertical");
 
+        bool bJump = Input.GetButton("Jump");
+
+        if (Physics.CheckSphere(transform.position, GetComponent<CapsuleCollider>().height, LayerMask.GetMask("Default")) && bJump)
+        {
+            moveDirection.y = (float)statManager.GetStat(NumericalStats.JumpHeight);
+        }
+
         Vector3 dir = transform.TransformDirection(new Vector3(moveDirection.x, 0, moveDirection.z).normalized) * (float)statManager.GetStat(NumericalStats.MovementSpeed);
+        dir.y = moveDirection.y;
 
         predictionHandler.ProcessTranslation(dir);
     }
@@ -263,16 +270,6 @@ public abstract class AttackManager : NetworkBehaviour
         predictionHandler.ProcessRotation(newRot);
         cameraPredictionHandler.ProcessTranslation(pos);
         cameraPredictionHandler.ProcessRotation(rot);
-    }
-
-    protected virtual void HandleJump()
-    {
-        bool bJump = Input.GetButton("Jump");
-
-        if (Physics.CheckSphere(transform.position, GetComponent<CapsuleCollider>().height, LayerMask.GetMask("Default")))
-        {
-            if (bJump) GetComponent<Rigidbody>().AddForce(Vector3.up * (float)statManager.GetStat(NumericalStats.JumpHeight), ForceMode.VelocityChange);
-        }
     }
 
     /// <summary>
