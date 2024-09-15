@@ -144,7 +144,6 @@ public class PredictionHandler : NetworkBehaviour
     [Client]
     void HandleServerReconciliation()
     {
-        Debug.Log("RECONCILING");
         lastProcessedState = latestServerState;
 
         int serverStateBufferIndex = latestServerState.tick % BUFFER_SIZE;
@@ -152,6 +151,9 @@ public class PredictionHandler : NetworkBehaviour
 
         if (positionError > 0.001f)
         {
+
+            Debug.Log("RECONCILING");
+
             //Rewind and Replay
             transform.position = latestServerState.position;
 
