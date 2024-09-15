@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class NetworkCameraToggle : MonoBehaviour
 {
-    private void Awake()
+    private void Start()
     {
         if (transform.root.name != "LocalGamePlayer") gameObject.SetActive(false);
     }
