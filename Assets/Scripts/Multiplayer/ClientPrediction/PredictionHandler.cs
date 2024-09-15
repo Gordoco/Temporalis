@@ -22,7 +22,7 @@ public class PredictionHandler : NetworkBehaviour
     private StatePayload latestServerState;
     private StatePayload lastProcessedState;
     private Vector3 inputLocation;
-    private Vector3 inputScale = Vector3.one;
+    private Vector3 inputScale;
     private Quaternion inputRotation;
 
     //Server Specific
@@ -73,6 +73,10 @@ public class PredictionHandler : NetworkBehaviour
 
     void Start()
     {
+        inputLocation = LOCAL_SPACE ? transform.localPosition : transform.position;
+        inputRotation = LOCAL_SPACE ? transform.localRotation : transform.rotation;
+        inputScale = transform.localScale;
+
         if (transform.root.name == "LocalGamePlayer") transform.name = "GamePlayerCharacter";
 
         minTimeBetweenTicks = 1f / SERVER_TICK_RATE;
@@ -120,8 +124,6 @@ public class PredictionHandler : NetworkBehaviour
         inputPayload.inputScale = inputScale;
         inputPayload.inputRot = inputRotation;
         inputBuffer[bufferIndex] = inputPayload;
-
-        inputLocation = Vector3.zero;
 
         clientStateBuffer[bufferIndex] = ProcessMovement(inputPayload);
 
