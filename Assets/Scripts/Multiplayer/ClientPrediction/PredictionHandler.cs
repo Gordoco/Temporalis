@@ -97,7 +97,7 @@ public class PredictionHandler : NetworkBehaviour
     [Client]
     void ClientHandleTick()
     {
-        if (!latestServerState.Equals(default(StatePayload)) &&
+        if (!isServer && !latestServerState.Equals(default(StatePayload)) &&
             (lastProcessedState.Equals(default(StatePayload)) ||
             !latestServerState.Equals(lastProcessedState)))
         {
