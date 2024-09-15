@@ -151,6 +151,7 @@ public class PredictionHandler : NetworkBehaviour
                 clientStateBuffer[bufferIndex] = statePayload;
 
                 tickToProcess++;
+                tickToProcess = tickToProcess % BUFFER_SIZE;
             }
         }
 
