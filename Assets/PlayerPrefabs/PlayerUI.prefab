@@ -180,7 +180,6 @@ GameObject:
   - component: {fileID: 9094602894760147340}
   - component: {fileID: 7296172031640043849}
   - component: {fileID: 2080162750204220814}
-  - component: {fileID: 7237212138348247573}
   - component: {fileID: 224996227286531432}
   m_Layer: 7
   m_Name: AbilityBar
@@ -249,25 +248,6 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
---- !u!114 &7237212138348247573
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1280967839313211886}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cbb0a07cd5996ef46871013874421987, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  primary: {fileID: 2112035410957381018}
-  secondary: {fileID: 4633179901794255579}
-  ability1: {fileID: 6393947874522178579}
-  ability2: {fileID: 8012367994509829643}
-  ability3: {fileID: 821167398835136685}
-  ability4: {fileID: 7856133415042110789}
-  player: {fileID: 0}
 --- !u!114 &224996227286531432
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2727,6 +2707,9 @@ MonoBehaviour:
   manager: {fileID: 0}
   text: {fileID: 827347665511095039}
   bEnemy: 0
+  fill: {fileID: 0}
+  hpColor: {r: 0, g: 0, b: 0, a: 0}
+  shieldColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!114 &4769846758461304296 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8452622706639403978, guid: 8335bd2e35e11194ca8ae3a7b865159a, type: 3}
