@@ -179,24 +179,23 @@ public class CommandoAttack : AttackManager
     {
         if (StimImage) StimImage.enabled = true;
 
-        StatManager manager = GetComponent<StatManager>();
         double[] vals = null;
         if (isServer)
         {
-            if (manager.GetHealth() - 25 <= 0) manager.DealDamage(manager.GetHealth() - 1);
-            else manager.DealDamage(25); //Deal Damage
+            if (statManager.GetHealth() - 25 <= 0) statManager.DealDamage(statManager.GetHealth() - 1);
+            else statManager.DealDamage(25); //Deal Damage
 
             vals = new double[3];
-            vals[0] = manager.GetStat(NumericalStats.AttackSpeed);
-            vals[1] = manager.GetStat(NumericalStats.MovementSpeed);
-            vals[2] = manager.GetStat(NumericalStats.JumpHeight);
+            vals[0] = statManager.GetStat(NumericalStats.AttackSpeed);
+            vals[1] = statManager.GetStat(NumericalStats.MovementSpeed);
+            vals[2] = statManager.GetStat(NumericalStats.JumpHeight);
 
-            manager.ModifyStat(NumericalStats.AttackSpeed, vals[0]);
-            manager.ModifyStat(NumericalStats.MovementSpeed, vals[1]);
-            manager.ModifyStat(NumericalStats.JumpHeight, vals[2]);
+            statManager.ModifyStat(NumericalStats.AttackSpeed, vals[0]);
+            statManager.ModifyStat(NumericalStats.MovementSpeed, vals[1]);
+            statManager.ModifyStat(NumericalStats.JumpHeight, vals[2]);
         }
         if (vals == null) vals = new double[3];
-        StartCoroutine(ResetStats(manager, 5f, vals));
+        StartCoroutine(ResetStats(statManager, 5f, vals));
     }
 
     private IEnumerator ResetStats(StatManager manager, float time, double[] vals)
