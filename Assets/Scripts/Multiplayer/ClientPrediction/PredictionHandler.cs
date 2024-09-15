@@ -38,7 +38,7 @@ public class PredictionHandler : NetworkBehaviour
 
     private void Awake()
     {
-        if (!authority) enabled = false;
+        if (transform.root.name != "LocalGamePlayer") enabled = false;
     }
 
     void Start()
