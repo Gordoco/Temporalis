@@ -92,7 +92,7 @@ public class PredictionHandler : NetworkBehaviour
         {
             timer -= minTimeBetweenTicks;
             if (isClient && GetComponentInParent<NetworkIdentity>().isLocalPlayer) ClientHandleTick();
-            if (isServer && !isClient) ServerHandleTick();
+            if (isServer) ServerHandleTick();
             currentTick++;
         }
     }
