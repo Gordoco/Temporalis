@@ -184,12 +184,12 @@ public class PredictionHandler : NetworkBehaviour
             if (LOCAL_SPACE)
             {
                 transform.localPosition = input.inputVector;
-            }/*
+            }
             else if (GetComponent<CharacterController>())
             {
                 CharacterController CC = GetComponent<CharacterController>();
                 CC.Move(input.inputVector * minTimeBetweenTicks);
-            }*/
+            }
             else
             {
                 transform.position += input.inputVector * minTimeBetweenTicks;
