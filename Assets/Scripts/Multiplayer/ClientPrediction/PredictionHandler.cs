@@ -51,6 +51,12 @@ public class PredictionHandler : NetworkBehaviour
     }
 
     [Client]
+    public void ProcessScaling(Vector3 inScale)
+    {
+        inputScale = inScale;
+    }
+
+    [Client]
     public void ProcessRotation(Quaternion inRot)
     {
         inputRotation = inRot;
