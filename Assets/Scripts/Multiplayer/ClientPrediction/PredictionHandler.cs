@@ -34,7 +34,6 @@ public class PredictionHandler : NetworkBehaviour
     public void OnClientInput(InputPayload inputPayload)
     {
         inputQueue.Enqueue(inputPayload);
-        Debug.Log("QUEUEING CLIENT INPUT ON: " + transform.name);
     }
 
     [Client]
@@ -145,6 +144,7 @@ public class PredictionHandler : NetworkBehaviour
     [Client]
     void HandleServerReconciliation()
     {
+        Debug.Log("RECONCILING");
         lastProcessedState = latestServerState;
 
         int serverStateBufferIndex = latestServerState.tick % BUFFER_SIZE;
@@ -218,7 +218,6 @@ public class PredictionHandler : NetworkBehaviour
     [Command]
     void SendToServer(InputPayload input)
     {
-        Debug.Log("RECIEVING CLIENT INFO ON: " + transform.name);
         OnClientInput(input);
     }
 
