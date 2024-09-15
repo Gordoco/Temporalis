@@ -139,19 +139,19 @@ public class PredictionHandler : NetworkBehaviour
             clientStateBuffer[serverStateBufferIndex] = latestServerState;
 
             //Resimulate the rest of the ticks up to the current client tick
-            int tickToProcess = (latestServerState.tick) + 1 % BUFFER_SIZE;
+            int tickToProcess = (latestServerState.tick) + 1;
 
             while (tickToProcess < currentTick)
             {
+                int bufferIndex = tickToProcess % BUFFER_SIZE;
+
                 //Process new movement with reconciled state
-                StatePayload statePayload = ProcessMovement(inputBuffer[tickToProcess]);
+                StatePayload statePayload = ProcessMovement(inputBuffer[bufferIndex]);
 
                 //Update buffer with recalculated state
-                int bufferIndex = tickToProcess % BUFFER_SIZE;
                 clientStateBuffer[bufferIndex] = statePayload;
 
                 tickToProcess++;
-                tickToProcess = tickToProcess % BUFFER_SIZE;
             }
         }
 
