@@ -88,7 +88,7 @@ public class PredictionHandler : NetworkBehaviour
         while (timer >= minTimeBetweenTicks)
         {
             timer -= minTimeBetweenTicks;
-            if (isClient && GetComponentInParent<NetworkIdentity>().isLocalPlayer) ClientHandleTick();
+            if (isClient) ClientHandleTick();
             if (isServer) ServerHandleTick();
             currentTick++;
         }
