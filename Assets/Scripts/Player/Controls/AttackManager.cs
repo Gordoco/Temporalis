@@ -107,7 +107,7 @@ public abstract class AttackManager : NetworkBehaviour
     protected virtual void Update()
     {
         if (!bEnabled) return;
-        if (!isOwned) { enabled = false; return; }
+        if (!isOwned) { return; }
 
         if (!statManager.Initialized) return;
 
