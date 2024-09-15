@@ -41,6 +41,7 @@ public class PredictionHandler : NetworkBehaviour
         latestServerState = serverState;
     }
 
+    [Client]
     public void ProcessTranslation(Vector3 inLoc)
     {
         if (!ROTATION_ONLY) 
@@ -49,6 +50,7 @@ public class PredictionHandler : NetworkBehaviour
             Debug.LogError("[ ERROR: PredictionHandler.cs - Attempting to process a translation on a rotation locked PredictionHandler ]");
     }
 
+    [Client]
     public void ProcessRotation(Quaternion inRot)
     {
         inputRotation = inRot;
