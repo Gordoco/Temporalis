@@ -55,8 +55,7 @@ public class CommandoAttack : AttackManager
         GameObject Camera = null;
         for (int i = 0; i < gameObject.transform.childCount; i++) if (gameObject.transform.GetChild(i).tag == "MainCamera") { Camera = gameObject.transform.GetChild(i).gameObject; break; }
 
-        if (isClient) StartCoroutine(WeaponSwell(Weapon.transform.GetChild(0).gameObject, statManager.GetStat(NumericalStats.AttackSpeed)));
-        if (isClient) StartCoroutine(WeaponSwell(Weapon.transform.GetChild(1).gameObject, statManager.GetStat(NumericalStats.AttackSpeed)));
+        if (isClient) StartCoroutine(WeaponSwell(Weapon, statManager.GetStat(NumericalStats.AttackSpeed)));
 
         Vector3 start1 = Camera.transform.position;
         Vector3 start2 = start1;
