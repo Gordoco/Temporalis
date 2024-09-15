@@ -202,8 +202,8 @@ public abstract class AttackManager : NetworkBehaviour
         }
 
         HandleMovement();
-        HandleJump();
-        HandleLook();
+        //HandleJump();
+        //HandleLook();
     }
 
     protected virtual void HandleMovement()
