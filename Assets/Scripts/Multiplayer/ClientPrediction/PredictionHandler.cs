@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
+using Unity.VisualScripting;
 
 public class PredictionHandler : NetworkBehaviour
 {
@@ -10,6 +11,8 @@ public class PredictionHandler : NetworkBehaviour
     private int currentTick;
     private float minTimeBetweenTicks;
     [SerializeField] private float SERVER_TICK_RATE = 45f;
+    [SerializeField] private bool ROTATION_ONLY = false;
+    [SerializeField] private bool LOCAL_SPACE = false;
     private const int BUFFER_SIZE = 1024;
 
     //Client specific
@@ -19,6 +22,8 @@ public class PredictionHandler : NetworkBehaviour
     private StatePayload lastProcessedState;
     private float horizontalInput;
     private float verticalInput;
+    private Vector3 inputLocation;
+    private Quaternion inputRotation;
 
     //Server Specific
     private StatePayload[] serverStateBuffer;
@@ -34,6 +39,28 @@ public class PredictionHandler : NetworkBehaviour
     public void OnServerMovementState(StatePayload serverState) 
     {
         latestServerState = serverState;
+    }
+
+    public void ProcessTranslation(Vector3 inLoc)
+    {
+        if (!ROTATION_ONLY) 
+            inputLocation = inLoc;
+        else
+            Debug.LogError("[ ERROR: PredictionHandler.cs - Attempting to process a translation on a rotation locked PredictionHandler ]");
+    }
+
+    public void ProcessRotation(Quaternion inRot)
+    {
+        inputRotation = inRot;
+    }
+
+    /// <summary>
+    /// Equivalent of delta time for the prediction behavior
+    /// </summary>
+    /// <returns></returns>
+    public float GetMinTimeBetweenTicks()
+    {
+        return minTimeBetweenTicks;
     }
 
     void Start()
@@ -56,21 +83,12 @@ public class PredictionHandler : NetworkBehaviour
 
     void Update()
     {
-        if (isClient && !isServer)
-        {
-            if (transform.root.name == "LocalGamePlayer")
-            {
-                horizontalInput = Input.GetAxis("Horizontal");
-                verticalInput = Input.GetAxis("Vertical");
-            }
-        }
-
         timer += Time.deltaTime;
         while (timer >= minTimeBetweenTicks)
         {
             timer -= minTimeBetweenTicks;
-            if (isClient && GetComponent<NetworkIdentity>().isLocalPlayer) ClientHandleTick();
-            if (isServer) ServerHandleTick();
+            if (isClient && GetComponentInParent<NetworkIdentity>().isLocalPlayer) ClientHandleTick();
+            if (isServer && !isClient) ServerHandleTick();
             currentTick++;
         }
     }
@@ -90,7 +108,8 @@ public class PredictionHandler : NetworkBehaviour
         // Add payload to inputBuffer
         InputPayload inputPayload = new InputPayload();
         inputPayload.tick = currentTick;
-        inputPayload.inputVector = new Vector3(horizontalInput, 0, verticalInput);
+        if (!ROTATION_ONLY) inputPayload.inputVector = inputLocation;
+        inputPayload.inputRot = inputRotation;
         inputBuffer[bufferIndex] = inputPayload;
 
         clientStateBuffer[bufferIndex] = ProcessMovement(inputPayload);
@@ -156,12 +175,38 @@ public class PredictionHandler : NetworkBehaviour
 
     StatePayload ProcessMovement(InputPayload input)
     {
-        transform.position += input.inputVector * 5f * minTimeBetweenTicks;
+        if (!ROTATION_ONLY)
+        {
+            if (LOCAL_SPACE)
+            {
+                transform.localPosition = input.inputVector;
+            }
+            else if (GetComponent<CharacterController>())
+            {
+                CharacterController CC = GetComponent<CharacterController>();
+                CC.Move(input.inputVector * minTimeBetweenTicks);
+            }
+            else
+            {
+                transform.position += input.inputVector * minTimeBetweenTicks;
+            }
+        }
+        if (LOCAL_SPACE) transform.localRotation = input.inputRot;
+        else transform.rotation = input.inputRot;
 
-        return new StatePayload()
+        return !LOCAL_SPACE ? 
+        new StatePayload()
         {
             tick = input.tick,
             position = transform.position,
+            rotation = transform.rotation,
+        }
+        :
+        new StatePayload()
+        {
+            tick = input.tick,
+            position = transform.localPosition,
+            rotation = transform.localRotation,
         };
     }
 

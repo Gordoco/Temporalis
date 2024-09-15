@@ -6,12 +6,25 @@ using Mirror;
 /// <summary>
 /// Abstract interface for handling the network resolution of player controls
 /// </summary>
+[RequireComponent(typeof(PredictionHandler))]
 public abstract class AttackManager : NetworkBehaviour
 {
     // Editor values
     [SerializeField] private GameObject PauseMenuPrefab;
     [SerializeField] protected StatManager statManager;
     [SerializeField] private GameObject StunnedParticleEffect;
+    [SerializeField] private float Gravity = 1f;
+    [SerializeField] private float mouseXSensitivity = 100f;
+    [SerializeField] private float mouseYSensitivity = 1f;
+    [SerializeField] private GameObject PlayerBody;
+    [SerializeField] private GameObject PlayerCamera;
+    [SerializeField] private View TopDownView = new View(new Vector3(0, 3, -2), new Vector3(52, 0, 0));
+    [SerializeField] private View StraightView = new View(new Vector3(0, 2.23f, -4.18f), new Vector3(10, 0, 0));
+    [SerializeField] private View DownTopView = new View(new Vector3(0, -0.27f, -1), new Vector3(-70, 0, 0));
+
+    private float yRotation = 0.3f;
+
+    private Vector3 moveDirection;
 
     // Editor network values
     [SerializeField, SyncVar] protected bool bIgnorePrimaryCooldown = false;
@@ -70,6 +83,8 @@ public abstract class AttackManager : NetworkBehaviour
     {
         GetComponent<HitManager>().OnStunned += ShowStunnedEffect;
         GetComponent<HitManager>().OnUnStunned += HideStunnedEffect;
+
+        Cursor.lockState = CursorLockMode.Locked;
     }
 
     private void ShowStunnedEffect(object sender, System.EventArgs e)
@@ -180,6 +195,80 @@ public abstract class AttackManager : NetworkBehaviour
                 Cursor.lockState = CursorLockMode.Locked;
                 Cursor.visible = false;
             }
+        }
+
+        HandleMovement();
+        HandleJump();
+        HandleLook();
+    }
+
+    protected virtual void HandleMovement()
+    {
+        PredictionHandler predictionHandler = GetComponent<PredictionHandler>();
+
+        moveDirection.x = Input.GetAxis("Horizontal");
+        moveDirection.y -= Gravity;
+        moveDirection.z = Input.GetAxis("Vertical");
+
+        Vector3 dir = transform.TransformDirection(new Vector3(moveDirection.x, 0, moveDirection.z)).normalized * (float)statManager.GetStat(NumericalStats.MovementSpeed);
+        dir.y = moveDirection.y;
+
+        predictionHandler.ProcessTranslation(dir);
+    }
+
+    protected virtual void HandleLook()
+    {
+        PredictionHandler predictionHandler = GetComponent<PredictionHandler>();
+        PredictionHandler cameraPredictionHandler = PlayerCamera.GetComponent<PredictionHandler>();
+
+        float mouseX = Input.GetAxis("Mouse X") * mouseXSensitivity * predictionHandler.GetMinTimeBetweenTicks();
+        float mouseY = -1 * Input.GetAxis("Mouse Y") * mouseYSensitivity * predictionHandler.GetMinTimeBetweenTicks();
+
+        yRotation = Mathf.Clamp(yRotation + mouseY, 0, 1); Vector3 pos;
+
+        if (yRotation <= 0.5)
+            pos = new Vector3(
+                Mathf.Lerp(DownTopView.loc.x, StraightView.loc.x, yRotation * 2),
+                Mathf.Lerp(DownTopView.loc.y, StraightView.loc.y, yRotation * 2),
+                Mathf.Lerp(DownTopView.loc.z, StraightView.loc.z, yRotation * 2)
+            );
+        else
+            pos = new Vector3(
+                Mathf.Lerp(StraightView.loc.x, TopDownView.loc.x, (yRotation - 0.5f) * 2),
+                Mathf.Lerp(StraightView.loc.y, TopDownView.loc.y, (yRotation - 0.5f) * 2),
+                Mathf.Lerp(StraightView.loc.z, TopDownView.loc.z, (yRotation - 0.5f) * 2)
+            );
+
+        Quaternion rot;
+        if (yRotation <= 0.5)
+            rot = Quaternion.Euler(new Vector3(
+                Mathf.Lerp(DownTopView.rot.x, StraightView.rot.x, yRotation * 2),
+                Mathf.Lerp(DownTopView.rot.y, StraightView.rot.y, yRotation * 2),
+                Mathf.Lerp(DownTopView.rot.z, StraightView.rot.z, yRotation * 2)
+            ));
+        else
+            rot = Quaternion.Euler(new Vector3(
+                Mathf.Lerp(StraightView.rot.x, TopDownView.rot.x, (yRotation - 0.5f) * 2),
+                Mathf.Lerp(StraightView.rot.y, TopDownView.rot.y, (yRotation - 0.5f) * 2),
+                Mathf.Lerp(StraightView.rot.z, TopDownView.rot.z, (yRotation - 0.5f) * 2)
+            ));
+
+        //X Rotation
+        Quaternion newRot = Quaternion.Euler(transform.rotation.eulerAngles + Vector3.up * mouseX);
+
+        predictionHandler.ProcessRotation(newRot);
+        cameraPredictionHandler.ProcessTranslation(pos);
+        cameraPredictionHandler.ProcessRotation(rot);
+    }
+
+    protected virtual void HandleJump()
+    {
+        bool bJump = Input.GetButton("Jump");
+
+        if (GetComponent<CharacterController>().isGrounded)
+        {
+            if (bJump) moveDirection.y = (float)statManager.GetStat(NumericalStats.JumpHeight);
+            else moveDirection.y = 0;
         }
     }
 
