@@ -36,11 +36,6 @@ public class PredictionHandler : NetworkBehaviour
         latestServerState = serverState;
     }
 
-    private void Awake()
-    {
-        if (transform.root.name != "LocalGamePlayer") enabled = false;
-    }
-
     void Start()
     {
         minTimeBetweenTicks = 1f / SERVER_TICK_RATE;
@@ -61,8 +56,11 @@ public class PredictionHandler : NetworkBehaviour
     {
         if (isClient)
         {
-            horizontalInput = Input.GetAxis("Horizontal");
-            verticalInput = Input.GetAxis("Vertical");
+            if (transform.root.name == "LocalGamePlayer")
+            {
+                horizontalInput = Input.GetAxis("Horizontal");
+                verticalInput = Input.GetAxis("Vertical");
+            }
         }
 
         timer += Time.deltaTime;
