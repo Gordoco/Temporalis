@@ -141,6 +141,7 @@ public class PredictionHandler : NetworkBehaviour
     [Client]
     void HandleServerReconciliation()
     {
+        Debug.Log("[RECONCILING]");
         lastProcessedState = latestServerState;
 
         int serverStateBufferIndex = latestServerState.tick % BUFFER_SIZE;
@@ -191,6 +192,7 @@ public class PredictionHandler : NetworkBehaviour
                 transform.position += input.inputVector * minTimeBetweenTicks;
             }
         }
+
         if (LOCAL_SPACE) transform.localRotation = input.inputRot;
         else transform.rotation = input.inputRot;
 
