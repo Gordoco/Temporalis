@@ -112,7 +112,7 @@ public class PredictionHandler : NetworkBehaviour
             (lastProcessedState.Equals(default(StatePayload)) ||
             !latestServerState.Equals(lastProcessedState)))
         {
-            //HandleServerReconciliation();
+            HandleServerReconciliation();
         }
 
         int bufferIndex = currentTick % BUFFER_SIZE;

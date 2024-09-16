@@ -205,7 +205,7 @@ public abstract class AttackManager : NetworkBehaviour
             }
         }
 
-        if (isClient)
+        if (isOwned && isClient)
         {
             HandleMovement();
             HandleLook();
