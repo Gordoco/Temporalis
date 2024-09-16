@@ -128,7 +128,7 @@ public class CommandoAttack : AttackManager
     {
         //Debug.Log("Started Swell");
         float swellSpeed = 0.02f;
-        Vector3 baseSize = Weapon.transform.localScale;
+        Vector3 baseSize = Vector3.one;
         PredictionHandler handler = Weapon.GetComponent<PredictionHandler>();
         while (Weapon.transform.localScale.x < baseSize.x + 0.1f)
         {
