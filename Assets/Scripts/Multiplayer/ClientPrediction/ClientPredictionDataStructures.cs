@@ -14,6 +14,7 @@ public struct StatePayload
 {
     public int tick;
     public Vector3 position;
+    public Vector3 velocity;
     public Vector3 scale;
     public Quaternion rotation;
 }

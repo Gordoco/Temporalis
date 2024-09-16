@@ -129,24 +129,31 @@ public class PredictionHandler : NetworkBehaviour
 
         //Send input to Server
         Vector3 inputPos = LOCAL_SPACE ? transform.localPosition : GetComponent<Rigidbody>().position;
+        Vector3 inputVel = LOCAL_SPACE ? Vector3.zero : GetComponent<Rigidbody>().velocity;
         Quaternion inputRot = LOCAL_SPACE ? transform.localRotation : transform.rotation;
         Vector3 iScale = transform.localScale;
 
         if (!isServer) SendToServer(inputPayload);
         else
         {
-            ReplicateToClientsDirectly(inputPos, iScale, inputRot);
+            ReplicateToClientsDirectly(inputPos, inputVel, iScale, inputRot);
         }
     }
 
     [ClientRpc]
-    void ReplicateToClientsDirectly(Vector3 pos, Vector3 scale, Quaternion rot)
+    void ReplicateToClientsDirectly(Vector3 pos, Vector3 vel, Vector3 scale, Quaternion rot)
     {
         if (!ROTATION_ONLY)
         {
             if (LOCAL_SPACE) transform.localPosition = pos;
-            else GetComponent<Rigidbody>().MovePosition(pos);
+            else
+            {
+                GetComponent<Rigidbody>().MovePosition(pos);
+                GetComponent<Rigidbody>().velocity = vel;
+            }
         }
+
+
 
         if (LOCAL_SPACE) transform.localRotation = rot;
         else transform.rotation = rot;
@@ -191,7 +198,11 @@ public class PredictionHandler : NetworkBehaviour
             if (!ROTATION_ONLY)
             {
                 if (LOCAL_SPACE) transform.localPosition = latestServerState.position;
-                else GetComponent<Rigidbody>().MovePosition(latestServerState.position);
+                else
+                {
+                    GetComponent<Rigidbody>().MovePosition(latestServerState.position);
+                    GetComponent<Rigidbody>().velocity = latestServerState.velocity;
+                }
             }
             
             if (LOCAL_SPACE) transform.localRotation = latestServerState.rotation;
@@ -252,6 +263,7 @@ public class PredictionHandler : NetworkBehaviour
         {
             tick = input.tick,
             position = GetComponent<Rigidbody>().position,
+            velocity = GetComponent<Rigidbody>().velocity,
             rotation = transform.rotation,
             scale = transform.localScale,
         }
