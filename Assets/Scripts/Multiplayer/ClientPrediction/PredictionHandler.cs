@@ -153,8 +153,6 @@ public class PredictionHandler : NetworkBehaviour
             }
         }
 
-
-
         if (LOCAL_SPACE) transform.localRotation = rot;
         else transform.rotation = rot;
 
@@ -201,7 +199,7 @@ public class PredictionHandler : NetworkBehaviour
                 if (LOCAL_SPACE) transform.localPosition = latestServerState.position;
                 else
                 {
-                    GetComponent<Rigidbody>().MovePosition(latestServerState.position);
+                    GetComponent<Rigidbody>().position = latestServerState.position;
                     //GetComponent<Rigidbody>().velocity = latestServerState.velocity;
                 }
             }
