@@ -142,7 +142,7 @@ public class PredictionHandler : NetworkBehaviour
         if (!ROTATION_ONLY)
         {
             if (LOCAL_SPACE) transform.localPosition = pos;
-            else transform.position = pos;
+            else GetComponent<Rigidbody>().position = pos;
         }
 
         if (LOCAL_SPACE) transform.localRotation = rot;
