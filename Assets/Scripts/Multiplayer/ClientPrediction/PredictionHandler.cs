@@ -93,7 +93,7 @@ public class PredictionHandler : NetworkBehaviour
         }
     }
 
-    void Update()
+    void LateUpdate()
     {
         timer += Time.deltaTime;
         while (timer >= minTimeBetweenTicks)
