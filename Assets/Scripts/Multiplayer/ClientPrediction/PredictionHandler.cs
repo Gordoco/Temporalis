@@ -133,7 +133,11 @@ public class PredictionHandler : NetworkBehaviour
         Vector3 iScale = transform.localScale;
 
         if (!isServer) SendToServer(inputPayload);
-        else ReplicateToClientsDirectly(inputPos, iScale, inputRot);
+        else
+        {
+            Debug.Log(transform.root.name + ": IS REPLICATING DIRECTLY");
+            ReplicateToClientsDirectly(inputPos, iScale, inputRot);
+        }
     }
 
     [ClientRpc]
