@@ -220,6 +220,12 @@ public class PredictionHandler : NetworkBehaviour
 
     StatePayload ProcessMovement(InputPayload input)
     {
+        if (!LOCAL_SPACE && GetComponent<Rigidbody>() == null)
+        {
+            Debug.LogError("[ERROR PredictionHandler.cs - No Rigidbody on world space PredictionHandler]");
+            return default;
+        }
+
         if (!ROTATION_ONLY)
         {
             if (LOCAL_SPACE)
@@ -228,7 +234,8 @@ public class PredictionHandler : NetworkBehaviour
             }
             else
             {
-                transform.position += input.inputVector * minTimeBetweenTicks;
+                Rigidbody rb = GetComponent<Rigidbody>();
+                rb.velocity = new Vector3(input.inputVector.x, rb.velocity.y + input.inputVector.y, input.inputVector.z);
             }
         }
 
@@ -241,7 +248,7 @@ public class PredictionHandler : NetworkBehaviour
         new StatePayload()
         {
             tick = input.tick,
-            position = transform.position,
+            position = GetComponent<Rigidbody>().position,
             rotation = transform.rotation,
             scale = transform.localScale,
         }

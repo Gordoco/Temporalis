@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 /// <summary>
 /// Majority of the logic for player control of the Commando class
@@ -127,14 +128,15 @@ public class CommandoAttack : AttackManager
     {
         //Debug.Log("Started Swell");
         float swellSpeed = 0.02f;
+        Vector3 baseSize = Weapon.transform.localScale;
         PredictionHandler handler = Weapon.GetComponent<PredictionHandler>();
-        for (int i = 0; i < 12; i++)
+        while (Weapon.transform.localScale.x < baseSize.x + 0.1f)
         {
             handler.ProcessScaling(Weapon.transform.localScale + new Vector3(swellSpeed, swellSpeed, swellSpeed));
             //Weapon.transform.localScale += new Vector3(swellSpeed, swellSpeed, swellSpeed);
             yield return new WaitForSeconds(0.01f / (float)AttackSpeed);
         }
-        for (int i = 0; i < 12; i++)
+        while (Weapon.transform.localScale.x > baseSize.x)
         {
             handler.ProcessScaling(Weapon.transform.localScale - new Vector3(swellSpeed, swellSpeed, swellSpeed));
             //Weapon.transform.localScale += new Vector3(-swellSpeed, -swellSpeed, -swellSpeed);
@@ -182,7 +184,7 @@ public class CommandoAttack : AttackManager
         double[] vals = null;
         if (isServer)
         {
-            Debug.Log("SHOULD ONLY BE ONE OF THESE = " + transform.root.name + " || " + statManager.gameObject.transform.root.name);
+            //Debug.Log("SHOULD ONLY BE ONE OF THESE = " + transform.root.name + " || " + statManager.gameObject.transform.root.name);
             if (statManager.GetHealth() - 25 <= 0) statManager.DealDamage(statManager.GetHealth() - 1);
             else statManager.DealDamage(25); //Deal Damage
 
@@ -244,45 +246,20 @@ public class CommandoAttack : AttackManager
     /// </summary>
     protected override void OnAbility3()
     {
-        CharacterController controller = GetComponent<CharacterController>();
         StatManager manager = GetComponent<StatManager>();
         if (JetpackParticleEffect != null) JetpackParticleEffect.SetActive(true);
-        GetComponent<PlayerMove>().SetFlying(true);
+        moveDirection.y = ((float)manager.GetStat(NumericalStats.JumpHeight) * 0.01f) + 0.5f;
+        //GetComponent<PlayerMove>().SetFlying(true);
         //StartCoroutine(JetpackBoost(controller, manager));
-        StartCoroutine(EndJetpack(0.5f + manager.GetStat(NumericalStats.JumpHeight)/64));
+        StartCoroutine(EndJetpack(0.5f + manager.GetStat(NumericalStats.JumpHeight)/16));
     }
 
     IEnumerator EndJetpack(double time)
     {
         yield return new WaitForSeconds((float)time);
         if (JetpackParticleEffect != null) JetpackParticleEffect.SetActive(false);
-        GetComponent<PlayerMove>().SetFlying(false);
-    }
-
-    Vector3 start;
-    int count = 0;
-    IEnumerator JetpackBoost(CharacterController controller, StatManager manager)
-    {
-        start = transform.position;
-        if (JetpackParticleEffect != null) JetpackParticleEffect.SetActive(true);
-        GetComponent<PlayerMove>().SetFlying(true);
-        if (isServer) ClientsToggleFlying(true);
-        while (count < 20)
-        {
-            if (isClient && controller.enabled) controller.Move(Vector3.up * (float)manager.GetStat(NumericalStats.JumpHeight) * 0.001f);
-            count++;
-            yield return new WaitForSeconds(0.02f);
-        }
-        count = 0;
-        if (JetpackParticleEffect != null) JetpackParticleEffect.SetActive(false);
-        GetComponent<PlayerMove>().SetFlying(false);
-        if (isServer) ClientsToggleFlying(false);
-    }
-
-    [ClientRpc]
-    void ClientsToggleFlying(bool b)
-    {
-        GetComponent<PlayerMove>().SetFlying(b);
+        moveDirection.y = 0;
+        //GetComponent<PlayerMove>().SetFlying(false);
     }
 
     /// <summary>
@@ -293,13 +270,13 @@ public class CommandoAttack : AttackManager
         float startLoc = transform.position.y;
         PlayerStatManager manager = GetComponent<PlayerStatManager>();
         if (isServer) manager.ToggleCCImmune(true);
-        GetComponent<PlayerMove>().SetTempGravity(200);
+        moveDirection.y = -10;
         if (isClient) StartCoroutine(CheckForGrounded(startLoc));
     }
 
     private IEnumerator CheckForGrounded(float startLoc)
     {
-        while (!GetComponent<CharacterController>().enabled || !GetComponent<CharacterController>().isGrounded)
+        while (!CheckForGrounded())
         {
             yield return new WaitForSeconds(0.01f);
         }

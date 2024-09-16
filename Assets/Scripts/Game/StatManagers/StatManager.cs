@@ -204,10 +204,14 @@ public abstract class StatManager : NetworkBehaviour
     public void DealDamage(double Damage)
     {
         //Debug.Log("DAMAGED");
-        Shield -= Damage;
-        if (Shield >= 0) return;
-        else Damage = -1 * Shield;
-        Health -= Damage;
+        if (Shield - Damage >= 0)
+        {
+            Shield -= Damage;
+        }
+        else {
+            Health -= (Damage - Shield);
+            Shield = 0;
+        }
         ShouldShowHP = true;
         if (showHPRoutine != null) StopCoroutine(showHPRoutine);
         showHPRoutine = StartCoroutine(ShowHPReset());

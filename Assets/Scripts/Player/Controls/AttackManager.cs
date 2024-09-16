@@ -21,10 +21,6 @@ public abstract class AttackManager : NetworkBehaviour
     [SerializeField] private View StraightView = new View(new Vector3(0, 2.23f, -4.18f), new Vector3(10, 0, 0));
     [SerializeField] private View DownTopView = new View(new Vector3(0, -0.27f, -1), new Vector3(-70, 0, 0));
 
-    private float yRotation = 0.3f;
-
-    private Vector3 moveDirection;
-
     // Editor network values
     [SerializeField, SyncVar] protected bool bIgnorePrimaryCooldown = false;
     [SerializeField, SyncVar] protected bool PrimaryFullAuto = true;
@@ -50,9 +46,15 @@ public abstract class AttackManager : NetworkBehaviour
     protected Coroutine Ability2CooldownCoroutine;
     protected Coroutine Ability3CooldownCoroutine;
     protected Coroutine Ability4CooldownCoroutine;
+    protected Vector3 moveDirection;
 
     // Local values
     private GameObject PauseMenu;
+    private float yRotation = 0.3f;
+    private int AnimMovingHash;
+    private int AnimStrafingHash;
+    private int AnimJumpingHash;
+    private Animator childAnimator;
 
     public bool GetAbilityReady(int abilityNum)
     {
@@ -84,6 +86,11 @@ public abstract class AttackManager : NetworkBehaviour
         GetComponent<HitManager>().OnUnStunned += HideStunnedEffect;
 
         Cursor.lockState = CursorLockMode.Locked;
+
+        AnimMovingHash = Animator.StringToHash("Vertical");
+        AnimStrafingHash = Animator.StringToHash("Horizontal");
+        AnimJumpingHash = Animator.StringToHash("Jumping");
+        childAnimator = GetComponentInChildren<Animator>();
     }
 
     private void ShowStunnedEffect(object sender, System.EventArgs e)
@@ -205,6 +212,11 @@ public abstract class AttackManager : NetworkBehaviour
         }
     }
 
+    protected bool CheckForGrounded()
+    {
+        return Physics.CheckSphere(transform.TransformPoint(GetComponent<CapsuleCollider>().center) + (Vector3.down * (GetComponent<CapsuleCollider>().height / 2)), 0.2f, LayerMask.GetMask("Default"));
+    }
+
     protected virtual void HandleMovement()
     {
         PredictionHandler predictionHandler = GetComponent<PredictionHandler>();
@@ -212,10 +224,28 @@ public abstract class AttackManager : NetworkBehaviour
         moveDirection.x = Input.GetAxis("Horizontal");
         moveDirection.z = Input.GetAxis("Vertical");
 
-        bool bJump = Input.GetButton("Jump");
+        bool bJump = Input.GetButtonDown("Jump");
 
         Vector3 dir = transform.TransformDirection(new Vector3(moveDirection.x, 0, moveDirection.z).normalized) * (float)statManager.GetStat(NumericalStats.MovementSpeed);
-        if (bJump && Physics.CheckSphere(transform.position, GetComponent<CapsuleCollider>().height, LayerMask.GetMask("Default"))) dir.y = (float)statManager.GetStat(NumericalStats.JumpHeight);
+        if (CheckForGrounded())
+        {
+            if (bJump)
+            {
+                dir.y = (float)statManager.GetStat(NumericalStats.JumpHeight);
+            }
+
+            if (moveDirection.y < 0) moveDirection.y = 0;
+
+            if (childAnimator) childAnimator.SetBool(AnimJumpingHash, false);
+
+            if (childAnimator) childAnimator.SetFloat(AnimMovingHash, Input.GetAxis("Vertical"));
+            if (childAnimator) childAnimator.SetFloat(AnimStrafingHash, Input.GetAxis("Horizontal"));
+        }
+        else
+        {
+            if (childAnimator) childAnimator.SetBool(AnimJumpingHash, true);
+        }
+        if (moveDirection.y != 0) dir.y = moveDirection.y;
 
         predictionHandler.ProcessTranslation(dir);
     }
