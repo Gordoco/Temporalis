@@ -188,9 +188,9 @@ public class PredictionHandler : NetworkBehaviour
 
         int serverStateBufferIndex = latestServerState.tick % BUFFER_SIZE;
         float positionError = Vector3.Distance(latestServerState.position, clientStateBuffer[serverStateBufferIndex].position);
-        float velError = Vector3.Distance(latestServerState.velocity, clientStateBuffer[serverStateBufferIndex].velocity);
+        //float velError = Vector3.Distance(latestServerState.velocity, clientStateBuffer[serverStateBufferIndex].velocity);
 
-        if (positionError > 0.001f || velError > 0.001f)
+        if (positionError > 0.001f/* || velError > 0.001f*/)
         {
 
             Debug.Log("RECONCILING");
@@ -202,7 +202,7 @@ public class PredictionHandler : NetworkBehaviour
                 else
                 {
                     GetComponent<Rigidbody>().MovePosition(latestServerState.position);
-                    GetComponent<Rigidbody>().velocity = latestServerState.velocity;
+                    //GetComponent<Rigidbody>().velocity = latestServerState.velocity;
                 }
             }
             
