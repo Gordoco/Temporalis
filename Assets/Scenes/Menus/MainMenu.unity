@@ -1955,7 +1955,7 @@ PrefabInstance:
       objectReference: {fileID: 405800351}
     - target: {fileID: 541125147151204917, guid: bd23b56a587cd4b41b14547811c83a93, type: 3}
       propertyPath: spawnPrefabs.Array.size
-      value: 27
+      value: 26
       objectReference: {fileID: 0}
     - target: {fileID: 541125147151204917, guid: bd23b56a587cd4b41b14547811c83a93, type: 3}
       propertyPath: spawnPrefabs.Array.data[6]

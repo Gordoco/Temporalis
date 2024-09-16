@@ -2559,8 +2559,6 @@ MonoBehaviour:
       m_Image: {fileID: 21300000, guid: 32575116707a4774f8193bb56f33d974, type: 3}
     - m_Text: Dr. Octagon
       m_Image: {fileID: 21300000, guid: a1e000ced6dfb484e842d41aec468d0d, type: 3}
-    - m_Text: TEST PredictionCharacter
-      m_Image: {fileID: 21300000, guid: b7012da4ebf9008458abc3ef9a741f3c, type: 3}
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
