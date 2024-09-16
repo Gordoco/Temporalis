@@ -128,7 +128,7 @@ public class PredictionHandler : NetworkBehaviour
         clientStateBuffer[bufferIndex] = ProcessMovement(inputPayload);
 
         //Send input to Server
-        Vector3 inputPos = LOCAL_SPACE ? transform.localPosition : transform.position;
+        Vector3 inputPos = LOCAL_SPACE ? transform.localPosition : GetComponent<Rigidbody>().velocity;
         Quaternion inputRot = LOCAL_SPACE ? transform.localRotation : transform.rotation;
         Vector3 iScale = transform.localScale;
 
@@ -145,7 +145,7 @@ public class PredictionHandler : NetworkBehaviour
         if (!ROTATION_ONLY)
         {
             if (LOCAL_SPACE) transform.localPosition = pos;
-            else GetComponent<Rigidbody>().MovePosition(pos);
+            else GetComponent<Rigidbody>().velocity = pos;
         }
 
         if (LOCAL_SPACE) transform.localRotation = rot;
@@ -191,7 +191,7 @@ public class PredictionHandler : NetworkBehaviour
             if (!ROTATION_ONLY)
             {
                 if (LOCAL_SPACE) transform.localPosition = latestServerState.position;
-                else GetComponent<Rigidbody>().MovePosition(latestServerState.position);
+                else GetComponent<Rigidbody>().velocity = latestServerState.position;
             }
             
             if (LOCAL_SPACE) transform.localRotation = latestServerState.rotation;
@@ -251,7 +251,7 @@ public class PredictionHandler : NetworkBehaviour
         new StatePayload()
         {
             tick = input.tick,
-            position = GetComponent<Rigidbody>().position,
+            position = GetComponent<Rigidbody>().velocity,
             rotation = transform.rotation,
             scale = transform.localScale,
         }
