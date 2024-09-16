@@ -73,7 +73,7 @@ public class PredictionHandler : NetworkBehaviour
 
     void Start()
     {
-        inputLocation = LOCAL_SPACE ? transform.localPosition : transform.position;
+        inputLocation = LOCAL_SPACE ? transform.localPosition : GetComponent<Rigidbody>().position;
         inputRotation = LOCAL_SPACE ? transform.localRotation : transform.rotation;
         inputScale = transform.localScale;
 

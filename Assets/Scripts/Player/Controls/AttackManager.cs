@@ -226,7 +226,7 @@ public abstract class AttackManager : NetworkBehaviour
 
         bool bJump = Input.GetButtonDown("Jump");
 
-        Vector3 dir = transform.TransformDirection(new Vector3(moveDirection.x, 0, moveDirection.z).normalized) * (float)statManager.GetStat(NumericalStats.MovementSpeed);
+        Vector3 dir = transform.TransformDirection(new Vector3(moveDirection.x, 0, moveDirection.z)).normalized * (float)statManager.GetStat(NumericalStats.MovementSpeed);
         if (CheckForGrounded())
         {
             if (bJump)
