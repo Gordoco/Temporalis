@@ -188,7 +188,7 @@ public class PredictionHandler : NetworkBehaviour
             if (!ROTATION_ONLY)
             {
                 if (LOCAL_SPACE) transform.localPosition = latestServerState.position;
-                else transform.position = latestServerState.position;
+                else GetComponent<Rigidbody>().position = latestServerState.position;
             }
             
             if (LOCAL_SPACE) transform.localRotation = latestServerState.rotation;
