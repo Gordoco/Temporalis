@@ -200,7 +200,7 @@ public class PredictionHandler : NetworkBehaviour
                 else
                 {
                     GetComponent<Rigidbody>().position = latestServerState.position;
-                    //GetComponent<Rigidbody>().velocity = latestServerState.velocity;
+                    GetComponent<Rigidbody>().velocity = latestServerState.velocity;
                 }
             }
             
