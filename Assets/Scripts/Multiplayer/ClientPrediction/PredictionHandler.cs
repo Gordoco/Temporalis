@@ -262,7 +262,7 @@ public class PredictionHandler : NetworkBehaviour
         };
     }
 
-    [Command]
+    [Command(requiresAuthority = false)]
     void SendToServer(InputPayload input)
     {
         OnClientInput(input);
