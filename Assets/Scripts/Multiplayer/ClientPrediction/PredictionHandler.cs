@@ -135,7 +135,6 @@ public class PredictionHandler : NetworkBehaviour
         if (!isServer) SendToServer(inputPayload);
         else
         {
-            Debug.Log(transform.root.name + ": IS REPLICATING DIRECTLY");
             ReplicateToClientsDirectly(inputPos, iScale, inputRot);
         }
     }
@@ -146,7 +145,7 @@ public class PredictionHandler : NetworkBehaviour
         if (!ROTATION_ONLY)
         {
             if (LOCAL_SPACE) transform.localPosition = pos;
-            else GetComponent<Rigidbody>().position = pos;
+            else GetComponent<Rigidbody>().MovePosition(pos);
         }
 
         if (LOCAL_SPACE) transform.localRotation = rot;
@@ -192,7 +191,7 @@ public class PredictionHandler : NetworkBehaviour
             if (!ROTATION_ONLY)
             {
                 if (LOCAL_SPACE) transform.localPosition = latestServerState.position;
-                else GetComponent<Rigidbody>().position = latestServerState.position;
+                else GetComponent<Rigidbody>().MovePosition(latestServerState.position);
             }
             
             if (LOCAL_SPACE) transform.localRotation = latestServerState.rotation;
