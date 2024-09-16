@@ -188,8 +188,9 @@ public class PredictionHandler : NetworkBehaviour
 
         int serverStateBufferIndex = latestServerState.tick % BUFFER_SIZE;
         float positionError = Vector3.Distance(latestServerState.position, clientStateBuffer[serverStateBufferIndex].position);
+        float velError = Vector3.Distance(latestServerState.velocity, clientStateBuffer[serverStateBufferIndex].velocity);
 
-        if (positionError > 0.001f)
+        if (positionError > 0.01f || velError > 0.01f)
         {
 
             Debug.Log("RECONCILING");
