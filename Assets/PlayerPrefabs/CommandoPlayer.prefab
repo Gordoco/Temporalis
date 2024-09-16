@@ -490,7 +490,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  SERVER_TICK_RATE: 45
+  SERVER_TICK_RATE: 120
   ROTATION_ONLY: 0
   LOCAL_SPACE: 0
 --- !u!54 &5801580958858338783
@@ -645,7 +645,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  SERVER_TICK_RATE: 45
+  SERVER_TICK_RATE: 120
   ROTATION_ONLY: 0
   LOCAL_SPACE: 1
 --- !u!114 &3231245317649047214
@@ -709,7 +709,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  SERVER_TICK_RATE: 45
+  SERVER_TICK_RATE: 120
   ROTATION_ONLY: 0
   LOCAL_SPACE: 1
 --- !u!1 &3505553184352942576

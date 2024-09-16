@@ -11,7 +11,7 @@ public class PredictionHandler : NetworkBehaviour
     private float timer;
     private int currentTick;
     private float minTimeBetweenTicks;
-    [SerializeField] private float SERVER_TICK_RATE = 45f;
+    [SerializeField] private float SERVER_TICK_RATE = 120f;
     [SerializeField] private bool ROTATION_ONLY = false;
     [SerializeField] private bool LOCAL_SPACE = false;
     private const int BUFFER_SIZE = 1024;
@@ -190,7 +190,7 @@ public class PredictionHandler : NetworkBehaviour
         float positionError = Vector3.Distance(latestServerState.position, clientStateBuffer[serverStateBufferIndex].position);
         float velError = Vector3.Distance(latestServerState.velocity, clientStateBuffer[serverStateBufferIndex].velocity);
 
-        if (positionError > 0.01f || velError > 0.01f)
+        if (positionError > 0.001f || velError > 0.001f)
         {
 
             Debug.Log("RECONCILING");
