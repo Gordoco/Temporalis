@@ -231,7 +231,7 @@ public abstract class AttackManager : NetworkBehaviour
         {
             if (bJump)
             {
-                dir.y = (float)statManager.GetStat(NumericalStats.JumpHeight);
+                dir.y = ((float)statManager.GetStat(NumericalStats.JumpHeight)/8) + 5;
             }
 
             if (moveDirection.y < 0) moveDirection.y = 0;
