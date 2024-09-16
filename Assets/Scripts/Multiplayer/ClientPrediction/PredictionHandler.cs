@@ -132,8 +132,8 @@ public class PredictionHandler : NetworkBehaviour
         Quaternion inputRot = LOCAL_SPACE ? transform.localRotation : transform.rotation;
         Vector3 iScale = transform.localScale;
 
-        if (!isServer) SendToServer(inputPayload);
-        else
+        //if (!isServer) SendToServer(inputPayload);
+        if(isServer)//else
         {
             ReplicateToClientsDirectly(inputPos, iScale, inputRot);
         }
