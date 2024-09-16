@@ -205,7 +205,7 @@ public abstract class AttackManager : NetworkBehaviour
             }
         }
 
-        if (isOwned && isClient)
+        if (isClient)
         {
             HandleMovement();
             HandleLook();
@@ -222,6 +222,9 @@ public abstract class AttackManager : NetworkBehaviour
         PredictionHandler predictionHandler = GetComponent<PredictionHandler>();
 
         moveDirection.x = Input.GetAxis("Horizontal");
+
+        if (moveDirection.x != 0) Debug.Log("RUNNING MOVEMENT ON THIS DEVICE");
+
         moveDirection.z = Input.GetAxis("Vertical");
 
         bool bJump = Input.GetButtonDown("Jump");
