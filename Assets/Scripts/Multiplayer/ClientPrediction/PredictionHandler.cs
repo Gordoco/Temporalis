@@ -73,7 +73,7 @@ public class PredictionHandler : NetworkBehaviour
 
     void Start()
     {
-        inputLocation = LOCAL_SPACE ? transform.localPosition : GetComponent<Rigidbody>().position;
+        inputLocation = LOCAL_SPACE ? transform.localPosition : /*GetComponent<Rigidbody>()*/transform.position;
         inputRotation = LOCAL_SPACE ? transform.localRotation : transform.rotation;
         inputScale = transform.localScale;
 
@@ -128,15 +128,15 @@ public class PredictionHandler : NetworkBehaviour
         clientStateBuffer[bufferIndex] = ProcessMovement(inputPayload);
 
         //Send input to Server
-        Vector3 inputPos = LOCAL_SPACE ? transform.localPosition : GetComponent<Rigidbody>().position;
-        Vector3 inputVel = LOCAL_SPACE ? Vector3.zero : GetComponent<Rigidbody>().velocity;
+        Vector3 inputPos = LOCAL_SPACE ? transform.localPosition : /*GetComponent<Rigidbody>()*/transform.position;
+        //Vector3 inputVel = LOCAL_SPACE ? Vector3.zero : GetComponent<Rigidbody>().velocity;
         Quaternion inputRot = LOCAL_SPACE ? transform.localRotation : transform.rotation;
         Vector3 iScale = transform.localScale;
 
         if (!isServer) SendToServer(inputPayload);
         else
         {
-            ReplicateToClientsDirectly(inputPos, inputVel, iScale, inputRot);
+            ReplicateToClientsDirectly(inputPos, Vector3.zero, iScale, inputRot);
         }
     }
 
@@ -148,8 +148,9 @@ public class PredictionHandler : NetworkBehaviour
             if (LOCAL_SPACE) transform.localPosition = pos;
             else
             {
-                GetComponent<Rigidbody>().MovePosition(pos);
-                GetComponent<Rigidbody>().velocity = vel;
+                transform.position = pos;
+                //GetComponent<Rigidbody>().MovePosition(pos);
+                //GetComponent<Rigidbody>().velocity = vel;
             }
         }
 
@@ -199,7 +200,8 @@ public class PredictionHandler : NetworkBehaviour
                 if (LOCAL_SPACE) transform.localPosition = latestServerState.position;
                 else
                 {
-                    GetComponent<Rigidbody>().MovePosition(latestServerState.position);
+                    GetComponent<CharacterController>().Move(latestServerState.position);
+                    //GetComponent<Rigidbody>().MovePosition(latestServerState.position);
                     //GetComponent<Rigidbody>().velocity = latestServerState.velocity;
                 }
             }
@@ -233,11 +235,12 @@ public class PredictionHandler : NetworkBehaviour
 
     StatePayload ProcessMovement(InputPayload input)
     {
-        if (!LOCAL_SPACE && GetComponent<Rigidbody>() == null)
+        /*if (!LOCAL_SPACE && GetComponent<Rigidbody>() == null)
         {
             Debug.LogError("[ERROR PredictionHandler.cs - No Rigidbody on world space PredictionHandler]");
             return default;
-        }
+        }*/
+
 
         if (!ROTATION_ONLY)
         {
@@ -247,8 +250,10 @@ public class PredictionHandler : NetworkBehaviour
             }
             else
             {
-                Rigidbody rb = GetComponent<Rigidbody>();
-                rb.velocity = new Vector3(input.inputVector.x, rb.velocity.y + input.inputVector.y, input.inputVector.z);
+                //Rigidbody rb = GetComponent<Rigidbody>();
+                //rb.velocity = new Vector3(input.inputVector.x, rb.velocity.y + input.inputVector.y, input.inputVector.z);
+
+                GetComponent<CharacterController>().Move(input.inputVector * minTimeBetweenTicks);
             }
         }
 
@@ -261,8 +266,8 @@ public class PredictionHandler : NetworkBehaviour
         new StatePayload()
         {
             tick = input.tick,
-            position = GetComponent<Rigidbody>().position,
-            velocity = GetComponent<Rigidbody>().velocity,
+            position = /*GetComponent<Rigidbody>()*/transform.position,
+            //velocity = GetComponent<Rigidbody>().velocity,
             rotation = transform.rotation,
             scale = transform.localScale,
         }

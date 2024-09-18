@@ -16,7 +16,6 @@ public class CommandoAttack : AttackManager
     [SerializeField] private GameObject GrenadePrefab;
     [SerializeField] private GameObject LShotStart;
     [SerializeField] private GameObject RShotStart;
-    [SerializeField] private GameObject Weapon;
 
     [SerializeField] private GameObject PrimaryAttackParticleEffect;
     [SerializeField] private GameObject DiveBombExplosionPrefab;
@@ -191,7 +190,7 @@ public class CommandoAttack : AttackManager
             vals = new double[3];
             vals[0] = statManager.GetStat(NumericalStats.AttackSpeed);
             vals[1] = statManager.GetStat(NumericalStats.MovementSpeed);
-            vals[2] = statManager.GetStat(NumericalStats.JumpHeight);
+            vals[2] = statManager.GetStat(NumericalStats.JumpHeight)/2;
 
             statManager.ModifyStat(NumericalStats.AttackSpeed, vals[0]);
             statManager.ModifyStat(NumericalStats.MovementSpeed, vals[1]);
@@ -248,10 +247,11 @@ public class CommandoAttack : AttackManager
     {
         StatManager manager = GetComponent<StatManager>();
         if (JetpackParticleEffect != null) JetpackParticleEffect.SetActive(true);
-        moveDirection.y = ((float)manager.GetStat(NumericalStats.JumpHeight) * 0.01f) + 0.5f;
+        GravityOverride = true;
+        moveDirection.y += ((float)manager.GetStat(NumericalStats.JumpHeight)/3) + 20;
         //GetComponent<PlayerMove>().SetFlying(true);
         //StartCoroutine(JetpackBoost(controller, manager));
-        StartCoroutine(EndJetpack(0.5f + manager.GetStat(NumericalStats.JumpHeight)/16));
+        StartCoroutine(EndJetpack(1f));
     }
 
     IEnumerator EndJetpack(double time)
@@ -259,6 +259,7 @@ public class CommandoAttack : AttackManager
         yield return new WaitForSeconds((float)time);
         if (JetpackParticleEffect != null) JetpackParticleEffect.SetActive(false);
         moveDirection.y = 0;
+        GravityOverride = false;
         //GetComponent<PlayerMove>().SetFlying(false);
     }
 
