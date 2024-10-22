@@ -40,7 +40,7 @@ public class MechArmsAttack : AttackManager
         {
             lastAttackSpeed = statManager.GetStat(NumericalStats.AttackSpeed);
             baseAttackSpeed = lastAttackSpeed;
-            //Start With 1 Arm
+            //Start With 2 Arm
             for (int i = 0; i < 2/*ArmSpawnLocations.Length*/; i++)
             {
                 AddArm();
