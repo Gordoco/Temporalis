@@ -71,14 +71,9 @@ public class CommandoAttack : AttackManager
 
         CameraShakeRef.enabled = true;
 
-        if (isServer)
-        {
-            GameObject MF1 = Instantiate(PrimaryAttackParticleEffect, Gun1MuzzleLoc, Quaternion.LookRotation(dir));
-            GameObject MF2 = Instantiate(PrimaryAttackParticleEffect, Gun2MuzzleLoc, Quaternion.LookRotation(dir));
-            NetworkServer.Spawn(MF1);
-            NetworkServer.Spawn(MF2);
-            PlayShootSound();
-        }
+        GameObject MF1 = Instantiate(PrimaryAttackParticleEffect, Gun1MuzzleLoc, Quaternion.LookRotation(dir));
+        GameObject MF2 = Instantiate(PrimaryAttackParticleEffect, Gun2MuzzleLoc, Quaternion.LookRotation(dir));
+        PlayShootSound();
 
         LShotStart.GetComponent<ParticleSystem>().Play();
         RShotStart.GetComponent<ParticleSystem>().Play();
@@ -88,12 +83,12 @@ public class CommandoAttack : AttackManager
 
         if (hit1.collider != null && hit1.collider.gameObject != null && hit1.collider.gameObject.GetComponentInParent<HitManager>() != null && !hit1.collider.gameObject.GetComponentInParent<PlayerStatManager>()) 
         { 
-            hit1.collider.gameObject.GetComponentInParent<HitManager>().Hit((float)statManager.GetStat(NumericalStats.PrimaryDamage));
+            if (isServer) hit1.collider.gameObject.GetComponentInParent<HitManager>().Hit((float)statManager.GetStat(NumericalStats.PrimaryDamage));
             GameObject HP1 = Instantiate(HitParticleEffect, hit1.transform.position, Quaternion.LookRotation(dir));
         }
         if (hit2.collider != null && hit2.collider.gameObject != null && hit2.collider.gameObject.GetComponentInParent<HitManager>() != null && !hit2.collider.gameObject.GetComponentInParent<PlayerStatManager>()) 
         {
-            hit2.collider.gameObject.GetComponentInParent<HitManager>().Hit((float)statManager.GetStat(NumericalStats.PrimaryDamage));
+            if (isServer) hit2.collider.gameObject.GetComponentInParent<HitManager>().Hit((float)statManager.GetStat(NumericalStats.PrimaryDamage));
             GameObject HP2 = Instantiate(HitParticleEffect, hit2.transform.position, Quaternion.LookRotation(dir));
         }
     }

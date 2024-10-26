@@ -73,7 +73,7 @@ public class PredictionHandler : NetworkBehaviour
 
     void Start()
     {
-        inputLocation = LOCAL_SPACE ? transform.localPosition : /*GetComponent<Rigidbody>()*/transform.position;
+        inputLocation = LOCAL_SPACE ? transform.localPosition : transform.position;
         inputRotation = LOCAL_SPACE ? transform.localRotation : transform.rotation;
         inputScale = transform.localScale;
 
@@ -128,8 +128,7 @@ public class PredictionHandler : NetworkBehaviour
         clientStateBuffer[bufferIndex] = ProcessMovement(inputPayload);
 
         //Send input to Server
-        Vector3 inputPos = LOCAL_SPACE ? transform.localPosition : /*GetComponent<Rigidbody>()*/transform.position;
-        //Vector3 inputVel = LOCAL_SPACE ? Vector3.zero : GetComponent<Rigidbody>().velocity;
+        Vector3 inputPos = LOCAL_SPACE ? transform.localPosition : transform.position;
         Quaternion inputRot = LOCAL_SPACE ? transform.localRotation : transform.rotation;
         Vector3 iScale = transform.localScale;
 
@@ -149,8 +148,6 @@ public class PredictionHandler : NetworkBehaviour
             else
             {
                 transform.position = pos;
-                //GetComponent<Rigidbody>().MovePosition(pos);
-                //GetComponent<Rigidbody>().velocity = vel;
             }
         }
 
@@ -187,9 +184,8 @@ public class PredictionHandler : NetworkBehaviour
 
         int serverStateBufferIndex = latestServerState.tick % BUFFER_SIZE;
         float positionError = Vector3.Distance(latestServerState.position, clientStateBuffer[serverStateBufferIndex].position);
-        //float velError = Vector3.Distance(latestServerState.velocity, clientStateBuffer[serverStateBufferIndex].velocity);
 
-        if (positionError > 0.001f/* || velError > 0.001f*/)
+        if (positionError > 0.001f)
         {
 
             Debug.Log("RECONCILING");
@@ -201,8 +197,6 @@ public class PredictionHandler : NetworkBehaviour
                 else
                 {
                     GetComponent<CharacterController>().Move(latestServerState.position);
-                    //GetComponent<Rigidbody>().MovePosition(latestServerState.position);
-                    //GetComponent<Rigidbody>().velocity = latestServerState.velocity;
                 }
             }
             
