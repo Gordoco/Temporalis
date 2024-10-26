@@ -69,15 +69,17 @@ public class PlayerMove : NetworkBehaviour
     public void Server_Swing(Vector3 center, float radius)
     {
         Swing(center, radius);
+        bInputDisabled = true;
     }
 
     [ClientRpc]
     private void Client_Swing(Vector3 center, float radius)
     {
         Swing(center, radius);
+        bInputDisabled = true;
     }
 
-    private void Swing(Vector3 center, float radius)
+    private void SetSwing(Vector3 center, float radius)
     {
         bInputDisabled = true;
         this.center = center;
@@ -108,7 +110,7 @@ public class PlayerMove : NetworkBehaviour
     /// <summary>
     /// Handles swing movememnt from some classes
     /// </summary>
-    private void Swing()
+    private void Swing(Vector3 center, float radius)
     {
         GameObject Camera = null;
         for (int i = 0; i < gameObject.transform.childCount; i++) if (gameObject.transform.GetChild(i).tag == "MainCamera") { Camera = gameObject.transform.GetChild(i).gameObject; break; }
@@ -186,7 +188,7 @@ public class PlayerMove : NetworkBehaviour
         if (!isOwned || bDead || !bAwake) return;
         if (bInputDisabled)
         {
-            Swing();
+            Swing(this.center, this.radius);
         }
         else
         {

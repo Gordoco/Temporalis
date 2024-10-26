@@ -220,7 +220,7 @@ public abstract class AttackManager : NetworkBehaviour
 
     protected bool CheckForGrounded()
     {
-        return Physics.CheckSphere(transform.TransformPoint(GetComponent<CapsuleCollider>().center) + (Vector3.down * (GetComponent<CapsuleCollider>().height / 2)), 0.4f, LayerMask.GetMask("Default"));
+        return Physics.CheckSphere(transform.TransformPoint(GetComponent<CapsuleCollider>().center) + (Vector3.down * (GetComponent<CapsuleCollider>().height / 1.9f)), 0.4f, LayerMask.GetMask("Default"));
     }
 
     protected virtual void HandleMovement()
@@ -228,7 +228,7 @@ public abstract class AttackManager : NetworkBehaviour
         PredictionHandler predictionHandler = GetComponent<PredictionHandler>();
 
         moveDirection.x = Input.GetAxis("Horizontal");
-        if (!GravityOverride) moveDirection.y -= Gravity;
+        if (!GravityOverride) moveDirection.y -= Gravity * Time.deltaTime;
         moveDirection.z = Input.GetAxis("Vertical");
 
         bool bJump = Input.GetButtonDown("Jump");

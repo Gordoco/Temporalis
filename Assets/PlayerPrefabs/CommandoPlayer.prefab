@@ -92,7 +92,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2654573300976310541}
-  - component: {fileID: 2654573300976310542}
   - component: {fileID: 2654573300976310545}
   - component: {fileID: 7088774869660289746}
   - component: {fileID: 4511540719456656364}
@@ -133,22 +132,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2654573300976310542
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2654573300976310538}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bbb70ea40abfcba4bb67af1c62ad4655, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
-  gravity: 20
 --- !u!143 &2654573300976310545
 CharacterController:
   m_ObjectHideFlags: 0
@@ -206,7 +189,7 @@ MonoBehaviour:
   StunnedParticleEffect: {fileID: 4445243316468252411}
   mouseXSensitivity: 100
   mouseYSensitivity: 1
-  Gravity: 3
+  Gravity: 20
   PlayerBody: {fileID: 9204055790640268309}
   PlayerCamera: {fileID: 2654573301701016692}
   TopDownView:
@@ -284,7 +267,7 @@ MonoBehaviour:
   - stat: 12
     val: 10
   - stat: 13
-    val: 45
+    val: 3
   - stat: 14
     val: 12
   - stat: 15

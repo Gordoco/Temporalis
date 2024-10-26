@@ -275,7 +275,6 @@ public class MechArmsAttack : AttackManager
                 {
                     if (!hit.collider) { swingArm.CallForReset(); swingArm.ToggleActive(true); return; }
                     Vector3 localHit = hit.collider.transform.root.InverseTransformPoint(hit.point);
-                    //Debug.DrawLine(transform.position, hit.collider.transform.root.position + localHit, Color.blue, 15);
                     swingArm.ExternalMovementLoc = localHit;
                     swingArm.ExternalMovementObj = hit.collider.transform.root.gameObject;
                     bSwinging = true;
@@ -286,9 +285,36 @@ public class MechArmsAttack : AttackManager
         {
             if (swingArm.GetGrappled())
             {
-                GetComponent<PlayerMove>().Server_Swing(swingArm.transform.position, Vector3.Distance(transform.position, swingArm.transform.position));
+                Swing(swingArm.transform.position, Vector3.Distance(transform.position, swingArm.transform.position));
             }
         }
+    }
+
+    private Vector3 tempMomentum = Vector3.zero;
+    /// <summary>
+    /// Handles swing movememnt from some classes
+    /// </summary>
+    private void Swing(Vector3 center, float radius)
+    {
+        GameObject Camera = null;
+        for (int i = 0; i < gameObject.transform.childCount; i++) if (gameObject.transform.GetChild(i).tag == "MainCamera") { Camera = gameObject.transform.GetChild(i).gameObject; break; }
+
+        Vector3 forward = Camera.transform.forward * (float)GetComponent<PlayerStatManager>().GetStat(NumericalStats.MovementSpeed);
+        Vector3 radialVector = (forward + transform.position - center).normalized;
+        Vector3 loc = center + (radialVector * radius);
+        Vector3 dirVector;
+        if (Vector3.Distance(forward + transform.position, center) > Vector3.Distance(loc, center))
+        {
+            dirVector = (loc - transform.position).normalized;
+        }
+        else
+        {
+            dirVector = forward.normalized;
+        }
+
+        moveDirection = dirVector * ((float)GetComponent<PlayerStatManager>().GetStat(NumericalStats.MovementSpeed) * (Mathf.Abs((loc - transform.position).magnitude) / 1.5f));
+        tempMomentum = moveDirection;
+        GetComponent<CharacterController>().Move(moveDirection * Time.deltaTime);
     }
 
     //R
