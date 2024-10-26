@@ -135,12 +135,12 @@ public class PredictionHandler : NetworkBehaviour
         if (!isServer) SendToServer(inputPayload);
         else
         {
-            ReplicateToClientsDirectly(inputPos, Vector3.zero, iScale, inputRot);
+            ReplicateToClientsDirectly(inputPos, iScale, inputRot);
         }
     }
 
     [ClientRpc]
-    void ReplicateToClientsDirectly(Vector3 pos, Vector3 vel, Vector3 scale, Quaternion rot)
+    void ReplicateToClientsDirectly(Vector3 pos, Vector3 scale, Quaternion rot)
     {
         if (!ROTATION_ONLY)
         {
@@ -187,8 +187,13 @@ public class PredictionHandler : NetworkBehaviour
 
         if (positionError > 0.001f)
         {
-
             Debug.Log("RECONCILING");
+
+            Debug.Log("Buffer Layout:");
+            Debug.Log("transform.localPosition: " + transform.position);
+            Debug.Log("latestServerState.position: " + latestServerState.position);
+            Debug.Log("serverStateBufferIndex: " + serverStateBufferIndex);
+            Debug.Log("positionError: " + positionError);
 
             //Rewind and Replay
             if (!ROTATION_ONLY)
