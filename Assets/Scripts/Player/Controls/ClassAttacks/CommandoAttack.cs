@@ -73,10 +73,10 @@ public class CommandoAttack : AttackManager
 
         GameObject MF1 = Instantiate(PrimaryAttackParticleEffect, Gun1MuzzleLoc, Quaternion.LookRotation(dir));
         GameObject MF2 = Instantiate(PrimaryAttackParticleEffect, Gun2MuzzleLoc, Quaternion.LookRotation(dir));
-        PlayShootSound();
+        if (gameObject.transform.root.name == "LocalGamePlayer") PlayShootSound();
 
-        if (gameObject.transform.root.name == "LocalGamePlayer") LShotStart.GetComponent<ParticleSystem>().Play();
-        if (gameObject.transform.root.name == "LocalGamePlayer") RShotStart.GetComponent<ParticleSystem>().Play();
+        LShotStart.GetComponent<ParticleSystem>().Play();
+        RShotStart.GetComponent<ParticleSystem>().Play();
 
         if (Physics.Raycast(start1, dir, out hit1, (float)statManager.GetStat(NumericalStats.Range))) { /*Debug.Log("GUN 1 HIT OBJECT");*/ }
         if (Physics.Raycast(start2, dir, out hit2, (float)statManager.GetStat(NumericalStats.Range))) { /*Debug.Log("GUN 2 HIT OBJECT");*/ }
